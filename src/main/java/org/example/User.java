@@ -5,5 +5,6 @@ public interface User {
     String Password = "";
     Integer Age = 0; //not used for login
     Integer MaritalStatus = 0; //not used for login
-    public void changePassword();
+    UserPermissions perms = null; //user perms stored here
+    void changePassword();
 }

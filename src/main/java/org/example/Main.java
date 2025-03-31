@@ -38,12 +38,12 @@ class ui_main {
         Scanner sc = new Scanner(System.in);
         while (true) {
             System.out.println(ui_arr[idx]);
-            idxin = sc.nextInt();
-            if (idxin < next_ui[idx].length) {
+            idx_in = sc.nextInt();
+            if (idx_in < next_ui[idx].length) {
                 if (next_ui[idx][idx_in] >= 0) {
                     idx = next_ui[idx][idx_in]; //get the next ui idx
                 }
-            } else if (idxin == 5) { //terminate program (how can we make this take a -1?)
+            } else if (idx_in == 5) { //terminate program (how can we make this take a -1?)
                 return;
             }
         }

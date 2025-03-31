@@ -1,4 +1,4 @@
-package org.example;
+package org.User;
 
 public class UserPermissions {
     Integer[] app_perms; //array of what methods they can run from each action class, in order of class diag

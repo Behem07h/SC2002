@@ -29,7 +29,6 @@ public class Main {
                     System.out.print("Enter Age: ");
                     int age = scanner.nextInt();
                     System.out.print("Enter Marital Status (0 = Single, 1 = Married): ");
-                    String maritalStatus = scanner.nextLine();
                     userManager.add_user(newUserID, age, maritalStatus);
                     break;
                 case 3:

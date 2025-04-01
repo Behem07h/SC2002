@@ -17,7 +17,7 @@ public class UserManager {
             while ((line = br.readLine()) != null) {
                 String[] details = line.split(",");
                 if (details.length == 5) {
-                    usr_db.add(new RegularUser(details[0], details[4], Integer.parseInt(details[2]), details[3].equals("Single") ? 0 : 1));
+                    usr_db.add(new RegularUser(details[0], details[4], Integer.parseInt(details[2]), details[3]));
                 }
             }
             System.out.println("Users loaded successfully.");
@@ -38,7 +38,7 @@ public class UserManager {
         System.out.println("Invalid UserID or Password.");
     }
 
-    public void add_user(String userID, int age, int maritalStatus) {
+    public void add_user(String userID, int age, String maritalStatus) {
         usr_db.add(new RegularUser(userID, "password", age, maritalStatus));
         System.out.println("User added: " + userID);
     }

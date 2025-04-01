@@ -21,4 +21,31 @@ public class Applicant implements User {
         this.applicationStatus = null;
         this.bookedFlatType = null;
     }
+    public String getUsergroup() {
+        return usergroup;
+    }
+    public int getAge() {
+        return age;
+    }
+    public String getMartialStatus() {
+        return martialStatus;
+    }
+    public String getUserID() {
+        return userID;
+    }
+    public String getApplicationStatus() {
+        return applicationStatus;
+    }
+    public void setApplicationStatus(String applicationStatus) {
+        this.applicationStatus = applicationStatus;
+    }
+    public String getBookedFlatType() {
+        return bookedFlatType;
+    }
+    public void setBookedFlatType(String bookedFlatType) {
+        this.bookedFlatType = bookedFlatType;
+    }
+    public void changePassword(String newpassword) {
+        this.password = newpassword;
+    }
 }

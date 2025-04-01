@@ -48,5 +48,4 @@ public class Applicant implements User {
     public void changePassword(String newpassword) {
         this.password = newpassword;
     }
-
 }

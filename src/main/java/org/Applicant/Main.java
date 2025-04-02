@@ -1,11 +1,11 @@
-package org.User;
+package org.Applicant;
 
 import java.util.Scanner;
 
 public class Main {
     public static void main(String[] args) {
-        UserManager userManager = new UserManager();
-        userManager.loadUsersFromCSV("data/users.csv");
+        ApplicantManager userManager = new ApplicantManager();
+        userManager.loadUsersFromCSV("data/applicant.csv");
 
         Scanner scanner = new Scanner(System.in);
 
@@ -29,8 +29,10 @@ public class Main {
                     System.out.print("Enter Age: ");
                     int age = scanner.nextInt();
                     System.out.print("Enter Marital Status (0 = Single, 1 = Married): ");
+                    scanner.nextLine(); // Consume newline from nextInt
                     String maritalStatus = scanner.nextLine();
-                    userManager.add_user(newUserID, age, maritalStatus);
+                    System.out.println();
+                    userManager.add_user(newUserID, age, maritalStatus, scanner);
                     break;
                 case 3:
                     System.out.print("Enter UserID (NRIC): ");

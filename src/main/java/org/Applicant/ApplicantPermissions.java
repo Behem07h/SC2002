@@ -1,11 +1,11 @@
-package org.User;
+package org.Applicant;
 
-public class UserPermissions {
+public class ApplicantPermissions {
     Integer[] app_perms; //array of what methods they can run from each action class, in order of class diag
     Integer[] enq_perms;
     Integer[] proj_perms;
 
-    public UserPermissions(Integer usr_type) {
+    public ApplicantPermissions(Integer usr_type) {
         switch (usr_type) {
             case 0: //applicant
                 app_perms = new Integer[]{1, 0, 0, 0, 0}; //applicants can only withdraw their application

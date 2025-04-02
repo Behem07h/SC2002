@@ -1,18 +1,18 @@
-package org.User;
+package org.Applicant;
 
-public class RegularUser implements User {
+public class RegularApplicant implements Applicant {
     private String userID;
     private String password;
     private int age;
     private String maritalStatus;
-    private UserPermissions perms;
+    private ApplicantPermissions perms;
 
-    public RegularUser(String userID, String password, int age, String maritalStatus) {
+    public RegularApplicant(String userID, String password, int age, String maritalStatus) {
         this.userID = userID;
         this.password = password;
         this.age = age;
         this.maritalStatus = maritalStatus;
-        this.perms = new UserPermissions(0); // Default user type: applicant
+        this.perms = new ApplicantPermissions(0); // Default user type: applicant
     }
 
     public String getUserID() {
@@ -31,7 +31,7 @@ public class RegularUser implements User {
         return maritalStatus;
     }
 
-    public UserPermissions getPermissions() {
+    public ApplicantPermissions getPermissions() {
         return perms;
     }
 

@@ -1,19 +1,33 @@
-package org.User;
+package org.Applicant.mainUI;
 
+import org.Applicant.ApplicantManager;
 import java.util.Scanner;
 
-public class Main {
+
+public class MainMenuUI {
     public static void main(String[] args) {
-        UserManager userManager = new UserManager();
-        userManager.loadUsersFromCSV("data/users.csv");
+        ApplicantManager userManager = new ApplicantManager();
+        boolean loaded = userManager.loadUsersFromCSV("data/applicant.csv");
+        if (!loaded) {
+            System.out.println("Warning: Failed to load users from CSV file.");
+        }
 
         Scanner scanner = new Scanner(System.in);
 
         while (true) {
-            System.out.println("\n1. Login\n2. Add User\n3. Change Password\n4. Display Users\n5. Exit");
+            System.out.println("\n===== BTO Management System =====");
+            System.out.println("1. Login\n2. Add User\n3. Change Password\n4. Display Users\n5. Exit");
             System.out.print("Choose an option: ");
-            int choice = scanner.nextInt();
-            scanner.nextLine(); // Consume newline
+
+            int choice;
+            try {
+                choice = scanner.nextInt();
+                scanner.nextLine(); // Consume newline
+            } catch (Exception e) {
+                System.out.println("Please enter a valid number.");
+                scanner.nextLine(); // Clear the invalid input
+                continue;
+            }
 
             switch (choice) {
                 case 1:
@@ -26,12 +40,22 @@ public class Main {
                 case 2:
                     System.out.print("Enter UserID (NRIC): ");
                     String newUserID = scanner.nextLine();
-                    System.out.print("Enter Age: ");
-                    int age = scanner.nextInt();
+
+                    int age;
+                    try {
+                        System.out.print("Enter Age: ");
+                        age = scanner.nextInt();
+                        scanner.nextLine(); // Consume newline
+                    } catch (Exception e) {
+                        System.out.println("Invalid age input. Please enter a number.");
+                        scanner.nextLine(); // Clear the invalid input
+                        continue;
+                    }
+
                     System.out.print("Enter Marital Status (0 = Single, 1 = Married): ");
-                    int maritalStatus = scanner.nextInt();
-                    scanner.nextLine(); // Consume newline
-                    userManager.add_user(newUserID, age, maritalStatus);
+                    String maritalStatus = scanner.nextLine();
+
+                    userManager.add_user(newUserID, age, maritalStatus, scanner);
                     break;
                 case 3:
                     System.out.print("Enter UserID (NRIC): ");
@@ -46,7 +70,7 @@ public class Main {
                     userManager.displayUsers();
                     break;
                 case 5:
-                    System.out.println("Exiting...");
+                    System.out.println("Thank you for using BTO Management System. Exiting...");
                     scanner.close();
                     return;
                 default:

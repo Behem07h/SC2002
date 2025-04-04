@@ -6,20 +6,29 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class ApplicantManager {
-    private List<RegularApplicant> usr_db = new ArrayList<>();
+    private List<Applicant> usr_db = new ArrayList<>();
 
+    // Constructor to load users from a CSV file upon instantiation
     public boolean loadUsersFromCSV(String filename) {
-        try {
-            File file = new File(filename);
-            System.out.println("Looking for file at: " + file.getAbsolutePath());
-            
-            BufferedReader br = new BufferedReader(new FileReader(file));
+        File file = new File(filename);
+        try (BufferedReader br = new BufferedReader(new FileReader(file))) {
             String line;
             br.readLine(); // Skip header line
             while ((line = br.readLine()) != null) {
                 String[] details = line.split(",");
-                if (details.length == 5) {
-                    usr_db.add(new RegularApplicant(details[0], details[4], Integer.parseInt(details[2]), details[3]));
+                if (details.length != 5) {  // Now expect only 5 columns (userID, username, password, maritalStatus, age)
+                    System.out.println("Skipping malformed line: " + line);
+                    continue; // Skip lines that do not have exactly 5 columns
+                }
+                try {
+                    int age = Integer.parseInt(details[4]); // Ensure age is an integer
+                    // Default permission level since it's no longer in the CSV
+                    Applicant.PermissionLevel perms = Applicant.PermissionLevel.NONE;
+                    // Debugging output to check what's being loaded
+                    System.out.println("Loaded user: " + details[0] + " | Password: " + details[2]); // Print out loaded user info
+                    usr_db.add(new Applicant(details[0], details[1], details[2], details[3], age, perms));
+                } catch (NumberFormatException e) {
+                    System.out.println("Invalid data format in line: " + line);
                 }
             }
             System.out.println("Users loaded successfully.");
@@ -30,85 +39,71 @@ public class ApplicantManager {
         }
     }
     
+    
+
+    // Method to authenticate a user
     public void authenticate(String userID, String password) {
-        for (RegularApplicant user : usr_db) {
+        for (Applicant user : usr_db) {
+            // Debugging output to check what's being compared
+            System.out.println("Comparing UserID: " + user.getUserID() + " | Input UserID: " + userID);
+            System.out.println("Comparing Password: " + user.getPassword() + " | Input Password: " + password);
+    
             if (user.getUserID().equals(userID) && user.getPassword().equals(password)) {
-                System.out.println("Login successful! Welcome, " + user.getUserID());
+                System.out.println("Login successful! Welcome, " + user.getUsername());
                 return;
             }
         }
         System.out.println("Invalid UserID or Password.");
     }
+    
 
-    public void add_user(String userID, int age, String maritalStatus, Scanner scanner) {
-    if (age < 0) {
-        System.out.println("Invalid age. Age cannot be negative.");
-        return;
-    }
-
-    // Validate the UserID using regular expression
-    while (!isValidUserID(userID)) {
-        System.out.println("Invalid UserID. The UserID must start with 'S' or 'T', followed by 7 digits and ending with 1 alphabet.");
-        System.out.print("Enter UserID (NRIC): ");
-        userID = scanner.nextLine();
-        System.out.println();
-    }
-
-    // Consume any leftover newline character after nextInt() (if it's in use)
-    scanner.nextLine(); // this clears the buffer from nextInt()
-
-    // Map "0" to "Single" and "1" to "Married"
-    if (maritalStatus.equals("0")) {
-        maritalStatus = "Single";
-    } else if (maritalStatus.equals("1")) {
-        maritalStatus = "Married";
-    } else {
-        // Keep prompting until valid marital status is entered
-        while (!maritalStatus.equals("Single") && !maritalStatus.equals("Married")) {
-            System.out.println("Invalid marital status. Enter '0' for Single or '1' for Married.");
-            maritalStatus = scanner.nextLine(); // Wait for user input and immediately validate
-            if (maritalStatus.equals("0")) {
-                maritalStatus = "Single";
-                break;
-            } else if (maritalStatus.equals("1")) {
-                maritalStatus = "Married";
-                break;
-            }
+    // Method to add a user manually
+    public void add_user(String userID, String username, int age, String maritalStatus) {
+        if (age < 0) {
+            System.out.println("Invalid age. Age cannot be negative.");
+            return;
         }
+
+        // Default permissions or assign based on context
+        Applicant.PermissionLevel perms = Applicant.PermissionLevel.NONE;
+        usr_db.add(new Applicant(userID, username, "defaultPassword", maritalStatus, age, perms));  // Create new applicant
+        System.out.println("User added: " + userID);
     }
 
-    // Add the new user to the database
-    usr_db.add(new RegularApplicant(userID, "password", age, maritalStatus));
-    System.out.println("User added: " + userID);
-}
+    // Utility method to validate user ID
+    public boolean isValidUserID(String userID) {
+        String regex = "^[ST][0-9]{7}[A-Za-z]$";
+        Pattern pattern = Pattern.compile(regex);
+        Matcher matcher = pattern.matcher(userID);
+        return matcher.matches();
+    }
 
-// Method to validate UserID
-public boolean isValidUserID(String userID) {
-    // Regular expression to check if the UserID matches the required format
-    String regex = "^[ST][0-9]{7}[A-Za-z]$";
-    Pattern pattern = Pattern.compile(regex);
-    Matcher matcher = pattern.matcher(userID);
-    return matcher.matches();  // Returns true if the UserID matches the pattern, false otherwise
-}
-    
-    
-    
-    
-
+    // Method to change user's password
     public void changePassword(String userID, String oldPassword, String newPassword) {
-        for (RegularApplicant user : usr_db) {
-            if (user.getUserID().equals(userID)) {
-                user.changePassword(oldPassword, newPassword);
+        for (Applicant user : usr_db) {
+            if (user.getUserID().equals(userID) && user.getPassword().equals(oldPassword)) {
+                user.setPassword(newPassword);
+                System.out.println("Password changed successfully.");
                 return;
             }
         }
-        System.out.println("User not found.");
+        System.out.println("User not found or old password incorrect.");
     }
 
+    // Method to display all users
     public void displayUsers() {
         System.out.println("User List:");
-        for (RegularApplicant user : usr_db) {
+        for (Applicant user : usr_db) {
             System.out.println(user);
         }
     }
 }
+
+
+
+
+
+
+
+
+

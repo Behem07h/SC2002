@@ -3,7 +3,6 @@ package org.Applicant.mainUI;
 import org.Applicant.ApplicantManager;
 import java.util.Scanner;
 
-
 public class MainMenuUI {
     public static void main(String[] args) {
         ApplicantManager userManager = new ApplicantManager();
@@ -35,7 +34,8 @@ public class MainMenuUI {
                     String userID = scanner.nextLine();
                     System.out.print("Enter Password: ");
                     String password = scanner.nextLine();
-                    userManager.authenticate(userID, password);
+                userManager.authenticate(userID, password);
+        
                     break;
                 case 2:
                     System.out.print("Enter UserID (NRIC): ");
@@ -53,9 +53,10 @@ public class MainMenuUI {
                     }
 
                     System.out.print("Enter Marital Status (0 = Single, 1 = Married): ");
-                    String maritalStatus = scanner.nextLine();
-
-                    userManager.add_user(newUserID, age, maritalStatus, scanner);
+                    String maritalStatus = getMaritalStatus(scanner);
+                    
+                    // Corrected the method call with proper parameters
+                    userManager.add_user(newUserID, newUserID, age, maritalStatus);
                     break;
                 case 3:
                     System.out.print("Enter UserID (NRIC): ");
@@ -78,4 +79,26 @@ public class MainMenuUI {
             }
         }
     }
+
+    // Helper method to handle marital status input and validation
+    private static String getMaritalStatus(Scanner scanner) {
+        String maritalStatus = "";
+        while (true) {
+            String maritalStatusInput = scanner.nextLine();
+            if ("0".equals(maritalStatusInput)) {
+                maritalStatus = "Single";
+                break;
+            } else if ("1".equals(maritalStatusInput)) {
+                maritalStatus = "Married";
+                break;
+            } else {
+                System.out.println("Invalid input for marital status. Please enter 0 for Single or 1 for Married.");
+            }
+        }
+        return maritalStatus;
+    }
 }
+
+
+
+

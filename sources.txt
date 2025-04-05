@@ -1,0 +1,12 @@
+src/main/java/org/UI/UI.java
+src/main/java/org/Applicant/Applicant.java
+src/main/java/org/Applicant/mainUI/MainMenuUI.java
+src/main/java/org/Applicant/Enquiry.java
+src/main/java/org/Applicant/user.java
+src/main/java/org/Applicant/ApplicantPermissions.java
+src/main/java/org/Applicant/ApplicantManager.java
+src/main/java/org/HDBOfficer/mainUI/MainMenuUI.java
+src/main/java/org/HDBOfficer/user.java
+src/main/java/org/HDBOfficer/HDBOfficerPermissions.java
+src/main/java/org/HDBOfficer/HDBOfficerManager.java
+src/main/java/org/HDBOfficer/HDBOfficer.java

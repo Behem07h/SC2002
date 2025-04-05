@@ -4,6 +4,9 @@ import java.io.*;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
+import org.Applicant.Applicant;
+import org.Applicant.Enquiry;
 
 public class ApplicantManager {
     private List<Applicant> usr_db = new ArrayList<>();
@@ -97,6 +100,34 @@ public class ApplicantManager {
             System.out.println(user);
         }
     }
+
+    public List<Enquiry> getEnquiriesByUserID(String userID) {
+        return usr_db.stream()
+                .filter(user -> user.getUserID().equals(userID))
+                .findFirst()
+                .map(Applicant::getEnquiries)
+                .orElse(new ArrayList<>());
+    }
+
+    public void resolveEnquiry(String userID, String enquiryID, String response) {
+        Applicant applicant = usr_db.stream()
+                .filter(u -> u.getUserID().equals(userID))
+                .findFirst()
+                .orElse(null);
+
+        if (applicant != null) {
+            applicant.resolveEnquiry(enquiryID, response);
+        }
+    }
+
+    // Method to get all unresolved enquiries (for managers/officers)
+    public List<Enquiry> getAllUnresolvedEnquiries() {
+        return usr_db.stream()
+                .flatMap(user -> user.getEnquiries().stream())
+                .filter(enquiry -> !enquiry.isResolved())
+                .collect(Collectors.toList());
+    }
+
 }
 
 

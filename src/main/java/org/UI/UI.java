@@ -1,5 +1,8 @@
 package org.UI;
+import org.Applicant.user;
+
 import java.util.Scanner;
+
 public class UI {
     public static void main(String[] args) {
         ui_main ui = new ui_main(" ");
@@ -19,12 +22,14 @@ class ui_main {
     //todo: use format strings to display variable text
 
     //inputs are all 1 indexed as 0 is reserved for quitting
-    int[][] ui_fns = {{0},{-1,1,2},{-1,-1}}; //fns in fn_arr to run when receiving input, -1 if none
+    String[][] ui_fns = {{"0"},{"-1","1","2"},{"-1","-1"}}; //fns in fn_arr to run when receiving input, -1 if none
     //todo: add code to make the fns run when switching ui menus, and for taking inputs
     int[][] next_ui = {{1},{0,2,-1},{0,1}}; //ui in ui_arr to go to next when receiving input, -1 if no change
     Runnable[] fn_arr = new Runnable[10]; //arr of ui-exposed fns
-    //fn_arr[0] = () -> number(); //run with fn_arr[0].run() //use a case statement if this doesnt work
+    //fn_arr[0] = () -> number(); //run with fn_arr[0].run() //use a case statement if this doesn't work
     //this only really works if actions are derived from some actor class which handles account perms as an input
+
+    user currentUser;
 
     public ui_main(String filepath) {
         //load file path into ui_arr
@@ -37,6 +42,9 @@ class ui_main {
             int idx_in = sc.nextInt();
             if ((idx_in-1 < next_ui[idx].length) && (idx_in > 0)) { //convert input to zero index & verify
                 if (next_ui[idx][idx_in-1] >= 0) {
+                    //if the input was valid, run any relevant functions here
+                    // and save the return values to a ctx local var
+                    currentUser.act(ui_fns[idx][idx_in-1]);
                     idx = next_ui[idx][idx_in-1]; //get the next ui idx
                 }
             } else if (idx_in == 0) { //terminate program

@@ -4,25 +4,28 @@ public interface user {
     
     String getUserID();
 
-    String getUsername();
-
-    String getPassword();
-
-    String getMaritalStatus();
-
-    int getAge();
-
     void setUserID(String userID);
+
+    String getUsername();
 
     void setUsername(String username);
 
+    String getPassword();
+
     void setPassword(String password);
+
+    String getMaritalStatus();
 
     void setMaritalStatus(String maritalStatus);
 
+    int getAge();
+
     void setAge(int age);
 
+
     boolean changePassword(String oldPassword, String newPassword);
+
+    void act(String action); //wrapper fn that handles user inputs for all actions
 }
 
 

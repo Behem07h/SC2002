@@ -98,6 +98,13 @@ public class Applicant implements user {
     }
 
     @Override
+    public void act(String something) {
+        // Simple behavior — print something or log an action
+        System.out.println("Applicant [" + username + "] is acting on: " + something);
+    }
+
+
+    @Override
     public boolean changePassword(String oldPassword, String newPassword) {
         if (this.password.equals(oldPassword)) {  // Plain-text password comparison
             this.password = newPassword;  // Set new password

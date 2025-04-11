@@ -25,7 +25,7 @@ public interface user {
 
     boolean changePassword(String oldPassword, String newPassword);
 
-    void act(String action); //wrapper fn that handles user inputs for all actions
+    String[] act(String action); //wrapper fn that handles user inputs for all actions
 }
 
 

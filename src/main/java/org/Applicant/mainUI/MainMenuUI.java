@@ -1,6 +1,9 @@
-package org.applicant.mainUI;
+package org.Applicant.mainUI;
 
 import org.Applicant.ApplicantManager;
+import org.Applicant.user;
+import org.UI.UI2;
+
 import java.util.Scanner;
 
 public class MainMenuUI {
@@ -34,8 +37,11 @@ public class MainMenuUI {
                     String userID = scanner.nextLine();
                     System.out.print("Enter Password: ");
                     String password = scanner.nextLine();
-                userManager.authenticate(userID, password);
-        
+                    user myuser = userManager.authenticate(userID, password);
+                    if (myuser != null) {
+                        UI2 mainUI = new UI2("", myuser, scanner);
+                        mainUI.load_ui();
+                    }
                     break;
                 case 2:
                     System.out.print("Enter UserID (NRIC): ");
@@ -82,7 +88,7 @@ public class MainMenuUI {
 
     // Helper method to handle marital status input and validation
     private static String getMaritalStatus(Scanner scanner) {
-        String maritalStatus = "";
+        String maritalStatus;
         while (true) {
             String maritalStatusInput = scanner.nextLine();
             if ("0".equals(maritalStatusInput)) {

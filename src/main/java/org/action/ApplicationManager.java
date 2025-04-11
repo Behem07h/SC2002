@@ -1,14 +1,41 @@
 package org.action;
 
+import org.UI.ConfigLDR;
+
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
-public class Applicationcontroller {
+public class ApplicationManager {
     private List<Application> applicationList;
+    private final String path = "data/db";
 
-    public Applicationcontroller() {
-        applicationList = new ArrayList<>();
+    public ApplicationManager() {
+        //load applications from csv
+        this.applicationList = new ArrayList<Application>();
+
+        ConfigLDR ldr = new ConfigLDR();
+        Map<String,String[]> appl_map = ldr.ReadToArrMap(path + "/applications.csv");
+        for (String key : appl_map.keySet()) {
+            String[] items = appl_map.get(key);
+            if (items.length < 5) {
+                System.out.println("Application ID " + key + " missing params");
+                continue;
+            } //if param length too short, skip
+
+            String applicationId = key;
+            String projectID = items[0];
+            String applicantName = items[1];
+            Application.ApplicationStatus status = Application.ApplicationStatus.valueOf(items[2]);
+            String flatType = items[3];
+            LocalDateTime openingDate = LocalDateTime.parse(items[4]);
+            LocalDateTime closingDate = LocalDateTime.parse(items[5]);
+            this.applicationList.add(new Application(applicationId,applicantName,projectID,status,flatType,openingDate,closingDate));
+        }
     }
+
+    //todo:standardise with enquiries manager and make save fn
 
     public void addApplication(Application app) {
         applicationList.add(app);

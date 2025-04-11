@@ -6,6 +6,7 @@ import java.time.LocalDateTime;
 public class Application implements act {
     private String applicationId;
     private String applicantName;
+    private String projectId;
     private ApplicationStatus status;
     private String flattype;
     private LocalDateTime openingDate;
@@ -30,13 +31,14 @@ public class Application implements act {
     }
 
    
-    public Application(String applicationId, String applicantName, ApplicationStatus initialStatus, String flattype) {
+    public Application(String applicationId, String applicantName, String projectId, ApplicationStatus status, String flatType, LocalDateTime openingDate, LocalDateTime closingDate) {
         this.applicationId = applicationId;
         this.applicantName = applicantName;
-        this.status = initialStatus;
-        this.flattype = flattype;
-        this.openingDate = null;
-        this.closingDate = null;
+        this.projectId = projectId;
+        this.status = status;
+        this.flattype = flatType;
+        this.openingDate = openingDate;
+        this.closingDate = closingDate;
     }
 
     @Override

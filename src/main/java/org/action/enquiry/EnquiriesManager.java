@@ -12,6 +12,7 @@ public class EnquiriesManager implements EnquiryAction {
     public EnquiriesManager() {
         //load enquiries from csv
         this.enquiriesList = new ArrayList<Enquiries>();
+
         ConfigLDR ldr = new ConfigLDR();
         Map<String,String[]> enq_map = ldr.ReadToArrMap(path + "/enquiries.csv");
         for (String key : enq_map.keySet()) {
@@ -50,9 +51,49 @@ public class EnquiriesManager implements EnquiryAction {
         }
         return null;
     }
+    private int generateNewEnquiryId() {
+        int maxId = 0;
+        for (Enquiries e : enquiriesList) {
+            if (e.getId() > maxId) {
+                maxId = e.getId();
+            }
+        }
+        return maxId + 1;
+    }
+    public boolean submitEnquiry(String text, String username,String projectID) {
+        if(text == null || text.equals("")) {
+            System.out.println("Text is empty");
+            return false;
+        }
+        if(username == null || username.equals("")) {
+            System.out.println("Username is empty");
+            return false;
+        }
+        if(projectID == null || projectID.equals("")) {
+            System.out.println("Project ID is empty");
+            return false;
+        }
+        int newID = generateNewEnquiryId();
+        Enquiries newEnquiry = new Enquiries(
+                text,
+                newID,
+                "",
+                LocalDateTime.now(),
+                username,
+                projectID
+        );
 
-    public boolean deleteEnquiries(int enquiriesId,String username,boolean HDBManger, boolean HDBOfficer) {
-        Enquiries enquiries = getEnquiry(enquiriesId);
+        // Add to the enquiries list
+        enquiriesList.add(newEnquiry);
+
+        System.out.println("Enquiry successfully submitted with ID: " + newID);
+        return true;
+    }
+    @Override
+    public void submitEnquiries() {
+    }
+    public boolean deleteEnquiries(int projectId,String username,boolean HDBManger, boolean HDBOfficer) {
+        Enquiries enquiries = getEnquiry(projectId);
         if(enquiries == null) {
             System.out.println("Enquiries not found");
             return false;
@@ -66,12 +107,13 @@ public class EnquiriesManager implements EnquiryAction {
             return false;
         }
     }
+
     @Override
     public void deleteEnquiries() {
         System.out.println("Enquiries deleted");
     }
-    public boolean editEnquiries(int enquiriesId,String username,String text, boolean HDBManger, boolean HDBOfficer) {
-        Enquiries enquiries = getEnquiry(enquiriesId);
+    public boolean editEnquiries(int projectId,String username,String text, boolean HDBManger, boolean HDBOfficer) {
+        Enquiries enquiries = getEnquiry(projectId);
         if(enquiries == null) {
             System.out.println("Enquries not found");
         }
@@ -88,8 +130,8 @@ public class EnquiriesManager implements EnquiryAction {
     public void editEnquiries() {
         System.out.println("Enquiries edited");
     }
-    public boolean replyEnquiries(int enquriesId,String reply, boolean HDBManger, boolean HDBOfficer) {
-        Enquiries enquiries = getEnquiry(enquriesId);
+    public boolean replyEnquiries(int projectId,String reply, boolean HDBManger, boolean HDBOfficer) {
+        Enquiries enquiries = getEnquiry(projectId);
         if(enquiries == null) {
             System.out.println("Enquiries not found");
         }
@@ -140,13 +182,10 @@ public class EnquiriesManager implements EnquiryAction {
         System.out.println("Enquiries answered:" + answered);
     }
 
-    public void updateStatus(String projectID){
-
-    }
-    public void categorizedEnquiries(){
-
-    }
-    public void logEnquiries(){
-
-    }
+//    public void updateStatus(String projectID){
+//
+//    }
+//    public void categorizedEnquiries(){
+//
+//    }
 }

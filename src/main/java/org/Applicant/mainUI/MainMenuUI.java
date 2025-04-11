@@ -1,4 +1,4 @@
-package org.Applicant.mainUI;
+package org.applicant.mainUI;
 
 import org.Applicant.ApplicantManager;
 import org.Applicant.user;

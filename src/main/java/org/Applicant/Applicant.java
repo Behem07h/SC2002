@@ -11,7 +11,6 @@ public class Applicant implements user {
     private String maritalStatus;
     private int age;
     private PermissionLevel perms;  // Default permission level
-    private List<Enquiry> enquiries = new ArrayList<>();
 
     // Constructor
     public Applicant(String userID, String username, String password, String maritalStatus, int age, PermissionLevel perms) {
@@ -21,29 +20,6 @@ public class Applicant implements user {
         this.maritalStatus = maritalStatus;
         this.age = age;
         this.perms = perms;
-    }
-
-    public void createEnquiry(String projectID, String content) {
-        Enquiry enquiry = new Enquiry(projectID, getUserID(), content);
-        enquiries.add(enquiry);
-    }
-
-    public List<Enquiry> getEnquiries() {
-        return new ArrayList<>(enquiries);
-    }
-
-    public Enquiry findEnquiry(String enquiryID) {
-        return enquiries.stream()
-                .filter(e -> e.getEnquiryID().equals(enquiryID))
-                .findFirst()
-                .orElse(null);
-    }
-
-    public void resolveEnquiry(String enquiryID, String response) {
-        Enquiry enquiry = findEnquiry(enquiryID);
-        if (enquiry != null) {
-            enquiry.resolveEnquiry(response);
-        }
     }
 
     // Getters and Setters

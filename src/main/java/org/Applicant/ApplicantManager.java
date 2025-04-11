@@ -44,7 +44,7 @@ public class ApplicantManager {
     
 
     // Method to authenticate a user
-    public void authenticate(String userID, String password) {
+    public user authenticate(String userID, String password) {
         for (Applicant user : usr_db) {
             // Debugging output to check what's being compared
             System.out.println("Comparing UserID: " + user.getUserID() + " | Input UserID: " + userID);
@@ -52,10 +52,11 @@ public class ApplicantManager {
     
             if (user.getUserID().equals(userID) && user.getPassword().equals(password)) {
                 System.out.println("Login successful! Welcome, " + user.getUsername());
-                return;
+                return user;
             }
         }
         System.out.println("Invalid UserID or Password.");
+        return null;
     }
     
 

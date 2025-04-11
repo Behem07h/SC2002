@@ -90,8 +90,9 @@ public class HDBManager implements user {
     }
     
     @Override
-    public void act(String something) {
+    public String[] act(String something) {
         System.out.println("HDBManager [" + username + "] is acting on: " + something);
+        return new String[0];
     }
     
     @Override

@@ -1,0 +1,6 @@
+MENU_NAME           , MENU_CONTENT,
+Project_List        , Projects: \n{Project_List[0]}\n\n[2] - View application\n[1] - View a project\n[0] - Log out,
+Project_Details     , Project details:\n{Project_Details[0]}\n\n[3] - Send application\n[2] - Enquiries\n[1] - Back\n[0] - Log out,
+Project_Enquiries   , Project Enquiries:\nProject: {List_Enquiries[0]}\n{List_Enquiries[1]}\n\n[3] - View Enquiry\n[2] - Submit Enquiry\n[1] - Back\n[0] - Log out,
+Enquiry_View        , Enquiry Details:\nProject: {View_Enquiry[0]}\n{View_Enquiry[1]}\n\n[3] - Delete Enquiry\n[2] - Edit Enquiry\n[1] - Back\n[0] - Log out,
+Application_View    , Application Status:\n{View_Application[0]}\n\n[3] - Submit Flat Booking\n[2] - Request Application Withdrawal\n[1] - Back\n[0] - Log out

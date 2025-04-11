@@ -1,4 +1,4 @@
-package org.applicant.mainUI;
+package org.Applicant.mainUI;
 
 import org.Applicant.ApplicantManager;
 import org.Applicant.user;
@@ -39,7 +39,7 @@ public class MainMenuUI {
                     String password = scanner.nextLine();
                     user myuser = userManager.authenticate(userID, password);
                     if (myuser != null) {
-                        UI2 mainUI = new UI2("", myuser);
+                        UI2 mainUI = new UI2("", myuser, scanner);
                         mainUI.load_ui();
                     }
                     break;

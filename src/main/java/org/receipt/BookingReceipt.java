@@ -1,4 +1,4 @@
-package org.action.receipt;
+package org.receipt;
 
 
 public class BookingReceipt {

@@ -1,4 +1,4 @@
-package org.action.receipt;
+package org.receipt;
 
 
 import java.util.ArrayList;

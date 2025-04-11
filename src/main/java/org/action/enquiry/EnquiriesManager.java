@@ -73,4 +73,46 @@ public class EnquiriesManager implements EnquiryAction {
     public void replyEnquiries() {
         System.out.println("Enquiries replied");
     }
+
+    public void processEnquiries(){
+        int pending = 0;
+        System.out.println("Enquiries processing");
+        for (Enquiries e : enquiriesList) {
+            if(e.getReply().isEmpty()){
+                pending++;
+                System.out.println("Enquiries id:" + e.getId());
+            }
+        }
+        System.out.println("Enquiries needed to be processed:" + pending);
+    }
+
+    public void trackStatus(String projectID){
+        int pending = 0;
+        int answered = 0;
+        System.out.println("Tracking status");
+        for(Enquiries e : enquiriesList){
+            if(e.getProjectID().equals(projectID))
+            {
+                if(e.getReply().isEmpty()){
+                    pending++;
+                }
+                else
+                {
+                    answered++;
+                }
+            }
+        }
+        System.out.println("Enquiries pending:" + pending);
+        System.out.println("Enquiries answered:" + answered);
+    }
+
+    public void updateStatus(String projectID){
+
+    }
+    public void categorizedEnquiries(){
+
+    }
+    public void logEnquiries(){
+
+    }
 }

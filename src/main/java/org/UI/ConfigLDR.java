@@ -30,7 +30,6 @@ public class ConfigLDR{
             return cfg;
         }
     }
-
     public HashMap<String, String[]> ReadToArrMap(String filename) {
         File file = new File(filename);
         HashMap<String, String[]> cfg = new HashMap<>();
@@ -58,7 +57,7 @@ public class ConfigLDR{
     }
 
     //todo:fns to save data to file when quitting
-    public void saveCSV(String filename, HashMap<String, String[]> map) {
+    public void saveCSV(String filename, Map<String, String[]> map) {
         File file = new File(filename);
         StringBuilder line = new StringBuilder();
         for (String key : map.keySet()) {

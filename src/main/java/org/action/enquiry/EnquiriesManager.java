@@ -1,13 +1,47 @@
 package org.action.enquiry;
 
+import org.UI.ConfigLDR;
 import org.action.*;
+
+import java.time.LocalDateTime;
 import java.util.*;
 
 public class EnquiriesManager implements EnquiryAction {
     private List<Enquiries> enquiriesList;
+    private final String path = "data/db";
     public EnquiriesManager() {
+        //load enquiries from csv
         this.enquiriesList = new ArrayList<Enquiries>();
+        ConfigLDR ldr = new ConfigLDR();
+        Map<String,String[]> enq_map = ldr.ReadToArrMap(path + "/enquiries.csv");
+        for (String key : enq_map.keySet()) {
+            String[] items = enq_map.get(key);
+            if (items.length < 5) {
+                System.out.println("Enquiry ID " + key + " missing params");
+                continue;
+            } //if param length too short, skip
+
+            String text = items[3];
+            String reply = items[4];
+            int id = Integer.parseInt(key);
+            LocalDateTime timestamp = LocalDateTime.parse(items[2]);
+            String username = items[1];
+            String projectID = items[0];
+            this.enquiriesList.add(new Enquiries(text, id, reply, timestamp, username, projectID));
+        }
     }
+
+    public void storeEnquiries() {
+        // run this when quitting program to store to csv
+        Map<String,String[]> enq_map = new HashMap<>();
+        for (Enquiries e : enquiriesList) {
+            String[] items = {e.getProjectID(),e.getUsername(), String.valueOf(e.getTimestamp()),e.getText(),e.getReply()};
+            enq_map.put(String.valueOf(e.getId()),items);
+        }
+        ConfigLDR ldr = new ConfigLDR();
+        ldr.saveCSV(path + "/enquiries.csv",enq_map);
+    }
+
     public Enquiries getEnquiry(int id) {
         for (Enquiries e : enquiriesList) {
             if (e.getId() == id) {

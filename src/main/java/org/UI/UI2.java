@@ -28,7 +28,7 @@ class ui_main {
 
     //inputs are all 1 indexed as 0 is reserved for quitting
     String[][][] ui_fns = {
-    		{{"Project_List"},{"Project_Details"},{"View_Application"}},
+    		{{"Project_List"},{"Project_Details","View_Application"}},
     		{{"Project_Details"},{"List_Projects","List_Enquiries","Send_Application"}},
     		{{"Project_Enquiries"},{"Project_Details","Submit_Enquiry","View_Enquiry"}},
             {{"Enquiry_View"},{"List_Enquiries","Edit_Enquiry","Delete_Enquiry"}},
@@ -39,7 +39,7 @@ class ui_main {
     //
     String[][][] next_ui = {
     		{{"Project_List"},{"Project_Details","Application_View"}}, //key, values[]
-    		{{"Project_Details"},{"Project_List","Project_Enquiries",""}},
+    		{{"Project_Details"},{"Project_List","Project_Enquiries","NIL"}},
     		{{"Project_Enquiries"},{"Project_Details","NIL"}},
             {{"Enquiry_View"},{"Project_Enquiries","NIL","NIL"}},
             {{"Application_View"},{"Project_List","NIL","NIL"}}
@@ -84,15 +84,17 @@ class ui_main {
     public void load_ui() {
         while (true) {
         	String ui_text = ui_map.get(ui_idx); //get the current ui text
+
         	for (int i = 0; i < ctx.length; i++) {
         		ui_text = ui_text.replace(String.format("{%s[%d]}", ctx_idx, i), ctx[i]); //handle contextual text replacement
         	}
             System.out.println(ui_text); //display the ui
             
             int usr_in = sc.nextInt(); //get user input as int
-            
+
             if ((usr_in-1 < next_ui_map.get(ui_idx).length) && (usr_in > 0)) { //convert input to zero index & verify
             	String next_alias = next_ui_map.get(ui_idx)[usr_in - 1]; //get the next menu
+
                 if (ui_map.containsKey(next_alias)) { //check if next menu exists
                     //if the input was valid, run any relevant functions here and save the return values to a ctx local var
                 	ctx_idx = fn_map.get(ui_idx)[usr_in-1];

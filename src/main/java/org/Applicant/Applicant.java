@@ -1,9 +1,5 @@
 package org.Applicant;
 
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-
 public class Applicant implements user {
     private String userID;
     private String username;
@@ -74,9 +70,10 @@ public class Applicant implements user {
     }
 
     @Override
-    public void act(String something) {
+    public String[] act(String something) {
         // Simple behavior — print something or log an action
         System.out.println("Applicant [" + username + "] is acting on: " + something);
+        return new String[0];
     }
 
     @Override

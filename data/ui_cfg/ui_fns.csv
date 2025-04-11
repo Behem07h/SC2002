@@ -1,0 +1,6 @@
+MENU_NAME           , FN_NAME[1], FN_NAME[2]...,
+Project_List        , Project_Details,View_Application,
+Project_Details     , List_Projects,List_Enquiries,Send_Application,
+Project_Enquiries   , Project_Details,Submit_Enquiry,View_Enquiry,
+Enquiry_View        , List_Enquiries,Edit_Enquiry,Delete_Enquiry,
+Application_View    , List_Projects,Withdraw_Application,Submit_Booking

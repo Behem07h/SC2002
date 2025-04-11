@@ -39,7 +39,7 @@ public class MainMenuUI {
                     String password = scanner.nextLine();
                     user myuser = userManager.authenticate(userID, password);
                     if (myuser != null) {
-                        UI2 mainUI = new UI2("", myuser, scanner);
+                        UI2 mainUI = new UI2("data/ui_cfg", myuser, scanner);
                         mainUI.load_ui();
                     }
                     break;

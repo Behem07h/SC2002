@@ -1,156 +1,111 @@
 package org.action;
 
-import org.action.Application;
-import org.action.Application.ApplicationStatus;
-import java.time.LocalDateTime;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Applicationcontroller {
-    private Map<String, Application> applications = new HashMap<>();
-    
-    /**
-     * Adds a new application.
-     *
-     * @param applicationId the unique ID for the application.
-     * @param applicantName the applicant's name.
-     * @param flatType the type of flat applied for.
-     */
-    public void addApplication(String applicationId, String applicantName, String flatType) {
-        Application app = new Application(applicationId, applicantName, ApplicationStatus.PENDING, flatType);
-        applications.put(applicationId, app);
-        System.out.println("Application " + applicationId + " added successfully.");
+    private List<Application> applicationList;
+
+    public Applicationcontroller() {
+        applicationList = new ArrayList<>();
     }
-    
-    /**
-     * Displays the details of the application with the given ID.
-     *
-     * @param applicationId the unique ID of the application to view.
-     */
-    public void viewApplication(String applicationId) {
-        Application app = applications.get(applicationId);
-        if (app != null) {
+
+    public void addApplication(Application app) {
+        applicationList.add(app);
+        System.out.println("Application added: " + app);
+    }
+
+    public void viewAllApplications() {
+        System.out.println("=== All Applications ===");
+        for (Application app : applicationList) {
             app.view();
-        } else {
-            System.out.println("Application " + applicationId + " not found.");
+            System.out.println("--------------------");
         }
     }
-    
-    /**
-     * Submits the application with the given ID.
-     *
-     * @param applicationId the unique ID of the application to submit.
-     */
-    public void submitApplication(String applicationId) {
-        Application app = applications.get(applicationId);
-        if (app != null) {
-            app.submit();
-        } else {
-            System.out.println("Application " + applicationId + " not found.");
-        }
-    }
-    
-    /**
-     * Approves the application with the given ID.
-     *
-     * @param applicationId the unique ID of the application to approve.
-     */
-    public void approveApplication(String applicationId) {
-        Application app = applications.get(applicationId);
-        if (app != null) {
-            app.approveApplication();
-        } else {
-            System.out.println("Application " + applicationId + " not found.");
-        }
-    }
-    
-    /**
-     * Rejects the application with the given ID.
-     *
-     * @param applicationId the unique ID of the application to reject.
-     */
-    public void rejectApplication(String applicationId) {
-        Application app = applications.get(applicationId);
-        if (app != null) {
-            app.rejectApplication();
-        } else {
-            System.out.println("Application " + applicationId + " not found.");
-        }
-    }
-    
-    /**
-     * Withdraws the application with the given ID.
-     *
-     * @param applicationId the unique ID of the application to withdraw.
-     */
-    public void withdrawApplication(String applicationId) {
-        Application app = applications.get(applicationId);
-        if (app != null) {
-            app.withdrawApplication();
-        } else {
-            System.out.println("Application " + applicationId + " not found.");
-        }
-    }
-    
-    /**
-     * Updates the status of the application with the given ID directly.
-     * If the new status is final (e.g., SUCCESSFUL or UNSUCCESSFUL), 
-     * the closing date is updated accordingly.
-     *
-     * @param applicationId the unique ID of the application.
-     * @param newStatus     the new status to update the application to.
-     */
-    public void updateStatus(String applicationId, ApplicationStatus newStatus) {
-        Application app = applications.get(applicationId);
-        if (app != null) {
-            // Update the application's status using its setter.
-            app.setApplicationStatus(newStatus);
-            // If the status is final, update the closing date.
-            if (newStatus == ApplicationStatus.SUCCESSFUL || newStatus == ApplicationStatus.UNSUCCESSFUL) {
-                app.setClosingDate(LocalDateTime.now());
+
+    public Application retrieveApplication(String applicationId) {
+        for (Application app : applicationList) {
+            if (app.getApplicationId().equalsIgnoreCase(applicationId)) {
+                return app;
             }
-            System.out.println("Application " + applicationId + " status updated to " + newStatus);
-        } else {
-            System.out.println("Application " + applicationId + " not found.");
         }
+        System.out.println("No application found with ID: " + applicationId);
+        return null;
     }
-    
-    /**
-     * Processes the application by updating its state based on the target status.
-     * <ul>
-     *   <li>If the target status is BOOKED, the application is submitted (marking the flat as booked).</li>
-     *   <li>If the target status is SUCCESSFUL, the application is approved.</li>
-     *   <li>If the target status is UNSUCCESSFUL, the application is rejected.</li>
-     * </ul>
-     *
-     * @param applicationId the unique ID of the application to process.
-     * @param targetStatus  the target status for processing.
-     */
-    public void processApplication(String applicationId, ApplicationStatus targetStatus) {
-        Application app = applications.get(applicationId);
+
+    public void processApplication(String applicationId, Application.ApplicationStatus targetStatus) {
+        Application app = retrieveApplication(applicationId);
         if (app == null) {
-            System.out.println("Application " + applicationId + " not found.");
+            System.out.println("Application ID \"" + applicationId + "\" not found.");
             return;
         }
-        
+
         switch (targetStatus) {
             case BOOKED:
-                // Process as submission.
+                System.out.println("Processing submission for application ID: " + applicationId);
                 app.submit();
                 break;
+
             case SUCCESSFUL:
-                // Process as approval.
+                System.out.println("Processing approval for application ID: " + applicationId);
                 app.approveApplication();
                 break;
+
             case UNSUCCESSFUL:
-                // Process as rejection.
+                System.out.println("Processing rejection for application ID: " + applicationId);
                 app.rejectApplication();
                 break;
+
             default:
-                System.out.println("Processing for target status " + targetStatus + " is not supported.");
+                System.out.println("Unsupported target status: " + targetStatus);
         }
     }
-}
+
+    public void updateApplicationStatus(String applicationId, Application.ApplicationStatus newStatus) {
+        Application app = retrieveApplication(applicationId);
+        if (app != null) {
+            app.setApplicationStatus(newStatus);
+            if (newStatus == Application.ApplicationStatus.SUCCESSFUL || newStatus == Application.ApplicationStatus.UNSUCCESSFUL) {
+                app.setClosingDate(java.time.LocalDateTime.now());
+            }
+            System.out.println("Status updated to: " + newStatus);
+        }
+    }
+
+    public void withdrawApplication(String applicationId) {
+        Application app = retrieveApplication(applicationId);
+        if (app != null) {
+            app.withdrawApplication();
+        }
+    }
+
+    public void submitApplication(String applicationId) {
+        Application app = retrieveApplication(applicationId);
+        if (app != null) {
+            app.submit();
+        }
+    }
+
+    public void approveApplication(String applicationId) {
+        Application app = retrieveApplication(applicationId);
+        if (app != null) {
+            app.approveApplication();
+        }
+    }
+
+    public void rejectApplication(String applicationId) {
+        Application app = retrieveApplication(applicationId);
+        if (app != null) {
+            app.rejectApplication();
+        }
+    }
+
+    public List<Application> getApplicationList() {
+        return applicationList;
+    }
+} 
+
+
 
 
 

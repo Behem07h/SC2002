@@ -12,7 +12,7 @@ public class Application implements act {
     private LocalDateTime closingDate;
     private boolean withdrawn = false;
 
-    // Public setters implemented to update the values.
+    
     public void setApplicationStatus(ApplicationStatus newStatus) {
         this.status = newStatus;
     }
@@ -21,7 +21,7 @@ public class Application implements act {
         this.closingDate = now;
     }
 
-    // Enumeration for application statuses.
+    
     public enum ApplicationStatus {
         PENDING,       
         BOOKED,       
@@ -29,12 +29,10 @@ public class Application implements act {
         UNSUCCESSFUL  
     }
 
-    // Constructor that sets default status to PENDING.
+   
     public Application(String applicationId, String applicantName, ApplicationStatus initialStatus, String flattype) {
         this.applicationId = applicationId;
         this.applicantName = applicantName;
-        // We force initialStatus to be PENDING regardless of passed value if needed,
-        // or you can use the passed value. Here, we use it directly.
         this.status = initialStatus;
         this.flattype = flattype;
         this.openingDate = null;
@@ -98,6 +96,11 @@ public class Application implements act {
             System.out.println("Application " + applicationId + " cannot be withdrawn because it is not booked.");
         }
     }
+
+    public String getApplicationId() {
+        return this.applicationId;
+    }
+    
 }
 
 

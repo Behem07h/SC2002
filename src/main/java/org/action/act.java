@@ -1,9 +1,6 @@
-package org.Applicant;
+package org.action;
 
 public interface act{
-    /**
-     * Perform a view action.
-     */
     void view();
 
     /**
@@ -11,4 +8,3 @@ public interface act{
      */
     void submit();
 }
-

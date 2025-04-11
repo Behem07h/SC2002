@@ -5,7 +5,7 @@ import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class HDBManagerManager {
+public class ManagerController {
     private List<HDBManager> manager_db = new ArrayList<>();
 
     // Constructor to load managers from a CSV file upon instantiation
@@ -31,7 +31,7 @@ public class HDBManagerManager {
                     HDBManager.PermissionLevel perms = HDBManager.PermissionLevel.NONE;
                     
                     // Add the manager to the database
-                    manager_db.add(new HDBManager(userID, username, password, handleOneProject, perms));
+                    manager_db.add(new HDBManager(userID, username, password, handleOneProject, perms, password, age));
                 } catch (NumberFormatException e) {
                     System.out.println("Invalid data format in line: " + line);
                 }
@@ -63,7 +63,7 @@ public class HDBManagerManager {
         }
         // Default permissions or assign based on context
         HDBManager.PermissionLevel perms = HDBManager.PermissionLevel.NONE;
-        manager_db.add(new HDBManager(userID, username, password, handleOneProject, perms));
+        manager_db.add(new HDBManager(userID, username, password, handleOneProject, perms, password, age));
         System.out.println("Manager added: " + userID);
     }
 
@@ -95,5 +95,6 @@ public class HDBManagerManager {
         }
     }
 }
+
 
 

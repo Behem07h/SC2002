@@ -1,12 +1,13 @@
 package org.HDBManager.mainUI;
 
-import org.HDBManager.HDBManagerManager;
+import org.HDBManager.ManagerController;
 import java.util.Scanner;
 
 public class MainMenuUI {
     public static void main(String[] args) {
-        HDBManagerManager managerManager = new HDBManagerManager();
-        boolean loaded = managerManager.loadManagersFromCSV("data/hdbmanager.csv");
+        // Create the manager controller (which loads managers from CSV)
+        ManagerController managerController = new ManagerController();
+        boolean loaded = managerController.loadManagersFromCSV("data/hdbmanager.csv");
         if (!loaded) {
             System.out.println("Warning: Failed to load managers from CSV file.");
         }
@@ -24,68 +25,68 @@ public class MainMenuUI {
 
             int choice;
             try {
-                choice = scanner.nextInt();
-                scanner.nextLine(); // Consume newline character
+                choice = Integer.parseInt(scanner.nextLine());
             } catch (Exception e) {
-                System.out.println("Please enter a valid number.");
-                scanner.nextLine(); // Clear the invalid input
+                System.out.println("Invalid input, please enter a number.");
                 continue;
             }
 
             switch (choice) {
                 case 1:
+                    // Login procedure using the controller's authenticate method.
                     System.out.print("Enter UserID: ");
                     String userID = scanner.nextLine();
                     System.out.print("Enter Password: ");
                     String password = scanner.nextLine();
-                    managerManager.authenticate(userID, password);
+                    managerController.authenticate(userID, password);
                     break;
                 case 2:
+                    // Add a new manager manually.
                     System.out.print("Enter UserID: ");
                     String newUserID = scanner.nextLine();
                     System.out.print("Enter Name: ");
-                    String name = scanner.nextLine();  // Manager's name
+                    String name = scanner.nextLine();
                     int age;
                     try {
                         System.out.print("Enter Age: ");
-                        age = scanner.nextInt();
-                        scanner.nextLine(); // Consume newline
+                        age = Integer.parseInt(scanner.nextLine());
                     } catch (Exception e) {
                         System.out.println("Invalid age input. Please enter a number.");
-                        scanner.nextLine(); // Clear the invalid input
                         continue;
                     }
                     System.out.print("Enter Handle One Project: ");
-                    String handleOneProject = getHandleOneProject(scanner);
+                    String handleOneProject = scanner.nextLine();
                     System.out.print("Enter Password: ");
-                    String newPassword = scanner.nextLine();  // Manager's password
-
-                    // Add the manager with the provided details
-                    managerManager.addManager(newUserID, name, age, handleOneProject, newPassword);
+                    String newPassword = scanner.nextLine();
+                    managerController.addManager(newUserID, name, age, handleOneProject, newPassword);
                     break;
                 case 3:
+                    // Change a manager's password.
                     System.out.print("Enter UserID: ");
                     String userIDToChange = scanner.nextLine();
                     System.out.print("Enter Old Password: ");
                     String oldPassword = scanner.nextLine();
                     System.out.print("Enter New Password: ");
                     String newPasswordChange = scanner.nextLine();
-                    managerManager.changePassword(userIDToChange, oldPassword, newPasswordChange);
+                    managerController.changePassword(userIDToChange, oldPassword, newPasswordChange);
                     break;
                 case 4:
-                    managerManager.displayManagers();
+                    // Display all loaded managers.
+                    managerController.displayManagers();
                     break;
                 case 5:
-                    System.out.println("Thank you for using HDB Manager Management System. Exiting...");
+                    System.out.println("Exiting system. Goodbye!");
                     scanner.close();
-                    return;
+                    System.exit(0);
+                    break;
                 default:
-                    System.out.println("Invalid choice. Try again.");
+                    System.out.println("Invalid option. Try again.");
             }
         }
     }
 
-    // Helper method to handle the input for the unique manager attribute: handleOneProject
+    // Helper method to handle the input for the unique manager attribute: handleOneProject.
+    // (This method is kept for future use if you decide to use it instead of reading directly from scanner.)
     private static String getHandleOneProject(Scanner scanner) {
         String handleOneProject = "";
         while (true) {
@@ -100,5 +101,3 @@ public class MainMenuUI {
         return handleOneProject;
     }
 }
-
-

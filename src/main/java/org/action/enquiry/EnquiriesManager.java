@@ -30,7 +30,6 @@ public class EnquiriesManager implements EnquiryAction {
         else {
             System.out.println("You are not allowed to edit the enquiries");
             return false;
-
         }
     }
     @Override

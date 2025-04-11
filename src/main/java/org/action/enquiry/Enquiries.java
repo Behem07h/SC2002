@@ -18,7 +18,6 @@ public class Enquiries {
         this.timestamp = timestamp;
         this.username = username;
         this.projectID = projectID;
-
     }
     public String getText() {
         return text;

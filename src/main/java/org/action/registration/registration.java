@@ -1,4 +1,4 @@
-package org.action;
+package org.action.registration;
 
 public interface registration {
 

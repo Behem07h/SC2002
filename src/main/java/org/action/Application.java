@@ -12,7 +12,7 @@ public class Application implements act {
     private LocalDateTime closingDate;
     private boolean withdrawn = false;
 
-    
+    //todo: load applications from strmap and save to strmap
     public void setApplicationStatus(ApplicationStatus newStatus) {
         this.status = newStatus;
     }

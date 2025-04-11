@@ -31,6 +31,8 @@ public class Enquiry implements act {
     }
     //todo: reply action
 
+    //todo: load enquiries from str map and save enquiries to str map
+
 
     public void withdraw() {
         if (!this.enquiryResponse.isEmpty()) {

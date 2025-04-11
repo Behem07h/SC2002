@@ -1,13 +1,13 @@
 package org.UI;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
-public class ConfigLDR {
+public class ConfigLDR{
     public HashMap<String, String> ReadToMap(String filename) {
         File file = new File(filename);
         HashMap<String, String> cfg = new HashMap<>();
@@ -55,5 +55,24 @@ public class ConfigLDR {
             System.out.println("Error loading " + filename + ": " + e.getMessage());
             return cfg;
         }
+    }
+
+    //todo:fns to save data to file when quitting
+    public void saveCSV(String filename, HashMap<String, String[]> map) {
+        File file = new File(filename);
+        StringBuilder line = new StringBuilder();
+        for (String key : map.keySet()) {
+            line.append(key).append("   ,").append(arr2str(map.get(key))).append(",\n");
+        }
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(filename, false))) {
+            writer.append(line.toString());
+        } catch (
+                IOException e) {
+            System.out.println("Error writing " + filename + ": " + e.getMessage());
+        }
+    }
+
+    public String arr2str(String[] data) {
+        return String.join(",", data);
     }
 }

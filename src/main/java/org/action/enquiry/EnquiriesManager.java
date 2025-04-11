@@ -12,6 +12,7 @@ public class EnquiriesManager implements EnquiryAction {
     public EnquiriesManager() {
         //load enquiries from csv
         this.enquiriesList = new ArrayList<Enquiries>();
+
         ConfigLDR ldr = new ConfigLDR();
         Map<String,String[]> enq_map = ldr.ReadToArrMap(path + "/enquiries.csv");
         for (String key : enq_map.keySet()) {

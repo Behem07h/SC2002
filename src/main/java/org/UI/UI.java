@@ -1,87 +1,75 @@
-/*
 package org.UI;
 import org.Applicant.user;
 
-import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
 
 public class UI {
-    public static void main(String[] args) {
-        ui_main ui = new ui_main(" ");
-        ui.load_ui();
+    private final ui_main ui;
+    public UI(String cfg_rt, user myuser, Scanner sc) {
+        ConfigLDR ldr = new ConfigLDR();
+        this.ui = new ui_main(ldr.ReadToMap(cfg_rt+"/ui.csv"),
+                ldr.ReadToArrMap(cfg_rt+"/ui_connections.csv"),
+                ldr.ReadToArrMap(cfg_rt+"/ui_fns.csv"),
+                myuser, sc);
+    }
+    public void load_ui() {
+        this.ui.load_ui();
     }
 }
 
 
 class ui_main {
-    int idx = 0;
-    int idx_in = 0;
-    String[] ui_arr = {
-    		"Projects: \n{Project_List[0]}\n\n[1] - View a project\n[0] - Log out",
-    		"Project details:\n{Project_Details[0]}\n\n[3] - Send application\n[2] - Enquiries\n[1] - Back\n[0] - Log out",
-    		"c \n1 to go to a, 2 to go to b"
-    }; //text to display in ui page
-    
-    String[][] ui_arr2 = {
-    		{"Project_List", "Projects: \n{Project_List[0]}\n\n[1] - View a project\n[0] - Log out"},
-    		{"Project_Details","Project details:\n{Project_Details[0]}\n\n[3] - Send application\n[2] - Enquiries\n[1] - Back\n[0] - Log out"},
-    		{"next","c \n1 to go to a, 2 to go to b"}
-    }; //text to display in ui page
-    
-    Map<String,String> ui_map = parse(ui_arr2);
-    //todo: use format strings to display variable text
 
+    Map<String,String> ui_map;          //text to display in ui page
     //inputs are all 1 indexed as 0 is reserved for quitting
-    String[][] ui_fns = {{"Project_Details"},{"Project_List","Project_Enquiries","Send_Application"},{"-1","-1"}}; //fns in fn_arr to run when receiving input, -1 if none
-    //todo: add code to make the fns run when switching ui menus, and for taking inputs
-    int[][] next_ui = {{1},{0,2,-1},{0,1}}; //ui in ui_arr to go to next when receiving input, -1 if no change
-    String[][] next_ui2 = {{"Project_Details"},{"Project_List","next",""},{"Project_List","Project_Details"}};
+    Map<String,String[]> fn_map;        //fns in fn_arr to run when receiving input. may not be the same as the name of the next ui
+    Map<String,String[]> next_ui_map;   //ui menu connections
 
     user currentUser;
-    String[] ctx = {};
-    String ctx_idx = "";
-    
-    public Map<String, String> parse(String[][] mylist) { //convert array into map
-    	Map<String,String> map = new HashMap<String, String>();
-    	for (String[] row : mylist) {
-    		String key = row[0];
-    		String item = row[1];
-    		map.put(key, item);
-    	}
-    	return map;
-    }
+    String[] ctx;
+    String ctx_idx; //fn that the ctx was returned from
+    String ui_idx; //the name of the ui menu
+    Scanner sc;
 
-    public ui_main(String filepath) {
+    public ui_main(Map<String,String> ui_map,Map<String,String[]> next_ui_map,Map<String,String[]> fn_map, user currentUser, Scanner sc) {
         //load file path into ui_arr
-    	//get user 
-    	ctx = currentUser.act("Project_List"); //UI context starts on the projects list screen
+        this.ui_map = ui_map;
+        this.next_ui_map = next_ui_map;
+        this.fn_map = fn_map;
+
+        this.sc = sc;
+
+    	this.currentUser = currentUser;
+    	ctx = this.currentUser.act("Project_List"); //UI context starts on the projects list screen
         ctx_idx = "Project_List";
+        ui_idx = "Project_List"; //defaults can be loaded from file
     }
 
     public void load_ui() {
-        Scanner sc = new Scanner(System.in);
-        
         while (true) {
-        	String ui_text = ui_arr[idx];
+        	String ui_text = ui_map.get(ui_idx).replace("\\n"
+                    ,"\n"); //get the current ui text
+
         	for (int i = 0; i < ctx.length; i++) {
-        		ui_text = ui_text.replace(String.format("{%s[%d]}", ctx_idx, i), ctx[i]);
+        		ui_text = ui_text.replace(String.format("{%s[%d]}", ctx_idx, i), ctx[i]); //handle contextual text replacement
         	}
-            System.out.println(ui_text);
-            int idx_in = sc.nextInt();
-            if ((idx_in-1 < next_ui[idx].length) && (idx_in > 0)) { //convert input to zero index & verify
-                if (next_ui[idx][idx_in-1] >= 0) {
-                    //if the input was valid, run any relevant functions here
-                    // and save the return values to a ctx local var
-                	ctx_idx = ui_fns[idx][idx_in-1];
+            System.out.println(ui_text); //display the ui
+            
+            int usr_in = sc.nextInt(); //get user input as int
+
+            if ((usr_in-1 < next_ui_map.get(ui_idx).length) && (usr_in > 0)) { //convert input to zero index & verify
+            	String next_alias = next_ui_map.get(ui_idx)[usr_in - 1]; //get the next menu
+
+                if (ui_map.containsKey(next_alias)) { //check if next menu exists
+                    //if the input was valid, run any relevant functions here and save the return values to a ctx local var
+                	ctx_idx = fn_map.get(ui_idx)[usr_in-1];
                     ctx = currentUser.act(ctx_idx);
-                    idx = next_ui[idx][idx_in-1]; //get the next ui idx
+                    ui_idx = next_alias; //get the next ui idx
                 }
-            } else if (idx_in == 0) { //terminate program
+            } else if (usr_in == 0) { //terminate program
                 return;
             }
         }
     }
 }
-*/

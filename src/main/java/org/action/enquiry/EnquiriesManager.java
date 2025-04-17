@@ -1,8 +1,7 @@
 package org.action.enquiry;
 
 import org.UI.ConfigLDR;
-import org.action.*;
-
+import org.Users.user;
 import java.time.LocalDateTime;
 import java.util.*;
 
@@ -43,6 +42,7 @@ public class EnquiriesManager implements EnquiryAction {
         ldr.saveCSV(path + "/enquiries.csv",enq_map);
     }
 
+
     public Enquiries getEnquiry(int id) {
         for (Enquiries e : enquiriesList) {
             if (e.getId() == id) {
@@ -51,6 +51,7 @@ public class EnquiriesManager implements EnquiryAction {
         }
         return null;
     }
+
     private int generateNewEnquiryId() {
         int maxId = 0;
         for (Enquiries e : enquiriesList) {
@@ -60,26 +61,36 @@ public class EnquiriesManager implements EnquiryAction {
         }
         return maxId + 1;
     }
-    public boolean submitEnquiry(String text, String username,String projectID) {
+
+    @Override
+    public String[] submitEnquiry(user usr, String text, String projectID) {
+        String[] result = {"", "", "", ""};
+
         if(text == null || text.equals("")) {
             System.out.println("Text is empty");
-            return false;
+            result[0] = "ERROR: Text is empty";
+            return result;
         }
-        if(username == null || username.equals("")) {
+
+        if(usr == null || usr.getUsername().equals("")) {
             System.out.println("Username is empty");
-            return false;
+            result[0] = "ERROR: Username is empty";
+            return result;
         }
+
         if(projectID == null || projectID.equals("")) {
             System.out.println("Project ID is empty");
-            return false;
+            result[0] = "ERROR: Project ID is empty";
+            return result;
         }
+
         int newID = generateNewEnquiryId();
         Enquiries newEnquiry = new Enquiries(
                 text,
                 newID,
                 "",
                 LocalDateTime.now(),
-                username,
+                usr.getUsername(),
                 projectID
         );
 
@@ -87,63 +98,128 @@ public class EnquiriesManager implements EnquiryAction {
         enquiriesList.add(newEnquiry);
 
         System.out.println("Enquiry successfully submitted with ID: " + newID);
-        return true;
+        result[0] = String.valueOf(newID);
+        result[1] = text;
+        result[2] = usr.getUsername();
+        result[3] = projectID;
+        return result;
+    }
+
+//    @Override
+//    public void submitEnquiries() {
+//        // Interface implementation - used as placeholder
+//        System.out.println("Default submit enquiries method called");
+//    }
+//
+//    @Override
+//    public void deleteEnquiries() {
+//        // Interface implementation - used as placeholder
+//        System.out.println("Default delete enquiries method called");
+//    }
+    @Override
+    public String[] deleteEnquiries(user usr, String enquiryIdStr) {
+        String[] result = {"", "", "", ""};
+
+        try {
+            int enquiryId = Integer.parseInt(enquiryIdStr);
+            Enquiries enquiry = getEnquiry(enquiryId);
+
+            if(enquiry == null) {
+                System.out.println("Enquiry not found");
+                result[0] = "ERROR: Enquiry not found";
+                return result;
+            }
+
+            if(enquiry.getUsername().equals(usr.getUsername()) || usr.isHDBManager() || usr.isHDBOfficer()) {
+                enquiriesList.remove(enquiry);
+                result[0] = "SUCCESS";
+                result[1] = "Enquiry " + enquiryId + " deleted successfully";
+                return result;
+            } else {
+                System.out.println("You are not allowed to delete this enquiry");
+                result[0] = "ERROR: Unauthorized to delete enquiry";
+                return result;
+            }
+        } catch (NumberFormatException e) {
+            System.out.println("Invalid enquiry ID format");
+            result[0] = "ERROR: Invalid enquiry ID format";
+            return result;
+        }
     }
     @Override
-    public void submitEnquiries() {
+    public String[] editEnquiries(user usr, String newText, String enquiryIdStr) {
+        String[] result = {"", "", "", ""};
+
+        try {
+            int enquiryId = Integer.parseInt(enquiryIdStr);
+            Enquiries enquiry = getEnquiry(enquiryId);
+
+            if(enquiry == null) {
+                System.out.println("Enquiry not found");
+                result[0] = "ERROR: Enquiry not found";
+                return result;
+            }
+
+            if(enquiry.getUsername().equals(usr.getUsername()) || usr.isHDBManager() || usr.isHDBOfficer()) {
+                enquiry.setText(newText);
+                result[0] = "SUCCESS";
+                result[1] = newText;
+                result[2] = String.valueOf(enquiryId);
+                return result;
+            } else {
+                System.out.println("You are not allowed to edit this enquiry");
+                result[0] = "ERROR: Unauthorized to edit enquiry";
+                return result;
+            }
+        } catch (NumberFormatException e) {
+            System.out.println("Invalid enquiry ID format");
+            result[0] = "ERROR: Invalid enquiry ID format";
+            return result;
+        }
     }
-    public boolean deleteEnquiries(int projectId,String username,boolean HDBManger, boolean HDBOfficer) {
-        Enquiries enquiries = getEnquiry(projectId);
-        if(enquiries == null) {
-            System.out.println("Enquiries not found");
-            return false;
-        }
-        if(enquiries.getUsername().equals(username)  || HDBManger || HDBOfficer) {
-            enquiriesList.remove(enquiries);
-            return true;
-        }
-        else {
-            System.out.println("You are not allowed to edit the enquiries");
-            return false;
+//
+//    @Override
+//    public void editEnquiries() {
+//        // Interface implementation - used as placeholder
+//        System.out.println("Default edit enquiries method called");
+//    }
+@Override
+public String[] replyEnquiries(user usr, String reply, String enquiryIdStr) {
+        String[] result = {"", "", "", ""};
+
+        try {
+            int enquiryId = Integer.parseInt(enquiryIdStr);
+            Enquiries enquiry = getEnquiry(enquiryId);
+
+            if(enquiry == null) {
+                System.out.println("Enquiry not found");
+                result[0] = "ERROR: Enquiry not found";
+                return result;
+            }
+
+            if(usr.isHDBManager() || usr.isHDBOfficer()) {
+                enquiry.setReply(reply);
+                result[0] = "SUCCESS";
+                result[1] = reply;
+                result[2] = String.valueOf(enquiryId);
+                result[3] = enquiry.getText();
+                return result;
+            } else {
+                System.out.println("You are not authorized to reply to enquiries");
+                result[0] = "ERROR: Unauthorized to reply to enquiries";
+                return result;
+            }
+        } catch (NumberFormatException e) {
+            System.out.println("Invalid enquiry ID format");
+            result[0] = "ERROR: Invalid enquiry ID format";
+            return result;
         }
     }
 
-    public boolean editEnquiries(int projectId,String username,String text, boolean HDBManger, boolean HDBOfficer) {
-        Enquiries enquiries = getEnquiry(projectId);
-        if(enquiries == null) {
-            System.out.println("Enquries not found");
-        }
-        if(enquiries.getUsername().equals(username)  || HDBManger || HDBOfficer) {
-            enquiries.setText(text);
-            return true;
-        }
-        else {
-            System.out.println("Enquiries not found");
-            return false;
-        }
-    }
-    @Override
-    public void editEnquiries() {
-        System.out.println("Enquiries edited");
-    }
-    public boolean replyEnquiries(int projectId,String reply, boolean HDBManger, boolean HDBOfficer) {
-        Enquiries enquiries = getEnquiry(projectId);
-        if(enquiries == null) {
-            System.out.println("Enquiries not found");
-        }
-        boolean alreadyResponded = !enquiries.getReply().isEmpty();
-        if(alreadyResponded  || HDBManger || HDBOfficer) {
-            enquiries.setReply(reply);
-            return true;
-        }
-        else {
-            System.out.println("Enquiries not found");
-            return false;
-        }
-    }
     @Override
     public void replyEnquiries() {
-        System.out.println("Enquiries replied");
+        // Interface implementation - used as placeholder
+        System.out.println("Default reply enquiries method called");
     }
 
     public void processEnquiries(){
@@ -178,21 +254,17 @@ public class EnquiriesManager implements EnquiryAction {
         System.out.println("Enquiries answered:" + answered);
     }
 
-    public boolean updateStatus(int enquiryId, String newStatus, String username, boolean isHDBManager, boolean isHDBOfficer) {
-        Enquiries enquiry = getEnquiry(enquiryId);
+    // Added to get all enquiries for a user and project
+    public String[] getUserEnquiries(user usr, String projectID) {
+        List<String> enquiryIds = new ArrayList<>();
 
-        if (enquiry == null) {
-            System.out.println("Enquiry not found with ID: " + enquiryId);
-            return false;
+        for (Enquiries e : enquiriesList) {
+            if (e.getUsername().equals(usr.getUsername()) &&
+                    (projectID.isEmpty() || e.getProjectID().equals(projectID))) {
+                enquiryIds.add(String.valueOf(e.getId()));
+            }
         }
 
-        if (isHDBManager || isHDBOfficer) {
-            enquiry.setReply(newStatus);
-            System.out.println("Status updated for enquiry ID: " + enquiryId);
-            return true;
-        } else {
-            System.out.println("You don't have permission to update enquiry status");
-            return false;
-        }
+        return enquiryIds.toArray(new String[0]);
     }
 }

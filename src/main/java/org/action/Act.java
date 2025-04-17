@@ -6,5 +6,5 @@ package org.action;
 public interface Act {
     void view();
     void submit();
-    // add any other methods you intend every “actionable” class to implement
+    // add any other methods you intend every "actionable" class to implement
 }

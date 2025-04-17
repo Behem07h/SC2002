@@ -37,10 +37,7 @@ public class ApplicationManager {
 
     //todo:standardise with enquiries manager and make save fn
 
-    public void addApplication(Application app) {
-        applicationList.add(app);
-        System.out.println("Application added: " + app);
-    }
+
 
     public void viewAllApplications() {
         System.out.println("=== All Applications ===");
@@ -99,19 +96,6 @@ public class ApplicationManager {
         }
     }
 
-    public void withdrawApplication(String applicationId) {
-        Application app = retrieveApplication(applicationId);
-        if (app != null) {
-            app.withdrawApplication();
-        }
-    }
-
-    public void submitApplication(String applicationId) {
-        Application app = retrieveApplication(applicationId);
-        if (app != null) {
-            app.submit();
-        }
-    }
 
     public void approveApplication(String applicationId) {
         Application app = retrieveApplication(applicationId);

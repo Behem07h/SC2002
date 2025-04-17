@@ -8,37 +8,31 @@ public class Application implements act {
     private String applicantName;
     private String projectId;
     private ApplicationStatus status;
-    private String flattype;
+    private String flatType;
     private LocalDateTime openingDate;
     private LocalDateTime closingDate;
     private boolean withdrawn = false;
+    private WithdrawalRequest withdrawalRequest;
 
-    //todo: load applications from strmap and save to strmap
-    public void setApplicationStatus(ApplicationStatus newStatus) {
-        this.status = newStatus;
-    }
-
-    public void setClosingDate(LocalDateTime now) {
-        this.closingDate = now;
-    }
-
-    
     public enum ApplicationStatus {
-        PENDING,       
-        BOOKED,       
-        SUCCESSFUL,   
-        UNSUCCESSFUL  
+        PENDING,
+        BOOKED,
+        SUCCESSFUL,
+        UNSUCCESSFUL,
+        WITHDRAWN
     }
 
-   
-    public Application(String applicationId, String applicantName, String projectId, ApplicationStatus status, String flatType, LocalDateTime openingDate, LocalDateTime closingDate) {
+    public Application(String applicationId, String applicantName, String projectId,
+                       ApplicationStatus status, String flatType,
+                       LocalDateTime openingDate, LocalDateTime closingDate) {
         this.applicationId = applicationId;
         this.applicantName = applicantName;
         this.projectId = projectId;
         this.status = status;
-        this.flattype = flatType;
+        this.flatType = flatType;
         this.openingDate = openingDate;
         this.closingDate = closingDate;
+        this.withdrawalRequest = new WithdrawalRequest(applicationId);
     }
 
     @Override
@@ -50,7 +44,7 @@ public class Application implements act {
         System.out.println("Application ID: " + applicationId);
         System.out.println("Applicant Name: " + applicantName);
         System.out.println("Status: " + status);
-        System.out.println("Flat Type: " + flattype);
+        System.out.println("Flat Type: " + flatType);
         System.out.println("Opening Date: " + (openingDate != null ? openingDate : "Not set"));
         System.out.println("Closing Date: " + (closingDate != null ? closingDate : "Not set"));
     }
@@ -89,21 +83,53 @@ public class Application implements act {
     }
 
     public void withdrawApplication() {
-        if (status == ApplicationStatus.BOOKED) {
-            // Allow withdrawal only if the flat was booked.
-            withdrawn = true;
-            closingDate = LocalDateTime.now();
-            System.out.println("Application " + applicationId + " withdrawn successfully on " + closingDate + ".");
+        if (!withdrawn && status == ApplicationStatus.BOOKED) {
+            withdrawalRequest.request();
+        } else if (withdrawn) {
+            System.out.println("Application " + applicationId + " is already withdrawn.");
         } else {
-            System.out.println("Application " + applicationId + " cannot be withdrawn because it is not booked.");
+            System.out.println("Cannot request withdrawal in current status: " + status);
         }
     }
 
-    public String getApplicationId() {
-        return this.applicationId;
+    public void approveWithdrawal() {
+        if (withdrawalRequest.getApprovalStatus() == WithdrawalRequest.OfficerApprovalStatus.PENDING) {
+            withdrawalRequest.approve();
+            withdrawn = true;
+            status = ApplicationStatus.WITHDRAWN;
+            closingDate = LocalDateTime.now();
+            System.out.println("Application " + applicationId + " has been withdrawn successfully on " + closingDate + ".");
+        } else {
+            System.out.println("Withdrawal request for application " + applicationId + " is not pending or already processed.");
+        }
     }
-    
+
+    public void rejectWithdrawal() {
+        if (withdrawalRequest.getApprovalStatus() == WithdrawalRequest.OfficerApprovalStatus.PENDING) {
+            withdrawalRequest.reject();
+            System.out.println("Withdrawal request for application " + applicationId + " has been rejected.");
+        } else {
+            System.out.println("No pending withdrawal request for application " + applicationId + ".");
+        }
+    }
+
+    public void setClosingDate(LocalDateTime now) {
+        this.closingDate = now;
+    }
+
+    public void setApplicationStatus(ApplicationStatus newStatus) {
+        this.status = newStatus;
+    }
+
+    public String getApplicationId() {
+        return applicationId;
+    }
+    // other getters/setters omitted
 }
+
+
+
+
 
 
 

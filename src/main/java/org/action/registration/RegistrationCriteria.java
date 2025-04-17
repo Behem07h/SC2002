@@ -1,20 +1,28 @@
 package org.action.registration;
 
+import java.util.Scanner;
+
 public class RegistrationCriteria {
 
-    private boolean noIntention;
-    private boolean notHDBofficer;
+    Scanner scanner = new Scanner(System.in);
 
-    public RegistrationCriteria(boolean noIntention, boolean notHDBofficer){
-        this.noIntention = noIntention;
-        this.notHDBofficer = notHDBofficer;
+    // public RegistrationCriteria(boolean noIntention, boolean notHDBofficer){
+    //     this.notHDBofficer = notHDBofficer;
+    // }
+
+    public boolean noIntention(String user, String projectID){
+        System.out.println("Do you intend to apply for the project as an Applicant?");
+        String intention = scanner.nextLine();
+
+        if(intention == "No"){
+            return true;
+        }
+        else {
+            return false;
+        }
     }
 
-    public boolean noIntention(){
-        return noIntention;
-    }
-
-    public boolean notHDBofficer(){
-        return notHDBofficer;
+    public boolean notHDBofficer(String user, String projectID){
+        //
     }
 }

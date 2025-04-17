@@ -1,9 +1,16 @@
 package org.action.registration;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.LinkedHashSet;
 import java.util.List;
-
-import org.action.projectaction;
+import java.util.Scanner;
+import java.util.Set;
 
 public class RegistrationManager implements RegistrationAction {
     private List<Register> registrations;
@@ -13,7 +20,6 @@ public class RegistrationManager implements RegistrationAction {
     }
 
     public void processRegistration(Register registration){
-        // not done yet
         RegistrationCriteria criteria = registration.getCriteria();
         String user = registration.getUser();
         String projectID = registration.getProjectID();
@@ -55,8 +61,11 @@ public class RegistrationManager implements RegistrationAction {
 
     @Override
     public void approveRegistration(Register registration) {
-        // not done yet
-        if(criteria.noIntention() && criteria.notHDBofficer()){
+        RegistrationCriteria criteria = registration.getCriteria();
+        String user = registration.getUser();
+        String projectID = registration.getProjectID();
+
+        if(criteria.noIntention(user, projectID) && criteria.notHDBofficer(user, projectID)){
             registration.setStatus("Approved");
             System.out.println("Registration approved for ID: " + registration.getID());
         }
@@ -72,14 +81,55 @@ public class RegistrationManager implements RegistrationAction {
     }
 
     @Override
-    public void registerProject() {
-        // not done yet
+    public void registerProject(Register registration) {
+        String user = registration.getUser();
+        String projectID = registration.getProjectID();
+
+        String projectsFile = "projects.csv";
+        List<List<String>> data = new ArrayList<>();
+        try (Scanner scanner = new Scanner(new File(projectsFile))) {
+            while (scanner.hasNextLine()) {
+                String line = scanner.nextLine();
+                String[] values = line.split(",");
+                List<String> lineData = Arrays.asList(values);
+                data.add(lineData);
+            }
+        }
+        catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+
+        for (int i = 1; i < data.size(); i++) {
+            List<String> row = data.get(i);
+            if (!row.isEmpty() && row.get(0).equalsIgnoreCase(projectID)) {
+                while (row.size() <= 12) {
+                    row.add("");
+                }
+
+                String existing = row.get(12).trim();
+                Set<String> officers = new LinkedHashSet<>(Arrays.asList(existing.split(",")));
+
+                if (!officers.contains(user)) {
+                    officers.add(user);
+                    row.set(12, String.join(",", officers));
+                }
+                break;
+            }
+
+            try (PrintWriter writer = new PrintWriter(new FileWriter(projectsFile))) {
+                for (List<String> rowData : data) {
+                    writer.println(String.join(",", rowData));
+                }
+            } 
+            catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     @Override
     public void viewRegistrationProject(Register registration) {
         System.out.println("Status for ID: " + registration.getID());
-
         System.out.println("Registration ID: " + registration.getID());
         System.out.println("Status: " + registration.getStatus());
         System.out.println("User: " + registration.getUser());

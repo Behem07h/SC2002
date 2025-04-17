@@ -182,10 +182,21 @@ public class EnquiriesManager implements EnquiryAction {
         System.out.println("Enquiries answered:" + answered);
     }
 
-//    public void updateStatus(String projectID){
-//
-//    }
-//    public void categorizedEnquiries(){
-//
-//    }
+    public boolean updateStatus(int enquiryId, String newStatus, String username, boolean isHDBManager, boolean isHDBOfficer) {
+        Enquiries enquiry = getEnquiry(enquiryId);
+
+        if (enquiry == null) {
+            System.out.println("Enquiry not found with ID: " + enquiryId);
+            return false;
+        }
+
+        if (isHDBManager || isHDBOfficer) {
+            enquiry.setReply(newStatus);
+            System.out.println("Status updated for enquiry ID: " + enquiryId);
+            return true;
+        } else {
+            System.out.println("You don't have permission to update enquiry status");
+            return false;
+        }
+    }
 }

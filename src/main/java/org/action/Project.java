@@ -1,6 +1,6 @@
 package org.action;
 
-public class Project implements act {
+public class Project implements Act {
     private String projectName;
     private String Neighborhood;
     private String TypeOfFlat;

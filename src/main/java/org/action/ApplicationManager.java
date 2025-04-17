@@ -31,7 +31,7 @@ public class ApplicationManager {
             Application.ApplicationStatus status = Application.ApplicationStatus.valueOf(items[2]);
             LocalDateTime openingDate = LocalDateTime.parse(items[3]);
             LocalDateTime closingDate = LocalDateTime.parse(items[4]);
-            this.applicationList.add(new Application(applicationId,applicantId,projectID,status,openingDate,closingDate));
+            this.applicationList.add(new Application(applicationId,applicantId,projectID,status,key, openingDate,closingDate));
         }
     }
 
@@ -39,8 +39,8 @@ public class ApplicationManager {
         // run this when quitting program to store to csv
         Map<String,String[]> appl_map = new HashMap<>();
         for (Application a : applicationList) {
-            String[] items = {a.getProjectId(), a.getApplicantId(), String.valueOf(a.getApplicationStatus()), String.valueOf(a.getSubmissionDate()), String.valueOf(a.getClosingDate())};
-            appl_map.put(String.valueOf(a.getApplicationId()),items);
+            String[] items = {a.getProjectId(), a.getApplicantId(), String.valueOf(a.getApplicantId()), String.valueOf(a.getSubmissionDate()), String.valueOf(a.getClosingDate())};
+            appl_map.put(String.valueOf(a.getApplicantId()),items);
         }
         ConfigLDR ldr = new ConfigLDR();
         ldr.saveCSV(path + "/applications.csv",appl_map);
@@ -58,7 +58,7 @@ public class ApplicationManager {
 
     public Application retrieveApplication(String applicationId) {
         for (Application app : applicationList) {
-            if (app.getApplicationId().equalsIgnoreCase(applicationId)) {
+            if (app.getApplicantId().equalsIgnoreCase(applicationId)) {
                 return app;
             }
         }

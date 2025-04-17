@@ -28,8 +28,8 @@ public class Context {
     }
 
     public String[] act(String action, Scanner sc) {
-        String[] output = new String[5];
-        String[] input = new String[5];
+        String[] output = {"","","",""};
+        String[] input = {"","","",""};
         switch (action){
             //enquiry methods
             case "submit-enquiry":
@@ -42,7 +42,7 @@ public class Context {
                 System.out.println("Enter enquiry: ");
                 input[0] = sc.nextLine();
 
-                output = enqMan.submitEnquiry(usr, input[0], currentViewedProjectID);
+                //output = enqMan.submitEnquiry(usr, input[0], currentViewedProjectID);
                 currentViewedEnquiryID = output[0];
                 break;
             case "delete-enquiry":
@@ -50,7 +50,7 @@ public class Context {
                 //return success/failure and new project enquiries list
                 System.out.println("Enter enquiry ID to confirm deletion: ");
                 input[0] = sc.nextLine();
-                output = enqMan.deleteEnquiries(usr, input[0]);
+                //output = enqMan.deleteEnquiries(usr, input[0]);
                 currentViewedEnquiryID = "";
                 break;
             case "edit-enquiry":
@@ -69,7 +69,7 @@ public class Context {
 
                 System.out.println("Enter edited enquiry: ");
                 input[0] = sc.nextLine();
-                enqMan.editEnquiries(usr, input[0], currentViewedEnquiryID);
+                //enqMan.editEnquiries(usr, input[0], currentViewedEnquiryID);
                 break;
             case "reply-enquiry":
                 //user input enquiry id and reply text
@@ -80,7 +80,7 @@ public class Context {
                 }
                 System.out.println("Enter reply to enquiry: ");
                 input[0] = sc.nextLine();
-                enqMan.replyEnquiries(usr, input[0], currentViewedEnquiryID);
+                //enqMan.replyEnquiries(usr, input[0], currentViewedEnquiryID);
                 break;
             //application methods
             case "view-applications":
@@ -88,9 +88,9 @@ public class Context {
                 System.out.println("Enter project ID to view applications: ");
                 input[0] = sc.nextLine();
                 if (input[0].length() > 0) {
-                    appMan.viewAllApplications(usr, input[0]);
+                    //appMan.viewAllApplications(usr, input[0]);
                 } else {
-                    appMan.viewApplicationsByUsr(usr);
+                    //appMan.viewApplicationsByUsr(usr);
                 }
 
                 break;
@@ -100,8 +100,7 @@ public class Context {
             case "retrieve-application":
                 System.out.println("Enter an application ID to view: ");
                 input[0] = sc.nextLine();
-                appMan.retrieveApplication(usr,input[0]);
-                currentViewedApplicationID = input[0];
+                //appMan.retrieveApplication(usr,input[0]);
                 //??
                 break;
             case "withdraw-application":
@@ -109,39 +108,39 @@ public class Context {
                 //return withdrawal status
                 System.out.println("Enter application ID to confirm withdrawal request: ");
                 input[0] = sc.nextLine();
-                appMan.withdrawApplication(usr, input[0]);
+                //appMan.withdrawApplication(usr, input[0]);
                 break;
             case "approve-application":
                 //input application id, changes application status
                 //return new application status
                 System.out.println("Enter application ID to confirm approval: ");
                 input[0] = sc.nextLine();
-                appMan.approveApplication(usr, input[0]);
+                //appMan.approveApplication(usr, input[0]);
                 break;
             case "reject-application":
                 //input application id, changes application status
                 //return new application status
                 System.out.println("Enter application ID to confirm rejection: ");
                 input[0] = sc.nextLine();
-                appMan.rejectApplication(usr, input[0]);
+                //appMan.rejectApplication(usr, input[0]);
                 break;
             //project methods
             case "view-all-projects":
                 //returns list of visible projects based on user
-                proMan.getProjectList(usr);
+                //proMan.getProjectList(usr);
                 currentViewedProjectID = "";
                 currentViewedEnquiryID = "";
                 break;
             case "view-project":
                 System.out.println("Enter project ID to view: ");
                 input[0] = sc.nextLine();
-                output = proMan.getProjectDetails(usr, input[0]);
+                //output = proMan.getProjectDetails(usr, input[0]);
                 currentViewedProjectID = input[0];
             case "search-projects":
                 //input search term, output projects by keyword
                 System.out.println("Enter search term: ");
                 input[0] = sc.nextLine();
-                proMan.updateProject(usr, input[0]);
+                //proMan.updateProject(usr, input[0]);
                 currentViewedProjectID = "";
                 currentViewedEnquiryID = "";
                 break;
@@ -154,7 +153,7 @@ public class Context {
                 //input project id, output success/failure and new projects list
                 System.out.println("Enter project ID to be deleted: ");
                 input[0] = sc.nextLine();
-                proMan.deleteProjectByName(usr, input[0]);
+                //proMan.deleteProjectByName(usr, input[0]);
                 currentViewedProjectID = "";
                 currentViewedEnquiryID = "";
                 break;

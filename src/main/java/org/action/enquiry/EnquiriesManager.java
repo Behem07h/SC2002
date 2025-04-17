@@ -92,6 +92,12 @@ public class EnquiriesManager implements EnquiryAction {
     @Override
     public void submitEnquiries() {
     }
+
+    @Override
+    public void deleteEnquiries() {
+
+    }
+
     public boolean deleteEnquiries(int projectId,String username,boolean HDBManger, boolean HDBOfficer) {
         Enquiries enquiries = getEnquiry(projectId);
         if(enquiries == null) {

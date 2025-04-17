@@ -23,6 +23,6 @@ public class RegistrationCriteria {
     }
 
     public boolean notHDBofficer(String user, String projectID){
-        //
+        return true; //todo: add logic
     }
 }

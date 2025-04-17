@@ -26,7 +26,7 @@ class ui_main {
     Map<String,String[]> fn_map;        //fns in fn_arr to run when receiving input. may not be the same as the name of the next ui
     Map<String,String[]> next_ui_map;   //ui menu connections
 
-    user currentUser;
+    Context context;
     String[] ctx;
     String ctx_idx; //fn that the ctx was returned from
     String ui_idx; //the name of the ui menu
@@ -40,8 +40,8 @@ class ui_main {
 
         this.sc = sc;
 
-    	this.currentUser = currentUser;
-    	ctx = this.currentUser.act("Project_List",this.sc); //UI context starts on the projects list screen
+    	this.context = new Context(currentUser);
+    	ctx = context.act("Project_List",this.sc); //UI context starts on the projects list screen
         ctx_idx = "Project_List";
         ui_idx = "Project_List"; //defaults can be loaded from file
     }
@@ -64,10 +64,11 @@ class ui_main {
                 if (ui_map.containsKey(next_alias)) { //check if next menu exists
                     //if the input was valid, run any relevant functions here and save the return values to a ctx local var
                 	ctx_idx = fn_map.get(ui_idx)[usr_in-1];
-                    ctx = currentUser.act(ctx_idx,this.sc);
+                    ctx = context.act(ctx_idx,this.sc);
                     ui_idx = next_alias; //get the next ui idx
                 }
             } else if (usr_in == 0) { //terminate program
+                context.endContext();
                 return;
             }
         }

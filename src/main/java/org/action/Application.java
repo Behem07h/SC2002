@@ -4,11 +4,11 @@ import org.action.act;
 import java.time.LocalDateTime;
 
 public class Application implements act {
-    private String applicationId;
-    private String applicantId;
-    private String projectId;
+    private final String applicationId;
+    private final String applicantId;
+    private final String projectId;
     private ApplicationStatus status;
-    private String flattype;
+    private final String flat_type;
     private LocalDateTime openingDate;
     private LocalDateTime closingDate;
     private boolean withdrawn = false;
@@ -23,7 +23,7 @@ public class Application implements act {
         return status;
     }
     public String getFlatType() {
-        return flattype;
+        return flat_type;
     }
     public LocalDateTime getOpeningDate() {
         return openingDate;
@@ -50,12 +50,12 @@ public class Application implements act {
     }
 
    
-    public Application(String applicationId, String applicantName, String projectId, ApplicationStatus status, String flatType, LocalDateTime openingDate, LocalDateTime closingDate) {
+    public Application(String applicationId, String applicantId, String projectId, ApplicationStatus status, String flatType, LocalDateTime openingDate, LocalDateTime closingDate) {
         this.applicationId = applicationId;
-        this.applicantName = applicantName;
+        this.applicantId = applicantId;
         this.projectId = projectId;
         this.status = status;
-        this.flattype = flatType;
+        this.flat_type = flatType;
         this.openingDate = openingDate;
         this.closingDate = closingDate;
     }
@@ -67,9 +67,9 @@ public class Application implements act {
             return;
         }
         System.out.println("Application ID: " + applicationId);
-        System.out.println("Applicant Name: " + applicantName);
+        System.out.println("Applicant Name: " + applicantId);
         System.out.println("Status: " + status);
-        System.out.println("Flat Type: " + flattype);
+        System.out.println("Flat Type: " + flat_type);
         System.out.println("Opening Date: " + (openingDate != null ? openingDate : "Not set"));
         System.out.println("Closing Date: " + (closingDate != null ? closingDate : "Not set"));
     }

@@ -1,5 +1,9 @@
 package org.Users;
 
+import org.UI.Context;
+import org.action.ApplicationManager;
+import org.action.enquiry.EnquiriesManager;
+
 import java.util.Scanner;
 
 public interface user {
@@ -27,7 +31,7 @@ public interface user {
 
     boolean changePassword(String oldPassword, String newPassword);
 
-    default String[] act(String action, Scanner sc) {
+    default String[] act(String action, Scanner sc, EnquiriesManager enqMan, ApplicationManager appMan) {
         String[] output = new String[] {};
         switch (action){
             //enquiry methods

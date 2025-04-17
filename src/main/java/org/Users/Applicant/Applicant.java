@@ -1,6 +1,8 @@
 package org.Users.Applicant;
 
 import org.Users.user;
+import org.action.ApplicationManager;
+import org.action.enquiry.EnquiriesManager;
 
 import java.util.Scanner;
 
@@ -74,7 +76,7 @@ public class Applicant implements user {
     }
 
     @Override
-    public String[] act(String something, Scanner sc) {
+    public String[] act(String something, Scanner sc, EnquiriesManager enqMan, ApplicationManager appMan) {
         // Simple behavior — print something or log an action
         System.out.println("Applicant [" + username + "] is acting on: " + something);
         return new String[0];

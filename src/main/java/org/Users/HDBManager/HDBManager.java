@@ -1,6 +1,8 @@
 package org.Users.HDBManager;
 
 import org.Users.user;  // Adjust the import as necessary if your user interface is in a different package
+import org.action.ApplicationManager;
+import org.action.enquiry.EnquiriesManager;
 
 import java.util.Scanner;
 
@@ -92,7 +94,7 @@ public class HDBManager implements user {
     }
     
     @Override
-    public String[] act(String something, Scanner sc) {
+    public String[] act(String something, Scanner sc, EnquiriesManager enqMan, ApplicationManager appMan) {
         System.out.println("HDBManager [" + username + "] is acting on: " + something);
         return new String[0];
     }

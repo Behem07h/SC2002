@@ -1,6 +1,5 @@
 package org.action;
 
-import org.action.act;
 import java.time.LocalDateTime;
 
 public class Application implements act {
@@ -8,8 +7,7 @@ public class Application implements act {
     private final String applicantId;
     private final String projectId;
     private ApplicationStatus status;
-    private final String flat_type;
-    private LocalDateTime openingDate;
+    private LocalDateTime submissionDate;
     private LocalDateTime closingDate;
     private boolean withdrawn = false;
 
@@ -22,11 +20,8 @@ public class Application implements act {
     public ApplicationStatus getApplicationStatus() {
         return status;
     }
-    public String getFlatType() {
-        return flat_type;
-    }
-    public LocalDateTime getOpeningDate() {
-        return openingDate;
+    public LocalDateTime getSubmissionDate() {
+        return submissionDate;
     }
 
     public LocalDateTime getClosingDate() {
@@ -50,13 +45,12 @@ public class Application implements act {
     }
 
    
-    public Application(String applicationId, String applicantId, String projectId, ApplicationStatus status, String flatType, LocalDateTime openingDate, LocalDateTime closingDate) {
+    public Application(String applicationId, String applicantId, String projectId, ApplicationStatus status, LocalDateTime openingDate, LocalDateTime closingDate) {
         this.applicationId = applicationId;
         this.applicantId = applicantId;
         this.projectId = projectId;
         this.status = status;
-        this.flat_type = flatType;
-        this.openingDate = openingDate;
+        this.submissionDate = openingDate;
         this.closingDate = closingDate;
     }
 
@@ -69,8 +63,7 @@ public class Application implements act {
         System.out.println("Application ID: " + applicationId);
         System.out.println("Applicant Name: " + applicantId);
         System.out.println("Status: " + status);
-        System.out.println("Flat Type: " + flat_type);
-        System.out.println("Opening Date: " + (openingDate != null ? openingDate : "Not set"));
+        System.out.println("Submission Date: " + (submissionDate != null ? submissionDate : "Not set"));
         System.out.println("Closing Date: " + (closingDate != null ? closingDate : "Not set"));
     }
 
@@ -80,8 +73,8 @@ public class Application implements act {
             System.out.println("The application has already been submitted (booked).");
         } else if (status == ApplicationStatus.PENDING) {
             status = ApplicationStatus.BOOKED;
-            openingDate = LocalDateTime.now();
-            System.out.println("Application " + applicationId + " submitted (booked) successfully on " + openingDate);
+            submissionDate = LocalDateTime.now();
+            System.out.println("Application " + applicationId + " submitted (booked) successfully on " + submissionDate);
         } else {
             System.out.println("Application " + applicationId + " cannot be submitted. Current status: " + status);
         }

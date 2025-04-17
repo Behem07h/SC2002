@@ -12,7 +12,7 @@ public class Applicant implements user {
     private String password;  // Plain-text password
     private String maritalStatus;
     private int age;
-    private PermissionLevel perms;  // Default permission level
+    private PermissionLevel perms = PermissionLevel.READ;  // Default permission level
 
     // Constructor
     public Applicant(String userID, String username, String password, String maritalStatus, int age, PermissionLevel perms) {
@@ -96,13 +96,7 @@ public class Applicant implements user {
         return "Applicant{username='" + username + "', userID='" + userID + "'}";
     }
 
-    // Enum for Permission Levels
-    public enum PermissionLevel {
-        READ,   // Read permission
-        WRITE,  // Write permission
-        ADMIN,  // Administrator privileges
-        NONE    // No special permissions (default value)
-    }
+
 }
 
 

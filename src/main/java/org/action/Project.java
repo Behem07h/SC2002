@@ -1,9 +1,6 @@
 package org.action;
 
-import org.action.act;
-import java.time.LocalDateTime;
-
-public class projectaction implements act {  
+public class Project implements act {
     private String projectName;
     private String Neighborhood;
     private String TypeOfFlat;
@@ -14,8 +11,8 @@ public class projectaction implements act {
     private boolean submitted;  
 
     
-    public projectaction(String projectName, String Neighborhood, String TypeOfFlat, int NumberOfUnits,
-                         String ApplicationOpeningDate, String ApplicationClosingDate, int OfficerSlot) {
+    public Project(String projectName, String Neighborhood, String TypeOfFlat, int NumberOfUnits,
+                   String ApplicationOpeningDate, String ApplicationClosingDate, int OfficerSlot) {
         this.projectName = projectName;
         this.Neighborhood = Neighborhood;
         this.TypeOfFlat = TypeOfFlat;

@@ -2,6 +2,8 @@ package org.Users.Applicant;
 
 import org.Users.user;
 
+import java.util.Scanner;
+
 public class Applicant implements user {
     private String userID;
     private String username;
@@ -72,7 +74,7 @@ public class Applicant implements user {
     }
 
     @Override
-    public String[] act(String something) {
+    public String[] act(String something, Scanner sc) {
         // Simple behavior — print something or log an action
         System.out.println("Applicant [" + username + "] is acting on: " + something);
         return new String[0];

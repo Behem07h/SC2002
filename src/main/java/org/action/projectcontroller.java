@@ -19,7 +19,7 @@ public class projectcontroller {
         }
     }
 
-    public void viewAllProjects() {
+    public void j() {
         System.out.println("=== All Projects ===");
         for (projectaction p : projectList) {
             p.view();

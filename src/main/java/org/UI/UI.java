@@ -41,7 +41,7 @@ class ui_main {
         this.sc = sc;
 
     	this.currentUser = currentUser;
-    	ctx = this.currentUser.act("Project_List"); //UI context starts on the projects list screen
+    	ctx = this.currentUser.act("Project_List",this.sc); //UI context starts on the projects list screen
         ctx_idx = "Project_List";
         ui_idx = "Project_List"; //defaults can be loaded from file
     }
@@ -64,7 +64,7 @@ class ui_main {
                 if (ui_map.containsKey(next_alias)) { //check if next menu exists
                     //if the input was valid, run any relevant functions here and save the return values to a ctx local var
                 	ctx_idx = fn_map.get(ui_idx)[usr_in-1];
-                    ctx = currentUser.act(ctx_idx);
+                    ctx = currentUser.act(ctx_idx,this.sc);
                     ui_idx = next_alias; //get the next ui idx
                 }
             } else if (usr_in == 0) { //terminate program

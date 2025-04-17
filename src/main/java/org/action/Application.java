@@ -1,19 +1,27 @@
 package org.action;
 
-import org.action.act;
 import java.time.LocalDateTime;
 
 public class Application implements act {
-    private String applicationId;
-    private String applicantName;
-    private String projectId;
+    private final String applicationId;
+    private final String applicantId;
+    private final String projectId;
     private ApplicationStatus status;
-    private String flatType;
+    private String flattype;
     private LocalDateTime openingDate;
     private LocalDateTime closingDate;
     private boolean withdrawn = false;
-    private WithdrawalRequest withdrawalRequest;
 
+    //todo: load applications from strmap and save to strmap
+    public void setApplicationStatus(ApplicationStatus newStatus) {
+        this.status = newStatus;
+    }
+
+    public void setClosingDate(LocalDateTime now) {
+        this.closingDate = now;
+    }
+
+    
     public enum ApplicationStatus {
         PENDING,
         BOOKED,
@@ -22,14 +30,13 @@ public class Application implements act {
         WITHDRAWN
     }
 
-    public Application(String applicationId, String applicantName, String projectId,
-                       ApplicationStatus status, String flatType,
-                       LocalDateTime openingDate, LocalDateTime closingDate) {
+   
+    public Application(String applicationId, String applicantName, String projectId, ApplicationStatus status, String flatType, LocalDateTime openingDate, LocalDateTime closingDate) {
         this.applicationId = applicationId;
-        this.applicantName = applicantName;
+        this.applicantId = applicantId;
         this.projectId = projectId;
         this.status = status;
-        this.flatType = flatType;
+        this.flattype = flatType;
         this.openingDate = openingDate;
         this.closingDate = closingDate;
         this.withdrawalRequest = new WithdrawalRequest(applicationId);
@@ -42,9 +49,9 @@ public class Application implements act {
             return;
         }
         System.out.println("Application ID: " + applicationId);
-        System.out.println("Applicant Name: " + applicantName);
+        System.out.println("Applicant Name: " + applicantId);
         System.out.println("Status: " + status);
-        System.out.println("Flat Type: " + flatType);
+        System.out.println("Flat Type: " + flattype);
         System.out.println("Opening Date: " + (openingDate != null ? openingDate : "Not set"));
         System.out.println("Closing Date: " + (closingDate != null ? closingDate : "Not set"));
     }
@@ -55,8 +62,8 @@ public class Application implements act {
             System.out.println("The application has already been submitted (booked).");
         } else if (status == ApplicationStatus.PENDING) {
             status = ApplicationStatus.BOOKED;
-            openingDate = LocalDateTime.now();
-            System.out.println("Application " + applicationId + " submitted (booked) successfully on " + openingDate);
+            submissionDate = LocalDateTime.now();
+            System.out.println("Application " + applicationId + " submitted (booked) successfully on " + submissionDate);
         } else {
             System.out.println("Application " + applicationId + " cannot be submitted. Current status: " + status);
         }

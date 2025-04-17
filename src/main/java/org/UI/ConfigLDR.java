@@ -4,8 +4,6 @@ import java.io.*;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 public class ConfigLDR{
     public HashMap<String, String> ReadToMap(String filename) {
@@ -56,9 +54,7 @@ public class ConfigLDR{
         }
     }
 
-    //todo:fns to save data to file when quitting
     public void saveCSV(String filename, Map<String, String[]> map) {
-        File file = new File(filename);
         StringBuilder line = new StringBuilder();
         for (String key : map.keySet()) {
             line.append(key).append("   ,").append(arr2str(map.get(key))).append(",\n");

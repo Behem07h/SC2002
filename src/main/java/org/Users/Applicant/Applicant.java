@@ -1,6 +1,10 @@
 package org.Users.Applicant;
 
 import org.Users.user;
+import org.action.ApplicationManager;
+import org.action.enquiry.EnquiriesManager;
+
+import java.util.Scanner;
 
 public class Applicant implements user {
     private String userID;
@@ -8,7 +12,7 @@ public class Applicant implements user {
     private String password;  // Plain-text password
     private String maritalStatus;
     private int age;
-    private PermissionLevel perms;  // Default permission level
+    private PermissionLevel perms = PermissionLevel.READ;  // Default permission level
 
     // Constructor
     public Applicant(String userID, String username, String password, String maritalStatus, int age, PermissionLevel perms) {
@@ -72,7 +76,7 @@ public class Applicant implements user {
     }
 
     @Override
-    public String[] act(String something) {
+    public String[] act(String something, Scanner sc, EnquiriesManager enqMan, ApplicationManager appMan) {
         // Simple behavior — print something or log an action
         System.out.println("Applicant [" + username + "] is acting on: " + something);
         return new String[0];
@@ -92,13 +96,7 @@ public class Applicant implements user {
         return "Applicant{username='" + username + "', userID='" + userID + "'}";
     }
 
-    // Enum for Permission Levels
-    public enum PermissionLevel {
-        READ,   // Read permission
-        WRITE,  // Write permission
-        ADMIN,  // Administrator privileges
-        NONE    // No special permissions (default value)
-    }
+
 }
 
 

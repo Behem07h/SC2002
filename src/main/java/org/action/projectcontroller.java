@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class projectcontroller {
-    private List<projectaction> projectList;
+    private List<Project> projectList;
 
     public projectcontroller() {
         projectList = new ArrayList<>();
@@ -19,15 +19,15 @@ public class projectcontroller {
         }
     }
 
-    public void viewAllProjects() {
+    public void j() {
         System.out.println("=== All Projects ===");
-        for (projectaction p : projectList) {
+        for (Project p : projectList) {
             p.view();
             System.out.println("--------------------");
         }
     }
 
-    public void updateProject(String keyword, projectaction updatedProject) {
+    public void updateProject(String keyword, Project updatedProject) {
         for (int i = 0; i < projectList.size(); i++) {
             if (projectList.get(i).filterproject(keyword)) {
                 projectList.set(i, updatedProject);
@@ -39,7 +39,7 @@ public class projectcontroller {
     }
 
     public void submitProject(String keyword) {
-        for (projectaction p : projectList) {
+        for (Project p : projectList) {
             if (p.filterproject(keyword)) {
                 p.submit();
                 return;
@@ -50,7 +50,7 @@ public class projectcontroller {
 
     public void categorizeByFlatType(String flatType) {
         System.out.println("=== Projects with Flat Type: " + flatType + " ===");
-        for (projectaction p : projectList) {
+        for (Project p : projectList) {
             if (p.filterproject(flatType)) {
                 p.view();
                 System.out.println("--------------------");
@@ -58,7 +58,7 @@ public class projectcontroller {
         }
     }
 
-    public List<projectaction> getProjectList() {
+    public List<Project> getProjectList() {
         return projectList;
     }
 } 

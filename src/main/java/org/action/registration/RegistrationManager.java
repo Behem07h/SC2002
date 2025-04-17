@@ -3,8 +3,6 @@ package org.action.registration;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.action.projectaction;
-
 public class RegistrationManager implements RegistrationAction {
     private List<Register> registrations;
 

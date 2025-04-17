@@ -11,8 +11,7 @@ public class Application implements Act {
     private final String applicantId;
     private final String projectId;
     private ApplicationStatus status;
-    private String flatType;
-    private LocalDateTime openingDate;
+    private LocalDateTime submissionDate;
     private LocalDateTime closingDate;
     private boolean withdrawn = false;
     private final WithdrawalRequest withdrawalRequest;
@@ -30,7 +29,6 @@ public class Application implements Act {
         String applicantId,
         String projectId,
         ApplicationStatus status,
-        String flatType,
         LocalDateTime openingDate,
         LocalDateTime closingDate
     ) {
@@ -38,8 +36,7 @@ public class Application implements Act {
         this.applicantId       = applicantId;
         this.projectId         = projectId;
         this.status            = status;
-        this.flatType          = flatType;
-        this.openingDate       = openingDate;
+        this.submissionDate = openingDate;
         this.closingDate       = closingDate;
         this.withdrawalRequest = new WithdrawalRequest(applicationId);
     }
@@ -54,8 +51,7 @@ public class Application implements Act {
         System.out.println("Applicant ID:   " + applicantId);
         System.out.println("Project ID:     " + projectId);
         System.out.println("Status:         " + status);
-        System.out.println("Flat Type:      " + flatType);
-        System.out.println("Opening Date:   " + (openingDate != null ? openingDate : "Not set"));
+        System.out.println("Opening Date:   " + (submissionDate != null ? submissionDate : "Not set"));
         System.out.println("Closing Date:   " + (closingDate  != null ? closingDate  : "Not set"));
     }
 
@@ -63,8 +59,8 @@ public class Application implements Act {
     public void submit() {
         if (status == ApplicationStatus.PENDING) {
             status      = ApplicationStatus.BOOKED;
-            openingDate = LocalDateTime.now();
-            System.out.println("Application " + applicationId + " booked on " + openingDate);
+            submissionDate = LocalDateTime.now();
+            System.out.println("Application " + applicationId + " booked on " + submissionDate);
         } else {
             System.out.println("Cannot submit: status is " + status);
         }
@@ -134,7 +130,15 @@ public class Application implements Act {
     return applicantId;
     }
 
-/** Updates the application’s status. */
+    public LocalDateTime getClosingDate() {
+        return closingDate;
+    }
+
+    public LocalDateTime getSubmissionDate() {
+        return submissionDate;
+    }
+
+    /** Updates the application’s status. */
     public void setApplicationStatus(ApplicationStatus newStatus) {
     this.status = newStatus;
     }

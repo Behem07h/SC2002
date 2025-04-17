@@ -25,13 +25,12 @@ public class ApplicationManager {
                 continue;
             } //if param length too short, skip
 
-            String applicationId = key;
             String projectID = items[0];
             String applicantId = items[1];
             Application.ApplicationStatus status = Application.ApplicationStatus.valueOf(items[2]);
             LocalDateTime openingDate = LocalDateTime.parse(items[3]);
             LocalDateTime closingDate = LocalDateTime.parse(items[4]);
-            this.applicationList.add(new Application(applicationId,applicantId,projectID,status,key, openingDate,closingDate));
+            this.applicationList.add(new Application(key,applicantId,projectID,status, openingDate,closingDate));
         }
     }
 

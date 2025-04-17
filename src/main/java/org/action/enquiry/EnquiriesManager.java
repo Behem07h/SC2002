@@ -108,10 +108,6 @@ public class EnquiriesManager implements EnquiryAction {
         }
     }
 
-    @Override
-    public void deleteEnquiries() {
-        System.out.println("Enquiries deleted");
-    }
     public boolean editEnquiries(int projectId,String username,String text, boolean HDBManger, boolean HDBOfficer) {
         Enquiries enquiries = getEnquiry(projectId);
         if(enquiries == null) {

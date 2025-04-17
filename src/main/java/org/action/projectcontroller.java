@@ -10,11 +10,6 @@ public class projectcontroller {
         projectList = new ArrayList<>();
     }
 
-    public void addProject(projectaction project) {
-        projectList.add(project);
-        System.out.println("Project added: " + project);
-    }
-
     public void deleteProjectByName(String name) {
         boolean removed = projectList.removeIf(p -> p.filterproject(name));
         if (removed) {

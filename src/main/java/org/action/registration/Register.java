@@ -3,9 +3,9 @@ package org.action.registration;
 public class Register {
     private String status;
     private String ID;
-    private RegistrationCriteria criteria;
     private String user;
     private String projectID;
+    private RegistrationCriteria criteria;
 
     public Register(String ID, String user, String projectID, RegistrationCriteria criteria) {
         this.ID = ID;

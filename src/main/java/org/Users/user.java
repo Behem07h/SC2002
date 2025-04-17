@@ -37,9 +37,7 @@ public interface user {
         NONE    // No special permissions (default value)
     }
 
-    default String[] act(String action, Scanner sc) {
-
-    } //wrapper fn that handles user inputs for all actions
+    String[] act(String action, Scanner sc); //wrapper fn that handles user inputs for all actions
 }
 
 

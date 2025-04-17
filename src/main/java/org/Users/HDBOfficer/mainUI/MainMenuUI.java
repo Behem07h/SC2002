@@ -1,6 +1,7 @@
-package org.HDBOfficer.mainUI;
+package org.Users.HDBOfficer.mainUI;
 
-import org.HDBOfficer.HDBOfficerManager;
+import org.Users.HDBOfficer.HDBOfficerManager;
+
 import java.util.Scanner;
 
 public class MainMenuUI {

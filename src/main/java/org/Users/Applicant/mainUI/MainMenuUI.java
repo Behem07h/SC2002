@@ -1,7 +1,7 @@
-package org.Applicant.mainUI;
+package org.Users.Applicant.mainUI;
 
-import org.Applicant.ApplicantManager;
-import org.Applicant.user;
+import org.Users.Applicant.ApplicantManager;
+import org.Users.user;
 import org.UI.UI;
 
 import java.util.Scanner;

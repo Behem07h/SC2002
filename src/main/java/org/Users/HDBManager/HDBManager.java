@@ -1,6 +1,6 @@
-package org.HDBManager;
+package org.Users.HDBManager;
 
-import org.Applicant.user;  // Adjust the import as necessary if your user interface is in a different package
+import org.Users.user;  // Adjust the import as necessary if your user interface is in a different package
 
 public class HDBManager implements user {
     private String userID;

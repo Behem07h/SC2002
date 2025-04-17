@@ -1,4 +1,6 @@
-package org.HDBOfficer;
+package org.Users.HDBOfficer;
+
+import org.Users.user;
 
 public class HDBOfficer implements user {
     private String userID;

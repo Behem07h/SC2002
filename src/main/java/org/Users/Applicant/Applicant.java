@@ -1,4 +1,6 @@
-package org.Applicant;
+package org.Users.Applicant;
+
+import org.Users.user;
 
 public class Applicant implements user {
     private String userID;

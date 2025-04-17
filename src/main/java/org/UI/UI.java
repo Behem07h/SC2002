@@ -1,5 +1,5 @@
 package org.UI;
-import org.Applicant.user;
+import org.Users.user;
 
 import java.util.Map;
 import java.util.Scanner;

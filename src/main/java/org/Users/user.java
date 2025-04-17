@@ -1,4 +1,4 @@
-package org.Applicant;
+package org.Users;
 
 public interface user {
 
@@ -62,6 +62,7 @@ public interface user {
             default:
                 return output;
         }
+        return output;
     } //wrapper fn that handles user inputs for all actions
 }
 

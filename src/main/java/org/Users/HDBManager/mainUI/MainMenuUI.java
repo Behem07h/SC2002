@@ -1,6 +1,7 @@
-package org.HDBManager.mainUI;
+package org.Users.HDBManager.mainUI;
 
-import org.HDBManager.ManagerController;
+import org.Users.HDBManager.ManagerController;
+
 import java.util.Scanner;
 
 public class MainMenuUI {

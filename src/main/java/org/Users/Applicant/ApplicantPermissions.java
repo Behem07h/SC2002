@@ -1,4 +1,4 @@
-package org.Applicant;
+package org.Users.Applicant;
 
 public class ApplicantPermissions {
     Integer[] app_perms; //array of what methods they can run from each action class, in order of class diag

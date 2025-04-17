@@ -1,11 +1,11 @@
-package org.HDBManager;
+package org.Users.HDBOfficer;
 
-public class HDBManagerPermissions {
+public class HDBOfficerPermissions {
     Integer[] app_perms;
     Integer[] enq_perms;
     Integer[] proj_perms;
 
-    public HDBManagerPermissions(Integer usr_type) {
+    public HDBOfficerPermissions(Integer usr_type) {
         switch (usr_type) {
             case 0: // officer
                 app_perms = new Integer[]{1, 1, 1}; // Officers can access all application-related methods

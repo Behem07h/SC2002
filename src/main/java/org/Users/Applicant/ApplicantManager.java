@@ -1,11 +1,11 @@
-package org.Applicant;
+package org.Users.Applicant;
+
+import org.Users.user;
 
 import java.io.*;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
-import org.Applicant.Applicant;
 
 public class ApplicantManager {
     private List<Applicant> usr_db = new ArrayList<>();

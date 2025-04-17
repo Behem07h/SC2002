@@ -1,9 +1,11 @@
 package org.action;
 
 import org.UI.ConfigLDR;
+import org.action.enquiry.Enquiries;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -26,16 +28,25 @@ public class ApplicationManager {
 
             String applicationId = key;
             String projectID = items[0];
-            String applicantName = items[1];
+            String applicantId = items[1];
             Application.ApplicationStatus status = Application.ApplicationStatus.valueOf(items[2]);
             String flatType = items[3];
             LocalDateTime openingDate = LocalDateTime.parse(items[4]);
             LocalDateTime closingDate = LocalDateTime.parse(items[5]);
-            this.applicationList.add(new Application(applicationId,applicantName,projectID,status,flatType,openingDate,closingDate));
+            this.applicationList.add(new Application(applicationId,applicantId,projectID,status,flatType,openingDate,closingDate));
         }
     }
 
-    //todo:standardise with enquiries manager and make save fn
+    public void storeApplications() {
+        // run this when quitting program to store to csv
+        Map<String,String[]> appl_map = new HashMap<>();
+        for (Application a : applicationList) {
+            String[] items = {a.getProjectId(), a.getApplicantId(), String.valueOf(a.getApplicationStatus()), a.getFlatType(), String.valueOf(a.getOpeningDate()), String.valueOf(a.getClosingDate())};
+            appl_map.put(String.valueOf(a.getApplicationId()),items);
+        }
+        ConfigLDR ldr = new ConfigLDR();
+        ldr.saveCSV(path + "/applications.csv",appl_map);
+    }
 
     public void addApplication(Application app) {
         applicationList.add(app);

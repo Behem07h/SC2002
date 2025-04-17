@@ -5,7 +5,7 @@ import java.time.LocalDateTime;
 
 public class Application implements act {
     private String applicationId;
-    private String applicantName;
+    private String applicantId;
     private String projectId;
     private ApplicationStatus status;
     private String flattype;
@@ -13,7 +13,26 @@ public class Application implements act {
     private LocalDateTime closingDate;
     private boolean withdrawn = false;
 
-    //todo: load applications from strmap and save to strmap
+    public String getProjectId() {
+        return projectId;
+    }
+    public String getApplicantId() {
+        return applicantId;
+    }
+    public ApplicationStatus getApplicationStatus() {
+        return status;
+    }
+    public String getFlatType() {
+        return flattype;
+    }
+    public LocalDateTime getOpeningDate() {
+        return openingDate;
+    }
+
+    public LocalDateTime getClosingDate() {
+        return closingDate;
+    }
+
     public void setApplicationStatus(ApplicationStatus newStatus) {
         this.status = newStatus;
     }

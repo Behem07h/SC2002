@@ -1,7 +1,6 @@
 package org.action;
 
 import org.UI.ConfigLDR;
-import org.action.enquiry.Enquiries;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -30,10 +29,9 @@ public class ApplicationManager {
             String projectID = items[0];
             String applicantId = items[1];
             Application.ApplicationStatus status = Application.ApplicationStatus.valueOf(items[2]);
-            String flatType = items[3];
-            LocalDateTime openingDate = LocalDateTime.parse(items[4]);
-            LocalDateTime closingDate = LocalDateTime.parse(items[5]);
-            this.applicationList.add(new Application(applicationId,applicantId,projectID,status,flatType,openingDate,closingDate));
+            LocalDateTime openingDate = LocalDateTime.parse(items[3]);
+            LocalDateTime closingDate = LocalDateTime.parse(items[4]);
+            this.applicationList.add(new Application(applicationId,applicantId,projectID,status,openingDate,closingDate));
         }
     }
 
@@ -41,17 +39,14 @@ public class ApplicationManager {
         // run this when quitting program to store to csv
         Map<String,String[]> appl_map = new HashMap<>();
         for (Application a : applicationList) {
-            String[] items = {a.getProjectId(), a.getApplicantId(), String.valueOf(a.getApplicationStatus()), a.getFlatType(), String.valueOf(a.getOpeningDate()), String.valueOf(a.getClosingDate())};
+            String[] items = {a.getProjectId(), a.getApplicantId(), String.valueOf(a.getApplicationStatus()), String.valueOf(a.getSubmissionDate()), String.valueOf(a.getClosingDate())};
             appl_map.put(String.valueOf(a.getApplicationId()),items);
         }
         ConfigLDR ldr = new ConfigLDR();
         ldr.saveCSV(path + "/applications.csv",appl_map);
     }
 
-    public void addApplication(Application app) {
-        applicationList.add(app);
-        System.out.println("Application added: " + app);
-    }
+
 
     public void viewAllApplications() {
         System.out.println("=== All Applications ===");
@@ -110,19 +105,6 @@ public class ApplicationManager {
         }
     }
 
-    public void withdrawApplication(String applicationId) {
-        Application app = retrieveApplication(applicationId);
-        if (app != null) {
-            app.withdrawApplication();
-        }
-    }
-
-    public void submitApplication(String applicationId) {
-        Application app = retrieveApplication(applicationId);
-        if (app != null) {
-            app.submit();
-        }
-    }
 
     public void approveApplication(String applicationId) {
         Application app = retrieveApplication(applicationId);

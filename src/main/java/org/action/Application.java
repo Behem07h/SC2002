@@ -1,6 +1,5 @@
 package org.action;
 
-import org.action.act;
 import java.time.LocalDateTime;
 
 public class Application implements act {
@@ -8,31 +7,12 @@ public class Application implements act {
     private final String applicantId;
     private final String projectId;
     private ApplicationStatus status;
-    private final String flat_type;
+    private String flattype;
     private LocalDateTime openingDate;
     private LocalDateTime closingDate;
     private boolean withdrawn = false;
 
-    public String getProjectId() {
-        return projectId;
-    }
-    public String getApplicantId() {
-        return applicantId;
-    }
-    public ApplicationStatus getApplicationStatus() {
-        return status;
-    }
-    public String getFlatType() {
-        return flat_type;
-    }
-    public LocalDateTime getOpeningDate() {
-        return openingDate;
-    }
-
-    public LocalDateTime getClosingDate() {
-        return closingDate;
-    }
-
+    //todo: load applications from strmap and save to strmap
     public void setApplicationStatus(ApplicationStatus newStatus) {
         this.status = newStatus;
     }
@@ -43,21 +23,23 @@ public class Application implements act {
 
     
     public enum ApplicationStatus {
-        PENDING,       
-        BOOKED,       
-        SUCCESSFUL,   
-        UNSUCCESSFUL  
+        PENDING,
+        BOOKED,
+        SUCCESSFUL,
+        UNSUCCESSFUL,
+        WITHDRAWN
     }
 
    
-    public Application(String applicationId, String applicantId, String projectId, ApplicationStatus status, String flatType, LocalDateTime openingDate, LocalDateTime closingDate) {
+    public Application(String applicationId, String applicantName, String projectId, ApplicationStatus status, String flatType, LocalDateTime openingDate, LocalDateTime closingDate) {
         this.applicationId = applicationId;
         this.applicantId = applicantId;
         this.projectId = projectId;
         this.status = status;
-        this.flat_type = flatType;
+        this.flattype = flatType;
         this.openingDate = openingDate;
         this.closingDate = closingDate;
+        this.withdrawalRequest = new WithdrawalRequest(applicationId);
     }
 
     @Override
@@ -69,7 +51,7 @@ public class Application implements act {
         System.out.println("Application ID: " + applicationId);
         System.out.println("Applicant Name: " + applicantId);
         System.out.println("Status: " + status);
-        System.out.println("Flat Type: " + flat_type);
+        System.out.println("Flat Type: " + flattype);
         System.out.println("Opening Date: " + (openingDate != null ? openingDate : "Not set"));
         System.out.println("Closing Date: " + (closingDate != null ? closingDate : "Not set"));
     }
@@ -80,8 +62,8 @@ public class Application implements act {
             System.out.println("The application has already been submitted (booked).");
         } else if (status == ApplicationStatus.PENDING) {
             status = ApplicationStatus.BOOKED;
-            openingDate = LocalDateTime.now();
-            System.out.println("Application " + applicationId + " submitted (booked) successfully on " + openingDate);
+            submissionDate = LocalDateTime.now();
+            System.out.println("Application " + applicationId + " submitted (booked) successfully on " + submissionDate);
         } else {
             System.out.println("Application " + applicationId + " cannot be submitted. Current status: " + status);
         }
@@ -108,21 +90,53 @@ public class Application implements act {
     }
 
     public void withdrawApplication() {
-        if (status == ApplicationStatus.BOOKED) {
-            // Allow withdrawal only if the flat was booked.
-            withdrawn = true;
-            closingDate = LocalDateTime.now();
-            System.out.println("Application " + applicationId + " withdrawn successfully on " + closingDate + ".");
+        if (!withdrawn && status == ApplicationStatus.BOOKED) {
+            withdrawalRequest.request();
+        } else if (withdrawn) {
+            System.out.println("Application " + applicationId + " is already withdrawn.");
         } else {
-            System.out.println("Application " + applicationId + " cannot be withdrawn because it is not booked.");
+            System.out.println("Cannot request withdrawal in current status: " + status);
         }
     }
 
-    public String getApplicationId() {
-        return this.applicationId;
+    public void approveWithdrawal() {
+        if (withdrawalRequest.getApprovalStatus() == WithdrawalRequest.OfficerApprovalStatus.PENDING) {
+            withdrawalRequest.approve();
+            withdrawn = true;
+            status = ApplicationStatus.WITHDRAWN;
+            closingDate = LocalDateTime.now();
+            System.out.println("Application " + applicationId + " has been withdrawn successfully on " + closingDate + ".");
+        } else {
+            System.out.println("Withdrawal request for application " + applicationId + " is not pending or already processed.");
+        }
     }
-    
+
+    public void rejectWithdrawal() {
+        if (withdrawalRequest.getApprovalStatus() == WithdrawalRequest.OfficerApprovalStatus.PENDING) {
+            withdrawalRequest.reject();
+            System.out.println("Withdrawal request for application " + applicationId + " has been rejected.");
+        } else {
+            System.out.println("No pending withdrawal request for application " + applicationId + ".");
+        }
+    }
+
+    public void setClosingDate(LocalDateTime now) {
+        this.closingDate = now;
+    }
+
+    public void setApplicationStatus(ApplicationStatus newStatus) {
+        this.status = newStatus;
+    }
+
+    public String getApplicationId() {
+        return applicationId;
+    }
+    // other getters/setters omitted
 }
+
+
+
+
 
 
 

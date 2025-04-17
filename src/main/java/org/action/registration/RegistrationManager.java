@@ -9,8 +9,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.Scanner;
-import java.util.Set;
+
+import org.action.projectaction;
 
 public class RegistrationManager implements RegistrationAction {
     private List<Register> registrations;

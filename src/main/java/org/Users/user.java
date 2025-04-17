@@ -7,6 +7,8 @@ import org.action.enquiry.EnquiriesManager;
 import java.util.Scanner;
 
 public interface user {
+    PermissionLevel perms = PermissionLevel.NONE;
+
 
     String getUserID();
 
@@ -30,6 +32,14 @@ public interface user {
 
 
     boolean changePassword(String oldPassword, String newPassword);
+
+    // Enum for Permission Levels
+    public enum PermissionLevel {
+        READ,   // Read permission
+        WRITE,  // Write permission
+        ADMIN,  // Administrator privileges
+        NONE    // No special permissions (default value)
+    }
 
     default String[] act(String action, Scanner sc, EnquiriesManager enqMan, ApplicationManager appMan) {
         String[] output = new String[] {};

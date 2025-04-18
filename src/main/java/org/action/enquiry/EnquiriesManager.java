@@ -8,6 +8,7 @@ import org.Users.HDBOfficer.HDBOfficer;
 import java.time.LocalDateTime;
 import java.util.*;
 
+//todo: list enquiries by project name, and list enquiries by user id. listing enquiries shows full content, reply, author, timestamp
 public class EnquiriesManager implements EnquiryAction {
     private List<Enquiries> enquiriesList;
     private final String path = "data/db";

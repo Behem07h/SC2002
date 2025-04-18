@@ -24,7 +24,7 @@ public class RegistrationCriteria {
     }
 
     public boolean notHDBofficer(String user, String projectID){
-<<<<<<< HEAD
+//<<<<<<< HEAD //todo: what is this line for?
         String projectsFile = "projects.csv";
         List<List<String>> data = new ArrayList<>();
         try (Scanner scanner = new Scanner(new File(projectsFile))) {
@@ -49,8 +49,8 @@ public class RegistrationCriteria {
         }
 
         return true; // currently a HDB officer for another project
-=======
-        return true; //todo: add logic
->>>>>>> ae274b8892baff3ea01b9d6890431c11c6e661d7
+//======= //todo: what is this line for?
+//        return true; //todo: add logic //unreachable statement
+//>>>>>>> ae274b8892baff3ea01b9d6890431c11c6e661d7 //======= //todo: what is this line for?
     }
 }

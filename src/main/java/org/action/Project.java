@@ -4,6 +4,9 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
+//todo: track how many flats have already been booked, update this whenever an application status is updated
+//todo: track how many applications have been made for the project
+//todo: track amount of enquiries there are about the project
 public class Project implements Act {
     String projectName;
     String neighbourhood;
@@ -101,7 +104,7 @@ public class Project implements Act {
     }
 
     public String viewFull() {
-        return String.format("%s | %s $%s, %s units | %s $%s, %s units\nApplication Period: %s to %s\nManager: %s\nOfficers: %s\nVisibility: %s",projectName, flatType1, flatPrice1, flatCount1, flatType2, flatPrice2, flatCount2, openingDate, closingDate, managerId, officersList, visible);
+        return String.format("%s | %s $%s, %s units | %s $%s, %s units\nApplication Period: %s to %s\nManager: %s\nOfficers: %s\nVisible: %s",projectName, flatType1, flatPrice1, flatCount1, flatType2, flatPrice2, flatCount2, openingDate, closingDate, managerId, officersList, visible);
     }
 
     public void toggle_visibility() {

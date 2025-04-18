@@ -9,14 +9,16 @@ public class Enquiries {
     private final String ID;
     private final LocalDateTime timestamp;
     private final String userID;
+    private final String username;
     private final String projectID;
 
-    public Enquiries(String id, String projectID, String userId, String text, String reply, LocalDateTime timestamp) {
+    public Enquiries(String id, String projectID, String userId, String username, String text, String reply, LocalDateTime timestamp) {
         this.text = text;
         this.ID = id;
         this.reply = reply;
         this.timestamp = timestamp;
         this.userID = userId;
+        this.username = username;
         this.projectID = projectID;
     }
     public String getText() {
@@ -51,10 +53,10 @@ public class Enquiries {
         } else {
             shortText = text;
         }
-        return String.format("Enquiry ID: %s | Posted by: %s\nQ: %s\n%s", ID, userID, shortText, (reply.isEmpty() ? "[No reply]" : "[Answered]"));
+        return String.format("Enquiry ID: %s | Posted by: %s\nQ: %s\n%s", ID, username, shortText, (reply.isEmpty() ? "[No reply]" : "[Answered]"));
     }
     public String view_full() {
-        return String.format("Enquiry ID: %s | Posted by: %s at %s\nQ: %s\nR: %s", ID, userID, timestamp, text, (reply.isEmpty() ? "[No reply]" : reply));
+        return String.format("Enquiry ID: %s | Posted by: %s at %s\nQ: %s\nR: %s", ID, username, timestamp, text, (reply.isEmpty() ? "[No reply]" : reply));
     }
 
     public boolean filter(String userId, String projectId, String enquiryId) {

@@ -29,11 +29,12 @@ public class EnquiriesManager implements EnquiryAction {
 
             String projectID = items[0];
             String userId = items[1];
-            String text = items[2];
-            String reply = items[3];
-            LocalDateTime timestamp = LocalDateTime.parse(items[4]);
+            String username = items[2];
+            String text = items[3];
+            String reply = items[4];
+            LocalDateTime timestamp = LocalDateTime.parse(items[5]);
 
-            this.enquiriesList.add(new Enquiries(key, projectID, userId, text, reply, timestamp));
+            this.enquiriesList.add(new Enquiries(key, projectID, userId, username, text, reply, timestamp));
         }
     }
 
@@ -139,6 +140,7 @@ public class EnquiriesManager implements EnquiryAction {
                 newID,
                 projectID,
                 usr.getUserID(),
+                usr.getUsername(),
                 text,
                 "",
                 LocalDateTime.now()

@@ -3,11 +3,12 @@ package org.action;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 //todo: track how many flats have already been booked, update this whenever an application status is updated
 //todo: track how many applications have been made for the project
 //todo: track amount of enquiries there are about the project
-public class Project implements Act {
+public class Project {
     String projectName;
     String neighbourhood;
     String flatType1;
@@ -95,16 +96,25 @@ public class Project implements Act {
         this.officersList = new ArrayList<>(List.of(officersList.split(":")));
         this.visible = visible;
         //todo: a project can have multiple flat types, but an applicant only can view and apply for specific flat types (is this always 1?)
-        //todo: .: we need to display the appropriate flat type based on the applicant
     }
 
-    @Override
-    public String view() {
-        return String.format("%s | %s $%s | %s $%s",projectName, flatType1, flatPrice1, flatType2, flatPrice2);
+    public String view(String flatsFilter) { //todo: hide flat details based on user group
+        return String.format("%s | %s",projectName, viewFlatDetails(flatsFilter,false));
     }
 
-    public String viewFull() {
-        return String.format("%s | %s $%s, %s units | %s $%s, %s units\nApplication Period: %s to %s\nManager: %s\nOfficers: %s\nVisible: %s",projectName, flatType1, flatPrice1, flatCount1, flatType2, flatPrice2, flatCount2, openingDate, closingDate, managerId, officersList, visible);
+    public String viewFull(String flatsFilter) {
+        return String.format("%s | %s\nApplication Period: %s to %s\nManager: %s\nOfficers: %s\nVisible: %s",projectName, viewFlatDetails(flatsFilter,true), openingDate, closingDate, managerId, officersList, visible);
+    }
+
+    private String viewFlatDetails(String flatsFilter, boolean full) {
+        String flatstring = "";
+        if (flatType1.contains(flatsFilter)) {
+            flatstring = flatstring + String.format("%s $%s%s", flatType1, flatPrice1, (full ? String.format(", %s units | ",flatCount1) : " | "));
+        }
+        if (flatType2.contains(flatsFilter)) {
+            flatstring = flatstring + String.format("%s $%s%s", flatType2, flatPrice2, (full ? String.format(", %s units | ",flatCount2) : " | "));
+        }
+        return flatstring;
     }
 
     public void toggle_visibility() {
@@ -136,10 +146,10 @@ public class Project implements Act {
             out = projectName.toLowerCase().contains(name.toLowerCase());
         }
         if (!neighbourhood.isEmpty()) {
-            out = out && neighbourhood.toLowerCase().contains(neighbourhood);
+            out = out && neighbourhood.toLowerCase().contains(neighbourhood.toLowerCase());
         }
         if (!flat.isEmpty()) {
-            out = out && (flatType1.toLowerCase().contains(flat) || flatType2.toLowerCase().contains(flat));
+            out = out && (flatType1.toLowerCase().contains(flat.toLowerCase()) || flatType2.toLowerCase().contains(flat.toLowerCase()));
         }
         if (date) {
             out = out && ((LocalDate.now().isAfter(openingDate) || LocalDate.now().isEqual(openingDate)) && LocalDate.now().isBefore(closingDate));

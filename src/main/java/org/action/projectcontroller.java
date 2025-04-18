@@ -136,7 +136,7 @@ public class projectcontroller {
         if (flatType.contains(getUserValidFlatTypes(usr))) {
             filteredProjects = searchFilter(usr,"","","", flatType);
             for (Project p : filteredProjects) {
-                out.set(0, out.get(0) + "\n" + p.view());
+                out.set(0, out.get(0) + "\n" + p.view(getUserValidFlatTypes(usr)));
             }
             return out;
         }
@@ -147,7 +147,7 @@ public class projectcontroller {
         List<String> out = new ArrayList<>(List.of(""));
         filteredProjects = searchFilter(usr,"","",neighbourhood,getUserValidFlatTypes(usr));
         for (Project p : filteredProjects) {
-            out.set(0, out.get(0) + "\n" + p.view());
+            out.set(0, out.get(0) + "\n" + p.view(getUserValidFlatTypes(usr)));
         }
         return out;
     }
@@ -156,7 +156,7 @@ public class projectcontroller {
         List<String> out = new ArrayList<>(List.of(""));
         filteredProjects = searchFilter(usr, name,"","",getUserValidFlatTypes(usr));
         for (Project p : filteredProjects) {
-            out.set(0, out.get(0) + "\n" + p.view());
+            out.set(0, out.get(0) + "\n" + p.view(getUserValidFlatTypes(usr)));
         }
         return out;
     }
@@ -166,7 +166,7 @@ public class projectcontroller {
         List<String> out = new ArrayList<>(List.of(""));
         filteredProjects = searchFilter(usr,"",projectName,"",getUserValidFlatTypes(usr));
         for (Project p : filteredProjects) {
-            out.set(0, out.get(0) + "\n" + p.viewFull());
+            out.set(0, out.get(0) + "\n" + p.viewFull(getUserValidFlatTypes(usr)));
         }
         return out;
     }
@@ -175,12 +175,13 @@ public class projectcontroller {
             return "";
         } else {
             if (Objects.equals(usr.getMaritalStatus(), "Single") && usr.getAge() >= 35) {
+                System.out.println("SINGLE");
                 return "2-Room";
             } else if (Objects.equals(usr.getMaritalStatus(), "Married") && usr.getAge() >= 21) {
                 return "Room"; //returns any flat type
             }
         }
-        return "";
+        return "NONE"; //if you fall outside those ranges, you cannot see anything according to SG law
     }
     public List<String> getProjectList(user usr) {
         //Singles, 35 years old and above, can ONLY apply for 2-Room

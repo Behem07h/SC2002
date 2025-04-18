@@ -102,17 +102,14 @@ public class Context {
             //application methods
             case "view-applications":
                 //user input project id to view applications for project, or none to view own application
-                System.out.println("Enter project ID to view applications: ");
+                System.out.println("Enter project ID to view applications (Blank to view own applications): ");
                 input.set(0, sc.nextLine());
                 if (!input.get(0).isEmpty()) {
-                    System.out.println("A");
-                    //appMan.viewAllApplications(usr, input[0]);
+                    output = appMan.listByProject(usr, input.get(0));
                 } else {
-                    System.out.println("B");
-                    //appMan.viewApplicationsByUsr(usr);
+                    output = appMan.listByUser(usr);
                 }
-
-                break;
+                return output;
             case "add-application":
                 //??
                 break;

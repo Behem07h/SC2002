@@ -2,6 +2,7 @@
 package org.action;
 
 import java.time.LocalDate;
+import java.util.Objects;
 
 /**
  * A single application with full submit/approve/reject/withdrawal workflow.
@@ -44,16 +45,9 @@ public class Application implements Act {
     @Override
     public String view() {
         if (withdrawn) {
-            System.out.println("This application has been withdrawn; details hidden.");
-            return "";
+            return "Application is withdrawn, cannot view";
         }
-        System.out.println("Application ID: " + applicationId);
-        System.out.println("Applicant ID:   " + applicantId);
-        System.out.println("Project ID:     " + projectId);
-        System.out.println("Status:         " + status);
-        System.out.println("Opening Date:   " + (submissionDate != null ? submissionDate : "Not set"));
-        System.out.println("Closing Date:   " + (closingDate  != null ? closingDate  : "Not set"));
-        return "";
+        return String.format("Application %s for Project %s\nApplicant: %s\nStatus: %s\nSubmitted on: %s%s", applicationId, projectId, applicantId, status, submissionDate, (closingDate  != null ? String.format("| Closed on: %s",closingDate)  : ""));
     }
 
     public void submit() {
@@ -119,6 +113,20 @@ public class Application implements Act {
         } else {
             System.out.println("No rejected withdrawal to process for " + applicationId);
         }
+    }
+
+    public boolean filter(String userId, String projectId, String applicationId) {
+        boolean out = true;
+        if (!userId.isEmpty()) {
+            out = Objects.equals(this.applicantId, userId);
+        }
+        if (!projectId.isEmpty()) {
+            out = Objects.equals(this.projectId, projectId);
+        }
+        if (!applicationId.isEmpty()) {
+            out = out && Objects.equals(this.applicationId, applicationId);
+        }
+        return out;
     }
 
     public String getProjectId() {

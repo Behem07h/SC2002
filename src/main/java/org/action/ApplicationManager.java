@@ -1,6 +1,7 @@
 package org.action;
 
 import org.UI.ConfigLDR;
+import org.Users.user;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -15,7 +16,7 @@ public class ApplicationManager {
 
     public ApplicationManager() {
         //load applications from csv
-        this.applicationList = new ArrayList<Application>();
+        this.applicationList = new ArrayList<>();
 
         ConfigLDR ldr = new ConfigLDR();
         Map<String,String[]> appl_map = ldr.ReadToArrMap(path + filename);
@@ -48,12 +49,32 @@ public class ApplicationManager {
 
 
 
-    public void viewAllApplications() {
-        System.out.println("=== All Applications ===");
-        for (Application app : applicationList) {
-            app.view();
-            System.out.println("--------------------");
+    private List<Application> searchFilter(String userId, String projectId, String applicationId) {
+        List<Application> out = new ArrayList<>();
+        for (Application a : applicationList) {
+            if (a.filter(userId, projectId, applicationId)) {
+                out.add(a);
+            }
         }
+        return out;
+    }
+
+    public List<String> listByUser(user usr) { //todo: also print the full project details with an override to visibility filter. this is how the user sees their applied project even if it is made hiddent
+        List<Application> filteredApps = searchFilter(usr.getUserID(),"","");
+        List<String> output = new ArrayList<>(List.of(""));
+        for (Application a : filteredApps) {
+            output.set(0, output.get(0) + a.view());
+        }
+        return output;
+    }
+
+    public List<String> listByProject(user usr, String projectId) { //todo: perms checking. combine into 1 fn?
+        List<Application> filteredApps = searchFilter("",projectId,"");
+        List<String> output = new ArrayList<>(List.of(""));
+        for (Application a : filteredApps) {
+            output.set(0, output.get(0) + a.view());
+        }
+        return output;
     }
 
     public Application retrieveApplication(String applicationId) {

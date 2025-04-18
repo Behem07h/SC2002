@@ -10,7 +10,7 @@ import java.time.LocalDate;
 import java.util.*;
 
 public class ProjectManager {
-    private List<Project> projectList;
+    private final List<Project> projectList;
     private final String path = "data/db";
     private final String filename = "/project.csv";
 

@@ -4,6 +4,7 @@ import org.UI.ConfigLDR;
 import org.Users.HDBManager.HDBManager;
 import org.Users.HDBOfficer.HDBOfficer;
 import org.Users.user;
+import org.action.enquiry.EnquiriesManager;
 
 import java.time.LocalDate;
 import java.util.*;
@@ -161,12 +162,12 @@ public class projectcontroller {
         return out;
     }
 
-    public List<String> getProjectByName(user usr, String projectName) {
+    public List<String> getProjectByName(user usr, String projectName, EnquiriesManager enqMan) {
         List<Project> filteredProjects;
         List<String> out = new ArrayList<>(List.of(""));
         filteredProjects = searchFilter(usr,"",projectName,"",getUserValidFlatTypes(usr));
         for (Project p : filteredProjects) {
-            out.set(0, out.get(0) + "\n" + p.viewFull(getUserValidFlatTypes(usr)));
+            out.set(0, out.get(0) + "\n" + p.viewFull(usr, getUserValidFlatTypes(usr), enqMan));
         }
         return out;
     }
@@ -175,7 +176,6 @@ public class projectcontroller {
             return "";
         } else {
             if (Objects.equals(usr.getMaritalStatus(), "Single") && usr.getAge() >= 35) {
-                System.out.println("SINGLE");
                 return "2-Room";
             } else if (Objects.equals(usr.getMaritalStatus(), "Married") && usr.getAge() >= 21) {
                 return "Room"; //returns any flat type

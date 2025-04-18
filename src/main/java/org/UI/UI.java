@@ -3,6 +3,7 @@ import org.Users.user;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Scanner;
 
 public class UI {
@@ -68,6 +69,9 @@ class ui_main {
                 	ctx_idx = fn_map.get(ui_idx)[usr_in-1];
                     ctx = context.act(ctx_idx,this.sc);
                     ui_idx = next_alias; //get the next ui idx
+                } else if (Objects.equals(next_alias, "NIL")) {
+                    //if the next menu is NIL, that means the ui doesn't move but fns are run.
+                    ctx = context.act(fn_map.get(ui_idx)[usr_in-1],this.sc);
                 }
             } else if (usr_in == 0) { //terminate program
                 context.endContext();

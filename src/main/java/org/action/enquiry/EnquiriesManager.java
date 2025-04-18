@@ -4,6 +4,7 @@ import org.UI.ConfigLDR;
 import org.Users.*;
 import org.Users.HDBManager.HDBManager;
 import org.Users.HDBOfficer.HDBOfficer;
+import org.action.Project;
 
 import java.time.LocalDateTime;
 import java.util.*;
@@ -15,7 +16,7 @@ public class EnquiriesManager implements EnquiryAction {
     private final String filename = "/enquiries.csv";
     public EnquiriesManager() {
         //load enquiries from csv
-        this.enquiriesList = new ArrayList<Enquiries>();
+        this.enquiriesList = new ArrayList<>();
 
         ConfigLDR ldr = new ConfigLDR();
         Map<String,String[]> enq_map = ldr.ReadToArrMap(path + filename);
@@ -40,27 +41,72 @@ public class EnquiriesManager implements EnquiryAction {
         // run this when quitting program to store to csv
         Map<String,String[]> enq_map = new HashMap<>();
         for (Enquiries e : enquiriesList) {
-            String[] items = {e.getProjectID(),e.getUserId(),e.getText(),e.getReply(), String.valueOf(e.getTimestamp())};
-            enq_map.put(String.valueOf(e.getId()),items);
+            String[] items = {e.getProjectID(),e.getUserID(),e.getText(),e.getReply(), String.valueOf(e.getTimestamp())};
+            enq_map.put(String.valueOf(e.getID()),items);
         }
         ConfigLDR ldr = new ConfigLDR();
         ldr.saveCSV(path + filename,enq_map);
     }
-
-    public Enquiries getEnquiry(String id) {
+    private List<Enquiries> searchFilter(user usr, String userId, String projectId, String enquiryId) {
+        List<Enquiries> out = new ArrayList<>();
         for (Enquiries e : enquiriesList) {
-            if (Objects.equals(e.getId(), id)) {
-                return e;
+            if (e.filter(userId, projectId, enquiryId)) {
+                out.add(e);
             }
         }
-        return null;
+        return out;
     }
+    public List<String> getEnquiriesByProject(user usr, String projectName) {
+        List<Enquiries> filteredEnquiries;
+        List<String> out = new ArrayList<>(List.of(String.format("%s",projectName),""));
+        filteredEnquiries = searchFilter(usr,"",projectName,"");
+        for (Enquiries e : filteredEnquiries) {
+            out.set(1, out.get(1) + "\n" + e.toString());
+        }
+        if (out.get(1).isEmpty()) {
+            out.set(1, "No enquiries for this project");
+        }
+        return out;
+    }
+
+    public int countProjectEnquiries(user usr, String projectName) {
+        List<Enquiries> filteredEnquiries;
+        filteredEnquiries = searchFilter(usr,"",projectName,"");
+        return filteredEnquiries.size();
+    }
+    public List<String> getEnquiriesByUser(user usr) {
+        List<Enquiries> filteredEnquiries;
+        List<String> out = new ArrayList<>(List.of(String.format("%s",usr.getUserID()),""));
+        filteredEnquiries = searchFilter(usr,usr.getUserID(),"","");
+        for (Enquiries e : filteredEnquiries) {
+            out.set(1, out.get(1) + "\n" + e.toString());
+        }
+        if (out.get(1).isEmpty()) {
+            out.set(1, "No enquiries by this user");
+        }
+        return out;
+    }
+
+    public List<String> getEnquiriesById(user usr, String enquiryId) {
+        List<Enquiries> filteredEnquiries;
+        List<String> out = new ArrayList<>(List.of("",""));
+        filteredEnquiries = searchFilter(usr,"","",enquiryId);
+        for (Enquiries e : filteredEnquiries) {
+            out.set(0, e.getProjectID());
+            out.set(1, out.get(1) + "\n" + e.view_full());
+        }
+        if (out.get(1).isEmpty()) {
+            out.set(1, "No such enquiry");
+        }
+        return out;
+    }
+
 
     private int generateNewEnquiryId() {
         int maxId = 0;
         for (Enquiries e : enquiriesList) {
-            if (Integer.parseInt(e.getId()) > maxId) {
-                maxId = Integer.parseInt(e.getId());
+            if (Integer.parseInt(e.getID()) > maxId) {
+                maxId = Integer.parseInt(e.getID());
             }
         }
         return maxId + 1;
@@ -102,28 +148,21 @@ public class EnquiriesManager implements EnquiryAction {
         enquiriesList.add(newEnquiry);
 
         System.out.println("Enquiry successfully submitted with ID: " + newID);
-        result.set(0, newID);
-        result.set(1, text);
-        result.set(2, usr.getUserID());
-        result.set(3, projectID);
+        result = getEnquiriesByProject(usr, projectID);
         return result;
     }
-//
-//    @Override
-//    public void submitEnquiries() {
-//        // Interface implementation - used as placeholder
-//        System.out.println("Default submit enquiries method called");
-//    }
-//
-//    @Override
-//    public void deleteEnquiries() {
-//        // Interface implementation - used as placeholder
-//        System.out.println("Default delete enquiries method called");
-//    }
 
+    private Enquiries getEnquiry(String id) {
+        for (Enquiries e : enquiriesList) {
+            if (Objects.equals(e.getID(), id)) {
+                return e;
+            }
+        }
+        return null;
+    }
     @Override
     public List<String> deleteEnquiries(user usr, String enquiryId) {
-        List<String> result = new ArrayList<>();
+        List<String> result = new ArrayList<>(List.of("",""));
 
         try {
             Enquiries enquiry = getEnquiry(enquiryId);
@@ -132,9 +171,7 @@ public class EnquiriesManager implements EnquiryAction {
                 System.out.println("Enquiry not found");
                 result.set(0, "ERROR: Enquiry not found");
                 return result;
-            }
-
-            if(enquiry.getUserId().equals(usr.getUserID()) || usr instanceof HDBManager || usr instanceof HDBOfficer) {
+            } else if(enquiry.getUserID().equals(usr.getUserID()) || usr instanceof HDBManager || usr instanceof HDBOfficer) {
                 enquiriesList.remove(enquiry);
                 result.set(0, "SUCCESS");
                 result.set(1, "Enquiry " + enquiryId + " deleted successfully");
@@ -153,7 +190,7 @@ public class EnquiriesManager implements EnquiryAction {
 
     @Override
     public List<String> editEnquiries(user usr, String newText, String enquiryId) {
-        List<String> result = new ArrayList<>();
+        List<String> result = new ArrayList<>(List.of("",""));
 
         try {
             Enquiries enquiry = getEnquiry(enquiryId);
@@ -162,13 +199,9 @@ public class EnquiriesManager implements EnquiryAction {
                 System.out.println("Enquiry not found");
                 result.set(0, "ERROR: Enquiry not found");
                 return result;
-            }
-
-            if(enquiry.getUserId().equals(usr.getUserID()) || usr instanceof HDBManager || usr instanceof HDBOfficer) {
+            } else if(enquiry.getUserID().equals(usr.getUserID()) || usr instanceof HDBManager || usr instanceof HDBOfficer) {
                 enquiry.setText(newText);
-                result.set(0, "SUCCESS");
-                result.set(1, newText);
-                result.set(2, String.valueOf(enquiryId));
+                result = getEnquiriesByProject(usr,enquiry.getProjectID());
                 return result;
             } else {
                 System.out.println("You are not allowed to edit this enquiry");
@@ -190,7 +223,7 @@ public class EnquiriesManager implements EnquiryAction {
 
     @Override
     public List<String> replyEnquiries(user usr, String reply, String enquiryId) {
-        List<String> result = new ArrayList<>();
+        List<String> result = new ArrayList<>(List.of("",""));
 
         try {
             Enquiries enquiry = getEnquiry(enquiryId);
@@ -203,10 +236,11 @@ public class EnquiriesManager implements EnquiryAction {
 
             if(usr instanceof HDBManager || usr instanceof HDBOfficer) {
                 enquiry.setReply(reply);
-                result.set(0, "SUCCESS");
-                result.set(1, reply);
-                result.set(2, String.valueOf(enquiryId));
-                result.set(3, enquiry.getText());
+                //result.set(0, "SUCCESS");
+                //result.set(1, reply);
+                //result.set(2, String.valueOf(enquiryId));
+                //result.set(3, enquiry.getText());
+                result = getEnquiriesById(usr,enquiryId);
             } else {
                 System.out.println("You are not authorized to reply to enquiries");
                 result.set(0, "ERROR: Unauthorized to reply to enquiries");
@@ -232,7 +266,7 @@ public class EnquiriesManager implements EnquiryAction {
         for (Enquiries e : enquiriesList) {
             if(e.getReply().isEmpty()){
                 pending++;
-                System.out.println("Enquiries id:" + e.getId());
+                System.out.println("Enquiries id:" + e.getID());
             }
         }
         System.out.println("Enquiries needed to be processed:" + pending);
@@ -262,9 +296,9 @@ public class EnquiriesManager implements EnquiryAction {
         List<String> enquiryIds = new ArrayList<>();
 
         for (Enquiries e : enquiriesList) {
-            if (e.getUserId().equals(usr.getUserID()) &&
+            if (e.getUserID().equals(usr.getUserID()) &&
                     (projectID.isEmpty() || e.getProjectID().equals(projectID))) {
-                enquiryIds.add(String.valueOf(e.getId()));
+                enquiryIds.add(String.valueOf(e.getID()));
             }
         }
 

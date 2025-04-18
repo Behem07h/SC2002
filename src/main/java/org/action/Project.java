@@ -1,9 +1,11 @@
 package org.action;
 
+import org.Users.user;
+import org.action.enquiry.EnquiriesManager;
+
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 //todo: track how many flats have already been booked, update this whenever an application status is updated
 //todo: track how many applications have been made for the project
@@ -102,8 +104,9 @@ public class Project {
         return String.format("%s | %s",projectName, viewFlatDetails(flatsFilter,false));
     }
 
-    public String viewFull(String flatsFilter) {
-        return String.format("%s | %s\nApplication Period: %s to %s\nManager: %s\nOfficers: %s\nVisible: %s",projectName, viewFlatDetails(flatsFilter,true), openingDate, closingDate, managerId, officersList, visible);
+    public String viewFull(user usr, String flatsFilter, EnquiriesManager enqMan) {
+        int enquiriesCount = enqMan.countProjectEnquiries(usr, projectName);
+        return String.format("%s | %s\nApplication Period: %s to %s\nManager: %s\nOfficers: %s\nVisible: %s\n\nEnquiries: %s",projectName, viewFlatDetails(flatsFilter,true), openingDate, closingDate, managerId, officersList, visible, enquiriesCount);
     }
 
     private String viewFlatDetails(String flatsFilter, boolean full) {

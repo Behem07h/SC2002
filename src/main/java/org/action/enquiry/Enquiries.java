@@ -1,21 +1,22 @@
 package org.action.enquiry;
 
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 public class Enquiries {
     private String text;
     private String reply;
-    private final String id;
+    private final String ID;
     private final LocalDateTime timestamp;
-    private final String userId;
+    private final String userID;
     private final String projectID;
 
     public Enquiries(String id, String projectID, String userId, String text, String reply, LocalDateTime timestamp) {
         this.text = text;
-        this.id = id;
+        this.ID = id;
         this.reply = reply;
         this.timestamp = timestamp;
-        this.userId = userId;
+        this.userID = userId;
         this.projectID = projectID;
     }
     public String getText() {
@@ -30,22 +31,43 @@ public class Enquiries {
     public void setReply(String reply) {
         this.reply = reply;
     }
-    public String getId() {
-        return id;
+    public String getID() {
+        return ID;
     }
     public LocalDateTime getTimestamp() {
         return timestamp;
     }
-    public String getUserId() {
-        return userId;
+    public String getUserID() {
+        return userID;
     }
     public String getProjectID() {
         return projectID;
     }
     @Override
     public String toString() {
-        return "Enquiry ID: " + id + " by " + userId + " at " + timestamp + "for Project ID: " + projectID + "\n"
-                + "Question is " + text + "\n" +
-                (reply.isEmpty() ? "[No reply yet]" : "Reply: " + reply);
+        String shortText;
+        if (text.length() > 50) {
+            shortText = text.substring(0,47) + "...";
+        } else {
+            shortText = text;
+        }
+        return String.format("Enquiry ID: %s | Posted by: %s\nQ: %s\n%s", ID, userID, shortText, (reply.isEmpty() ? "[No reply]" : "[Answered]"));
+    }
+    public String view_full() {
+        return String.format("Enquiry ID: %s | Posted by: %s at %s\nQ: %s\nR: %s", ID, userID, timestamp, text, (reply.isEmpty() ? "[No reply]" : reply));
+    }
+
+    public boolean filter(String userId, String projectId, String enquiryId) {
+        boolean out = true;
+        if (!userId.isEmpty()) {
+            out = Objects.equals(this.userID, userId);
+        }
+        if (!projectId.isEmpty()) {
+            out = Objects.equals(this.projectID, projectId);
+        }
+        if (!enquiryId.isEmpty()) {
+            out = out && Objects.equals(this.ID, enquiryId);
+        }
+        return out;
     }
 }

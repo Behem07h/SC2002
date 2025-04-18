@@ -4,6 +4,7 @@ import java.io.*;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 public class ConfigLDR{
     public HashMap<String, String> ReadToMap(String filename) {
@@ -43,9 +44,9 @@ public class ConfigLDR{
                 String[] tmp = Arrays.copyOfRange(details, 1, details.length);
                 for (int i = 0; i < tmp.length; i++) {
                     tmp[i] = tmp[i].trim();
-                    //if (Objects.equals(tmp[i], "None")) {
-                    //    tmp[i] = "";
-                    //}
+                    if (Objects.equals(tmp[i], "NONE")) {
+                        tmp[i] = "";
+                    }
                 }
                 System.out.println(Arrays.toString(tmp));
                 cfg.put(details[0].trim(), tmp);
@@ -82,11 +83,11 @@ public class ConfigLDR{
     }
 
         public String arr2str(String[] data) {
-        //for (int i = 0; i < data.length; i++) {
-        //    if (data[i].isEmpty()) {
-        //        data[i] = "None";
-        //    }
-        //}
+        for (int i = 0; i < data.length; i++) {
+            if (data[i].isEmpty()) {
+                data[i] = "NONE";
+            }
+        }
         return String.join(", ", data);
     }
 }

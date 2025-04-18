@@ -39,6 +39,19 @@ public class Context {
             //enquiry methods
             //todo: add a view enquiries option. projects store list of enquiry ids, use that to look up and list enquiries
             //if no current project, show the user's submitted enquiries (user also stores a list of enquiry ids that are owned by them, as well as applications that are owned by them
+            case "view-enquiries":
+                if (currentViewedProjectID.isEmpty()) {
+                    output = enqMan.getEnquiriesByUser(usr);
+                } else {
+                    output = enqMan.getEnquiriesByProject(usr, currentViewedProjectID);
+                }
+                currentViewedEnquiryID = "";
+                return output;
+            case "view-enquiry":
+                System.out.println("Enter enquiry ID: ");
+                currentViewedEnquiryID = sc.nextLine();
+                output = enqMan.getEnquiriesById(usr, currentViewedEnquiryID);
+                return output;
             case "submit-enquiry":
                 //take user input of project id and enquiry text.
                 //return full enquiry details
@@ -50,8 +63,8 @@ public class Context {
                 input.set(0, sc.nextLine());
 
                 output = enqMan.submitEnquiry(usr, input.get(0), currentViewedProjectID);
-                currentViewedEnquiryID = output.get(0);
-                break;
+                currentViewedEnquiryID = "";
+                return output;
             case "delete-enquiry":
                 //user input enquiry id
                 //return success/failure and new project enquiries list
@@ -59,7 +72,7 @@ public class Context {
                 input.set(0, sc.nextLine());
                 output = enqMan.deleteEnquiries(usr, input.get(0));
                 currentViewedEnquiryID = "";
-                break;
+                return output;
             case "edit-enquiry":
                 //user input enquiry id and new text
                 //return new enquiry text
@@ -71,13 +84,10 @@ public class Context {
                     System.out.println("Enter enquiry ID to edit: ");
                     currentViewedEnquiryID = sc.nextLine();
                 }
-                //todo:call fn to print user's enquiry ids by project id
-                input.set(1, sc.nextLine());
-
                 System.out.println("Enter edited enquiry: ");
                 input.set(0, sc.nextLine());
-                enqMan.editEnquiries(usr, input.get(0), currentViewedEnquiryID);
-                break;
+                output = enqMan.editEnquiries(usr, input.get(0), currentViewedEnquiryID);
+                return output;
             case "reply-enquiry":
                 //user input enquiry id and reply text
                 //return full enquiry details
@@ -87,8 +97,8 @@ public class Context {
                 }
                 System.out.println("Enter reply to enquiry: ");
                 input.set(0, sc.nextLine());
-                enqMan.replyEnquiries(usr, input.get(0), currentViewedEnquiryID);
-                break;
+                output = enqMan.replyEnquiries(usr, input.get(0), currentViewedEnquiryID);
+                return output;
             //application methods
             case "view-applications":
                 //user input project id to view applications for project, or none to view own application
@@ -144,9 +154,13 @@ public class Context {
                 }
                 return output;
             case "view-project":
-                System.out.println("Enter exact project name to view: ");
-                input.set(0, sc.nextLine());
-                output = proMan.getProjectByName(usr, input.get(0));
+                if (currentViewedProjectID.isEmpty()) {
+                    System.out.println("Enter exact project name to view: ");
+                    input.set(0, sc.nextLine());
+                } else {
+                    input.set(0, currentViewedProjectID);
+                }
+                output = proMan.getProjectByName(usr, input.get(0), enqMan);
                 currentViewedProjectID = input.get(0);
                 if (output.isEmpty()) {
                     output.add("No projects found");
@@ -202,7 +216,7 @@ public class Context {
                 //input project id, output success/failure and new projects list
                 System.out.println("Enter project ID to edit: ");
                 input.set(0, sc.nextLine());
-                if (!proMan.getProjectByName(usr, input.get(0)).isEmpty()) {
+                if (!proMan.getProjectByName(usr, input.get(0), enqMan).isEmpty()) {
                     System.out.println("Enter new project ID (Blank to skip): ");
                     input.set(1, sc.nextLine());
                     System.out.println("Enter new neighbourhood (Blank to skip): ");
@@ -236,7 +250,7 @@ public class Context {
                 return output;
             case "create-project":
                 //input project id, output success/failure and new projects list
-                if (!proMan.getProjectByName(usr, input.get(0)).isEmpty()) {
+                if (!proMan.getProjectByName(usr, input.get(0), enqMan).isEmpty()) {
                     System.out.println("Enter new project ID: ");
                     input.set(1, sc.nextLine());
                     System.out.println("Enter neighbourhood: ");

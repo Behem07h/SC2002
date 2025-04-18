@@ -3,7 +3,7 @@ package org.UI;
 import org.Users.user;
 import org.action.ApplicationManager;
 import org.action.enquiry.EnquiriesManager;
-import org.action.projectcontroller;
+import org.action.project.ProjectManager;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
@@ -14,7 +14,7 @@ import java.util.Scanner;
 public class Context {
     private final EnquiriesManager enqMan;
     private final ApplicationManager appMan;
-    private final projectcontroller proMan;
+    private final ProjectManager proMan;
     private final user usr;
     private String currentViewedProjectID;
     private String currentViewedEnquiryID;
@@ -23,7 +23,7 @@ public class Context {
         usr = currentUser;
         enqMan = new EnquiriesManager();
         appMan = new ApplicationManager();
-        proMan = new projectcontroller();
+        proMan = new ProjectManager();
     }
 
     public void endContext() {

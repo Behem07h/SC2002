@@ -1,4 +1,4 @@
-package org.action;
+package org.action.project;
 
 import org.UI.ConfigLDR;
 import org.Users.HDBManager.HDBManager;
@@ -9,12 +9,12 @@ import org.action.enquiry.EnquiriesManager;
 import java.time.LocalDate;
 import java.util.*;
 
-public class projectcontroller {
+public class ProjectManager {
     private List<Project> projectList;
     private final String path = "data/db";
     private final String filename = "/project.csv";
 
-    public projectcontroller() {
+    public ProjectManager() {
         projectList = new ArrayList<>();
 
         ConfigLDR ldr = new ConfigLDR();

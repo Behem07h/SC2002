@@ -1,4 +1,4 @@
-package org.action;
+package org.action.project;
 
 import org.Users.user;
 import org.action.enquiry.EnquiriesManager;

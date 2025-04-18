@@ -1,7 +1,6 @@
 package org.action.enquiry;
 
 import org.UI.ConfigLDR;
-import org.action.*;
 import org.Users.*;
 import java.time.LocalDateTime;
 import java.util.*;
@@ -22,13 +21,13 @@ public class EnquiriesManager implements EnquiryAction {
                 continue;
             } //if param length too short, skip
 
-            String text = items[3];
-            String reply = items[4];
-            int id = Integer.parseInt(key);
-            LocalDateTime timestamp = LocalDateTime.parse(items[2]);
-            String username = items[1];
             String projectID = items[0];
-            this.enquiriesList.add(new Enquiries(text, id, reply, timestamp, username, projectID));
+            String userId = items[1];
+            String text = items[2];
+            String reply = items[3];
+            LocalDateTime timestamp = LocalDateTime.parse(items[4]);
+
+            this.enquiriesList.add(new Enquiries(key, projectID, userId, text, reply, timestamp));
         }
     }
 
@@ -36,16 +35,16 @@ public class EnquiriesManager implements EnquiryAction {
         // run this when quitting program to store to csv
         Map<String,String[]> enq_map = new HashMap<>();
         for (Enquiries e : enquiriesList) {
-            String[] items = {e.getProjectID(),e.getUsername(), String.valueOf(e.getTimestamp()),e.getText(),e.getReply()};
+            String[] items = {e.getProjectID(),e.getUserId(),e.getText(),e.getReply(), String.valueOf(e.getTimestamp())};
             enq_map.put(String.valueOf(e.getId()),items);
         }
         ConfigLDR ldr = new ConfigLDR();
         ldr.saveCSV(path + "/enquiries.csv",enq_map);
     }
 
-    public Enquiries getEnquiry(int id) {
+    public Enquiries getEnquiry(String id) {
         for (Enquiries e : enquiriesList) {
-            if (e.getId() == id) {
+            if (Objects.equals(e.getId(), id)) {
                 return e;
             }
         }
@@ -55,8 +54,8 @@ public class EnquiriesManager implements EnquiryAction {
     private int generateNewEnquiryId() {
         int maxId = 0;
         for (Enquiries e : enquiriesList) {
-            if (e.getId() > maxId) {
-                maxId = e.getId();
+            if (Integer.parseInt(e.getId()) > maxId) {
+                maxId = Integer.parseInt(e.getId());
             }
         }
         return maxId + 1;
@@ -66,39 +65,39 @@ public class EnquiriesManager implements EnquiryAction {
     public String[] submitEnquiry(user usr, String text, String projectID) {
         String[] result = {"", "", "", ""};
 
-        if(text == null || text.equals("")) {
+        if(text == null || text.isEmpty()) {
             System.out.println("Text is empty");
             result[0] = "ERROR: Text is empty";
             return result;
         }
 
-        if(usr == null || usr.getUsername().equals("")) {
+        if(usr == null || usr.getUsername().isEmpty()) {
             System.out.println("Username is empty");
             result[0] = "ERROR: Username is empty";
             return result;
         }
 
-        if(projectID == null || projectID.equals("")) {
+        if(projectID == null || projectID.isEmpty()) {
             System.out.println("Project ID is empty");
             result[0] = "ERROR: Project ID is empty";
             return result;
         }
 
-        int newID = generateNewEnquiryId();
+        String newID = String.valueOf(generateNewEnquiryId());
         Enquiries newEnquiry = new Enquiries(
-                text,
                 newID,
+                projectID,
+                usr.getUserID(),
+                text,
                 "",
-                LocalDateTime.now(),
-                usr.getUsername(),
-                projectID
+                LocalDateTime.now()
         );
 
         // Add to the enquiries list
         enquiriesList.add(newEnquiry);
 
         System.out.println("Enquiry successfully submitted with ID: " + newID);
-        result[0] = String.valueOf(newID);
+        result[0] = newID;
         result[1] = text;
         result[2] = usr.getUsername();
         result[3] = projectID;
@@ -118,11 +117,10 @@ public class EnquiriesManager implements EnquiryAction {
 //    }
 
     @Override
-    public String[] deleteEnquiries(user usr, String enquiryIdStr) {
+    public String[] deleteEnquiries(user usr, String enquiryId) {
         String[] result = {"", "", "", ""};
 
         try {
-            int enquiryId = Integer.parseInt(enquiryIdStr);
             Enquiries enquiry = getEnquiry(enquiryId);
 
             if(enquiry == null) {
@@ -131,7 +129,7 @@ public class EnquiriesManager implements EnquiryAction {
                 return result;
             }
 
-            if(enquiry.getUsername().equals(usr.getUsername()) || usr.isHDBManager() || usr.isHDBOfficer()) {
+            if(enquiry.getUserId().equals(usr.getUsername()) || usr.isHDBManager() || usr.isHDBOfficer()) {
                 enquiriesList.remove(enquiry);
                 result[0] = "SUCCESS";
                 result[1] = "Enquiry " + enquiryId + " deleted successfully";
@@ -149,11 +147,10 @@ public class EnquiriesManager implements EnquiryAction {
     }
 
     @Override
-    public String[] editEnquiries(user usr, String newText, String enquiryIdStr) {
+    public String[] editEnquiries(user usr, String newText, String enquiryId) {
         String[] result = {"", "", "", ""};
 
         try {
-            int enquiryId = Integer.parseInt(enquiryIdStr);
             Enquiries enquiry = getEnquiry(enquiryId);
 
             if(enquiry == null) {
@@ -162,7 +159,7 @@ public class EnquiriesManager implements EnquiryAction {
                 return result;
             }
 
-            if(enquiry.getUsername().equals(usr.getUsername()) || usr.isHDBManager() || usr.isHDBOfficer()) {
+            if(enquiry.getUserId().equals(usr.getUsername()) || usr.isHDBManager() || usr.isHDBOfficer()) {
                 enquiry.setText(newText);
                 result[0] = "SUCCESS";
                 result[1] = newText;
@@ -187,11 +184,10 @@ public class EnquiriesManager implements EnquiryAction {
 //    }
 
     @Override
-    public String[] replyEnquiries(user usr, String reply, String enquiryIdStr) {
+    public String[] replyEnquiries(user usr, String reply, String enquiryId) {
         String[] result = {"", "", "", ""};
 
         try {
-            int enquiryId = Integer.parseInt(enquiryIdStr);
             Enquiries enquiry = getEnquiry(enquiryId);
 
             if(enquiry == null) {
@@ -261,7 +257,7 @@ public class EnquiriesManager implements EnquiryAction {
         List<String> enquiryIds = new ArrayList<>();
 
         for (Enquiries e : enquiriesList) {
-            if (e.getUsername().equals(usr.getUsername()) &&
+            if (e.getUserId().equals(usr.getUsername()) &&
                     (projectID.isEmpty() || e.getProjectID().equals(projectID))) {
                 enquiryIds.add(String.valueOf(e.getId()));
             }

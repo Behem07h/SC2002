@@ -2,6 +2,9 @@ package org.action.enquiry;
 
 import org.UI.ConfigLDR;
 import org.Users.*;
+import org.Users.HDBManager.HDBManager;
+import org.Users.HDBOfficer.HDBOfficer;
+
 import java.time.LocalDateTime;
 import java.util.*;
 
@@ -71,9 +74,9 @@ public class EnquiriesManager implements EnquiryAction {
             return result;
         }
 
-        if(usr == null || usr.getUsername().isEmpty()) {
-            System.out.println("Username is empty");
-            result[0] = "ERROR: Username is empty";
+        if(usr == null || usr.getUserID().isEmpty()) {
+            System.out.println("UserID is empty");
+            result[0] = "ERROR: UserID is empty";
             return result;
         }
 
@@ -99,7 +102,7 @@ public class EnquiriesManager implements EnquiryAction {
         System.out.println("Enquiry successfully submitted with ID: " + newID);
         result[0] = newID;
         result[1] = text;
-        result[2] = usr.getUsername();
+        result[2] = usr.getUserID();
         result[3] = projectID;
         return result;
     }
@@ -129,7 +132,7 @@ public class EnquiriesManager implements EnquiryAction {
                 return result;
             }
 
-            if(enquiry.getUserId().equals(usr.getUsername()) || usr.isHDBManager() || usr.isHDBOfficer()) {
+            if(enquiry.getUserId().equals(usr.getUserID()) || usr instanceof HDBManager || usr instanceof HDBOfficer) {
                 enquiriesList.remove(enquiry);
                 result[0] = "SUCCESS";
                 result[1] = "Enquiry " + enquiryId + " deleted successfully";
@@ -159,7 +162,7 @@ public class EnquiriesManager implements EnquiryAction {
                 return result;
             }
 
-            if(enquiry.getUserId().equals(usr.getUsername()) || usr.isHDBManager() || usr.isHDBOfficer()) {
+            if(enquiry.getUserId().equals(usr.getUserID()) || usr instanceof HDBManager || usr instanceof HDBOfficer) {
                 enquiry.setText(newText);
                 result[0] = "SUCCESS";
                 result[1] = newText;
@@ -196,18 +199,18 @@ public class EnquiriesManager implements EnquiryAction {
                 return result;
             }
 
-            if(usr.isHDBManager() || usr.isHDBOfficer()) {
+            if(usr instanceof HDBManager || usr instanceof HDBOfficer) {
                 enquiry.setReply(reply);
                 result[0] = "SUCCESS";
                 result[1] = reply;
                 result[2] = String.valueOf(enquiryId);
                 result[3] = enquiry.getText();
-                return result;
             } else {
                 System.out.println("You are not authorized to reply to enquiries");
                 result[0] = "ERROR: Unauthorized to reply to enquiries";
-                return result;
             }
+            return result;
+
         } catch (NumberFormatException e) {
             System.out.println("Invalid enquiry ID format");
             result[0] = "ERROR: Invalid enquiry ID format";
@@ -257,7 +260,7 @@ public class EnquiriesManager implements EnquiryAction {
         List<String> enquiryIds = new ArrayList<>();
 
         for (Enquiries e : enquiriesList) {
-            if (e.getUserId().equals(usr.getUsername()) &&
+            if (e.getUserId().equals(usr.getUserID()) &&
                     (projectID.isEmpty() || e.getProjectID().equals(projectID))) {
                 enquiryIds.add(String.valueOf(e.getId()));
             }

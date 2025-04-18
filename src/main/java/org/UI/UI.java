@@ -48,8 +48,7 @@ class ui_main {
 
     public void load_ui() {
         while (true) {
-        	String ui_text = ui_map.get(ui_idx).replace("\\n"
-                    ,"\n"); //get the current ui text
+        	String ui_text = ui_map.get(ui_idx).replace("\\n","\n"); //get the current ui text
 
         	for (int i = 0; i < ctx.length; i++) {
         		ui_text = ui_text.replace(String.format("{%s[%d]}", ctx_idx, i), ctx[i]); //handle contextual text replacement

@@ -2,6 +2,8 @@ package org.Users.HDBOfficer;
 
 import org.Users.user;
 
+import java.util.Scanner;
+
 public class HDBOfficer implements user {
     private String userID;
     private String username;
@@ -78,6 +80,11 @@ public class HDBOfficer implements user {
             return true;
         }
         return false;
+    }
+
+    @Override
+    public String[] act(String action, Scanner sc) {
+        return new String[0];
     }
 
     // Enum for Permission Levels

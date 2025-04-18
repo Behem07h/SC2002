@@ -15,8 +15,7 @@ public interface EnquiryAction {
     String[] submitEnquiry(user usr, String text, String projectID);
     String[] deleteEnquiries(user usr, String enquiryIdStr);
     String[] editEnquiries(user usr, String newText, String enquiryIdStr);
-//    void editEnquiries();
     String[] replyEnquiries(user usr, String reply, String enquiryIdStr);
-    void replyEnquiries();
+//    void replyEnquiries();
 }
 

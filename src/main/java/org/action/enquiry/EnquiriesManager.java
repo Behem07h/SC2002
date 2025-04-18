@@ -1,7 +1,8 @@
 package org.action.enquiry;
 
 import org.UI.ConfigLDR;
-import org.Users.user;
+import org.action.*;
+import org.Users.*;
 import java.time.LocalDateTime;
 import java.util.*;
 
@@ -42,7 +43,6 @@ public class EnquiriesManager implements EnquiryAction {
         ldr.saveCSV(path + "/enquiries.csv",enq_map);
     }
 
-
     public Enquiries getEnquiry(int id) {
         for (Enquiries e : enquiriesList) {
             if (e.getId() == id) {
@@ -62,7 +62,7 @@ public class EnquiriesManager implements EnquiryAction {
         return maxId + 1;
     }
 
-    @Override
+    // Modified to match Context class expectations
     public String[] submitEnquiry(user usr, String text, String projectID) {
         String[] result = {"", "", "", ""};
 
@@ -104,7 +104,7 @@ public class EnquiriesManager implements EnquiryAction {
         result[3] = projectID;
         return result;
     }
-
+//
 //    @Override
 //    public void submitEnquiries() {
 //        // Interface implementation - used as placeholder
@@ -116,6 +116,7 @@ public class EnquiriesManager implements EnquiryAction {
 //        // Interface implementation - used as placeholder
 //        System.out.println("Default delete enquiries method called");
 //    }
+
     @Override
     public String[] deleteEnquiries(user usr, String enquiryIdStr) {
         String[] result = {"", "", "", ""};
@@ -146,6 +147,7 @@ public class EnquiriesManager implements EnquiryAction {
             return result;
         }
     }
+
     @Override
     public String[] editEnquiries(user usr, String newText, String enquiryIdStr) {
         String[] result = {"", "", "", ""};
@@ -177,14 +179,15 @@ public class EnquiriesManager implements EnquiryAction {
             return result;
         }
     }
-//
+
 //    @Override
 //    public void editEnquiries() {
 //        // Interface implementation - used as placeholder
 //        System.out.println("Default edit enquiries method called");
 //    }
-@Override
-public String[] replyEnquiries(user usr, String reply, String enquiryIdStr) {
+
+    @Override
+    public String[] replyEnquiries(user usr, String reply, String enquiryIdStr) {
         String[] result = {"", "", "", ""};
 
         try {
@@ -216,11 +219,11 @@ public String[] replyEnquiries(user usr, String reply, String enquiryIdStr) {
         }
     }
 
-    @Override
-    public void replyEnquiries() {
-        // Interface implementation - used as placeholder
-        System.out.println("Default reply enquiries method called");
-    }
+//    @Override
+//    public void replyEnquiries() {
+//        // Interface implementation - used as placeholder
+//        System.out.println("Default reply enquiries method called");
+//    }
 
     public void processEnquiries(){
         int pending = 0;
@@ -254,7 +257,6 @@ public String[] replyEnquiries(user usr, String reply, String enquiryIdStr) {
         System.out.println("Enquiries answered:" + answered);
     }
 
-    // Added to get all enquiries for a user and project
     public String[] getUserEnquiries(user usr, String projectID) {
         List<String> enquiryIds = new ArrayList<>();
 

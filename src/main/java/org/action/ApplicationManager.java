@@ -2,7 +2,7 @@ package org.action;
 
 import org.UI.ConfigLDR;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -11,13 +11,14 @@ import java.util.Map;
 public class ApplicationManager {
     private List<Application> applicationList;
     private final String path = "data/db";
+    private final String filename =  "/applications.csv";
 
     public ApplicationManager() {
         //load applications from csv
         this.applicationList = new ArrayList<Application>();
 
         ConfigLDR ldr = new ConfigLDR();
-        Map<String,String[]> appl_map = ldr.ReadToArrMap(path + "/applications.csv");
+        Map<String,String[]> appl_map = ldr.ReadToArrMap(path + filename);
         for (String key : appl_map.keySet()) {
             String[] items = appl_map.get(key);
             if (items.length < 5) {
@@ -28,13 +29,13 @@ public class ApplicationManager {
             String projectID = items[0];
             String applicantId = items[1];
             Application.ApplicationStatus status = Application.ApplicationStatus.valueOf(items[2]);
-            LocalDateTime openingDate = LocalDateTime.parse(items[3]);
-            LocalDateTime closingDate = LocalDateTime.parse(items[4]);
+            LocalDate openingDate = LocalDate.parse(items[3]);
+            LocalDate closingDate = LocalDate.parse(items[4]);
             this.applicationList.add(new Application(key,applicantId,projectID,status, openingDate,closingDate));
         }
     }
 
-    public void storeApplications() {
+    public void store() {
         // run this when quitting program to store to csv
         Map<String,String[]> appl_map = new HashMap<>();
         for (Application a : applicationList) {
@@ -42,7 +43,7 @@ public class ApplicationManager {
             appl_map.put(String.valueOf(a.getApplicantId()),items);
         }
         ConfigLDR ldr = new ConfigLDR();
-        ldr.saveCSV(path + "/applications.csv",appl_map);
+        ldr.saveCSV(path + filename,appl_map);
     }
 
 
@@ -98,7 +99,7 @@ public class ApplicationManager {
         if (app != null) {
             app.setApplicationStatus(newStatus);
             if (newStatus == Application.ApplicationStatus.SUCCESSFUL || newStatus == Application.ApplicationStatus.UNSUCCESSFUL) {
-                app.setClosingDate(java.time.LocalDateTime.now());
+                app.setClosingDate(java.time.LocalDate.now());
             }
             System.out.println("Status updated to: " + newStatus);
         }

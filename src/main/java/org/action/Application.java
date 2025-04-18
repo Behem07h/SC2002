@@ -1,7 +1,7 @@
 // src/org/action/Application.java
 package org.action;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 /**
  * A single application with full submit/approve/reject/withdrawal workflow.
@@ -11,8 +11,8 @@ public class Application implements Act {
     private final String applicantId;
     private final String projectId;
     private ApplicationStatus status;
-    private LocalDateTime submissionDate;
-    private LocalDateTime closingDate;
+    private LocalDate submissionDate;
+    private LocalDate closingDate;
     private boolean withdrawn = false;
     private final WithdrawalRequest withdrawalRequest;
 
@@ -29,23 +29,23 @@ public class Application implements Act {
         String applicantId,
         String projectId,
         ApplicationStatus status,
-        LocalDateTime openingDate,
-        LocalDateTime closingDate
+        LocalDate openingDate,
+        LocalDate closingDate
     ) {
         this.applicationId     = applicationId;
         this.applicantId       = applicantId;
         this.projectId         = projectId;
         this.status            = status;
-        this.submissionDate = openingDate;
+        this.submissionDate    = openingDate;
         this.closingDate       = closingDate;
         this.withdrawalRequest = new WithdrawalRequest(applicationId);
     }
 
     @Override
-    public void view() {
+    public String view() {
         if (withdrawn) {
             System.out.println("This application has been withdrawn; details hidden.");
-            return;
+            return "";
         }
         System.out.println("Application ID: " + applicationId);
         System.out.println("Applicant ID:   " + applicantId);
@@ -53,13 +53,13 @@ public class Application implements Act {
         System.out.println("Status:         " + status);
         System.out.println("Opening Date:   " + (submissionDate != null ? submissionDate : "Not set"));
         System.out.println("Closing Date:   " + (closingDate  != null ? closingDate  : "Not set"));
+        return "";
     }
 
-    @Override
     public void submit() {
         if (status == ApplicationStatus.PENDING) {
             status      = ApplicationStatus.BOOKED;
-            submissionDate = LocalDateTime.now();
+            submissionDate = LocalDate.now();
             System.out.println("Application " + applicationId + " booked on " + submissionDate);
         } else {
             System.out.println("Cannot submit: status is " + status);
@@ -69,7 +69,7 @@ public class Application implements Act {
     public void approveApplication() {
         if (status == ApplicationStatus.BOOKED) {
             status      = ApplicationStatus.SUCCESSFUL;
-            closingDate = LocalDateTime.now();
+            closingDate = LocalDate.now();
             System.out.println("Application " + applicationId + " approved on " + closingDate);
         } else {
             System.out.println("Cannot approve: status is " + status);
@@ -79,7 +79,7 @@ public class Application implements Act {
     public void rejectApplication() {
         if (status == ApplicationStatus.BOOKED) {
             status      = ApplicationStatus.UNSUCCESSFUL;
-            closingDate = LocalDateTime.now();
+            closingDate = LocalDate.now();
             System.out.println("Application " + applicationId + " rejected on " + closingDate);
         } else {
             System.out.println("Cannot reject: status is " + status);
@@ -102,7 +102,7 @@ public class Application implements Act {
 
             withdrawn   = true;
             status      = ApplicationStatus.WITHDRAWN;
-            closingDate = LocalDateTime.now();
+            closingDate = LocalDate.now();
             System.out.println("Application " + applicationId +
                                " withdrawn successfully on " + closingDate);
         } else {
@@ -130,11 +130,11 @@ public class Application implements Act {
     return applicantId;
     }
 
-    public LocalDateTime getClosingDate() {
+    public LocalDate getClosingDate() {
         return closingDate;
     }
 
-    public LocalDateTime getSubmissionDate() {
+    public LocalDate getSubmissionDate() {
         return submissionDate;
     }
 
@@ -144,7 +144,7 @@ public class Application implements Act {
     }
 
 /** Updates the closing date. */
-    public void setClosingDate(LocalDateTime now) {
+    public void setClosingDate(LocalDate now) {
     this.closingDate = now;
     }
 

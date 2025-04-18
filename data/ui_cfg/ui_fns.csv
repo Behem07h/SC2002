@@ -1,6 +1,7 @@
 MENU_NAME           , FN_NAME[1], FN_NAME[2]...,
-Project_List        , Project_Details,View_Application,
-Project_Details     , List_Projects,List_Enquiries,Send_Application,
-Project_Enquiries   , Project_Details,Submit_Enquiry,View_Enquiry,
-Enquiry_View        , List_Enquiries,Edit_Enquiry,Delete_Enquiry,
-Application_View    , List_Projects,Withdraw_Application,Submit_Booking
+DEFAULT             , view-all-projects,
+Project_List        , view-project,View_Application,
+Project_Details     , view-all-projects,List_Enquiries,Send_Application,
+Project_Enquiries   , view-project,submit-enquiry,View_Enquiry,
+Enquiry_View        , List_Enquiries,edit-enquiry,delete-enquiry,
+Application_View    , view-all-projects,Withdraw_Application,Submit_Booking

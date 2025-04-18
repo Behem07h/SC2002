@@ -1,4 +1,5 @@
 MENU_NAME           , CONNECTED_MENU[1], CONNECTED_MENU[2]...,
+DEFAULT             , Project_List,
 Project_List        , Project_Details,Application_View,
 Project_Details     , Project_List,Project_Enquiries,NIL,
 Project_Enquiries   , Project_Details,NIL,

@@ -1,6 +1,7 @@
 package org.UI;
 import org.Users.user;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
 
@@ -15,6 +16,7 @@ public class UI {
     }
     public void load_ui() {
         this.ui.load_ui();
+        System.out.println("test");
     }
 }
 
@@ -27,7 +29,7 @@ class ui_main {
     Map<String,String[]> next_ui_map;   //ui menu connections
 
     Context context;
-    String[] ctx;
+    List<String> ctx;
     String ctx_idx; //fn that the ctx was returned from
     String ui_idx; //the name of the ui menu
     Scanner sc;
@@ -41,21 +43,22 @@ class ui_main {
         this.sc = sc;
 
     	this.context = new Context(currentUser);
-    	ctx = context.act("Project_List",this.sc); //UI context starts on the projects list screen
-        ctx_idx = "Project_List";
-        ui_idx = "Project_List"; //defaults can be loaded from file
+        ctx_idx = fn_map.get("DEFAULT")[0];
+        ctx = context.act(ctx_idx,this.sc); //UI context starts on the projects list screen
+        ui_idx = next_ui_map.get("DEFAULT")[0]; //defaults can be loaded from file
     }
 
     public void load_ui() {
         while (true) {
         	String ui_text = ui_map.get(ui_idx).replace("\\n","\n"); //get the current ui text
 
-        	for (int i = 0; i < ctx.length; i++) {
-        		ui_text = ui_text.replace(String.format("{%s[%d]}", ctx_idx, i), ctx[i]); //handle contextual text replacement
+        	for (int i = 0; i < ctx.size(); i++) {
+        		ui_text = ui_text.replace(String.format("{%s[%d]}", ctx_idx, i), ctx.get(i)); //handle contextual text replacement
         	}
             System.out.println(ui_text); //display the ui
             
             int usr_in = sc.nextInt(); //get user input as int
+            sc.nextLine(); //clear buffer of newline
 
             if ((usr_in-1 < next_ui_map.get(ui_idx).length) && (usr_in > 0)) { //convert input to zero index & verify
             	String next_alias = next_ui_map.get(ui_idx)[usr_in - 1]; //get the next menu

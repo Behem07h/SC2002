@@ -41,7 +41,12 @@ public class ConfigLDR{
                     continue;
                 }
                 String[] tmp = Arrays.copyOfRange(details, 1, details.length);
-                tmp[0] = tmp[0].trim();
+                for (int i = 0; i < tmp.length; i++) {
+                    tmp[i] = tmp[i].trim();
+                    //if (Objects.equals(tmp[i], "None")) {
+                    //    tmp[i] = "";
+                    //}
+                }
                 System.out.println(Arrays.toString(tmp));
                 cfg.put(details[0].trim(), tmp);
             }
@@ -55,11 +60,20 @@ public class ConfigLDR{
     }
 
     public void saveCSV(String filename, Map<String, String[]> map) {
+        String headerLine = "";
+        try (BufferedReader br = new BufferedReader(new FileReader(filename))) {
+            headerLine = br.readLine();
+            headerLine = headerLine + "\n";
+        } catch (IOException e) {
+            System.out.println("Error loading file header: " + filename + ": " + e.getMessage());
+        }
+
         StringBuilder line = new StringBuilder();
         for (String key : map.keySet()) {
             line.append(key).append("   ,").append(arr2str(map.get(key))).append(",\n");
         }
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(filename, false))) {
+            writer.append(headerLine);
             writer.append(line.toString());
         } catch (
                 IOException e) {
@@ -67,7 +81,12 @@ public class ConfigLDR{
         }
     }
 
-    public String arr2str(String[] data) {
-        return String.join(",", data);
+        public String arr2str(String[] data) {
+        //for (int i = 0; i < data.length; i++) {
+        //    if (data[i].isEmpty()) {
+        //        data[i] = "None";
+        //    }
+        //}
+        return String.join(", ", data);
     }
 }

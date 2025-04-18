@@ -11,12 +11,13 @@ import java.util.*;
 public class EnquiriesManager implements EnquiryAction {
     private List<Enquiries> enquiriesList;
     private final String path = "data/db";
+    private final String filename = "/enquiries.csv";
     public EnquiriesManager() {
         //load enquiries from csv
         this.enquiriesList = new ArrayList<Enquiries>();
 
         ConfigLDR ldr = new ConfigLDR();
-        Map<String,String[]> enq_map = ldr.ReadToArrMap(path + "/enquiries.csv");
+        Map<String,String[]> enq_map = ldr.ReadToArrMap(path + filename);
         for (String key : enq_map.keySet()) {
             String[] items = enq_map.get(key);
             if (items.length < 5) {
@@ -34,7 +35,7 @@ public class EnquiriesManager implements EnquiryAction {
         }
     }
 
-    public void storeEnquiries() {
+    public void store() {
         // run this when quitting program to store to csv
         Map<String,String[]> enq_map = new HashMap<>();
         for (Enquiries e : enquiriesList) {
@@ -42,7 +43,7 @@ public class EnquiriesManager implements EnquiryAction {
             enq_map.put(String.valueOf(e.getId()),items);
         }
         ConfigLDR ldr = new ConfigLDR();
-        ldr.saveCSV(path + "/enquiries.csv",enq_map);
+        ldr.saveCSV(path + filename,enq_map);
     }
 
     public Enquiries getEnquiry(String id) {
@@ -65,24 +66,24 @@ public class EnquiriesManager implements EnquiryAction {
     }
 
     // Modified to match Context class expectations
-    public String[] submitEnquiry(user usr, String text, String projectID) {
-        String[] result = {"", "", "", ""};
+    public List<String> submitEnquiry(user usr, String text, String projectID) {
+        List<String> result = new ArrayList<>();
 
         if(text == null || text.isEmpty()) {
             System.out.println("Text is empty");
-            result[0] = "ERROR: Text is empty";
+            result.set(0, "ERROR: Text is empty");
             return result;
         }
 
         if(usr == null || usr.getUserID().isEmpty()) {
             System.out.println("UserID is empty");
-            result[0] = "ERROR: UserID is empty";
+            result.set(0, "ERROR: UserID is empty");
             return result;
         }
 
         if(projectID == null || projectID.isEmpty()) {
             System.out.println("Project ID is empty");
-            result[0] = "ERROR: Project ID is empty";
+            result.set(0, "ERROR: Project ID is empty");
             return result;
         }
 
@@ -100,10 +101,10 @@ public class EnquiriesManager implements EnquiryAction {
         enquiriesList.add(newEnquiry);
 
         System.out.println("Enquiry successfully submitted with ID: " + newID);
-        result[0] = newID;
-        result[1] = text;
-        result[2] = usr.getUserID();
-        result[3] = projectID;
+        result.set(0, newID);
+        result.set(1, text);
+        result.set(2, usr.getUserID());
+        result.set(3, projectID);
         return result;
     }
 //
@@ -120,62 +121,62 @@ public class EnquiriesManager implements EnquiryAction {
 //    }
 
     @Override
-    public String[] deleteEnquiries(user usr, String enquiryId) {
-        String[] result = {"", "", "", ""};
+    public List<String> deleteEnquiries(user usr, String enquiryId) {
+        List<String> result = new ArrayList<>();
 
         try {
             Enquiries enquiry = getEnquiry(enquiryId);
 
             if(enquiry == null) {
                 System.out.println("Enquiry not found");
-                result[0] = "ERROR: Enquiry not found";
+                result.set(0, "ERROR: Enquiry not found");
                 return result;
             }
 
             if(enquiry.getUserId().equals(usr.getUserID()) || usr instanceof HDBManager || usr instanceof HDBOfficer) {
                 enquiriesList.remove(enquiry);
-                result[0] = "SUCCESS";
-                result[1] = "Enquiry " + enquiryId + " deleted successfully";
+                result.set(0, "SUCCESS");
+                result.set(1, "Enquiry " + enquiryId + " deleted successfully");
                 return result;
             } else {
                 System.out.println("You are not allowed to delete this enquiry");
-                result[0] = "ERROR: Unauthorized to delete enquiry";
+                result.set(0, "ERROR: Unauthorized to delete enquiry");
                 return result;
             }
         } catch (NumberFormatException e) {
             System.out.println("Invalid enquiry ID format");
-            result[0] = "ERROR: Invalid enquiry ID format";
+            result.set(0, "ERROR: Invalid enquiry ID format");
             return result;
         }
     }
 
     @Override
-    public String[] editEnquiries(user usr, String newText, String enquiryId) {
-        String[] result = {"", "", "", ""};
+    public List<String> editEnquiries(user usr, String newText, String enquiryId) {
+        List<String> result = new ArrayList<>();
 
         try {
             Enquiries enquiry = getEnquiry(enquiryId);
 
             if(enquiry == null) {
                 System.out.println("Enquiry not found");
-                result[0] = "ERROR: Enquiry not found";
+                result.set(0, "ERROR: Enquiry not found");
                 return result;
             }
 
             if(enquiry.getUserId().equals(usr.getUserID()) || usr instanceof HDBManager || usr instanceof HDBOfficer) {
                 enquiry.setText(newText);
-                result[0] = "SUCCESS";
-                result[1] = newText;
-                result[2] = String.valueOf(enquiryId);
+                result.set(0, "SUCCESS");
+                result.set(1, newText);
+                result.set(2, String.valueOf(enquiryId));
                 return result;
             } else {
                 System.out.println("You are not allowed to edit this enquiry");
-                result[0] = "ERROR: Unauthorized to edit enquiry";
+                result.set(0, "ERROR: Unauthorized to edit enquiry");
                 return result;
             }
         } catch (NumberFormatException e) {
             System.out.println("Invalid enquiry ID format");
-            result[0] = "ERROR: Invalid enquiry ID format";
+            result.set(0, "ERROR: Invalid enquiry ID format");
             return result;
         }
     }
@@ -187,33 +188,33 @@ public class EnquiriesManager implements EnquiryAction {
 //    }
 
     @Override
-    public String[] replyEnquiries(user usr, String reply, String enquiryId) {
-        String[] result = {"", "", "", ""};
+    public List<String> replyEnquiries(user usr, String reply, String enquiryId) {
+        List<String> result = new ArrayList<>();
 
         try {
             Enquiries enquiry = getEnquiry(enquiryId);
 
             if(enquiry == null) {
                 System.out.println("Enquiry not found");
-                result[0] = "ERROR: Enquiry not found";
+                result.set(0, "ERROR: Enquiry not found");
                 return result;
             }
 
             if(usr instanceof HDBManager || usr instanceof HDBOfficer) {
                 enquiry.setReply(reply);
-                result[0] = "SUCCESS";
-                result[1] = reply;
-                result[2] = String.valueOf(enquiryId);
-                result[3] = enquiry.getText();
+                result.set(0, "SUCCESS");
+                result.set(1, reply);
+                result.set(2, String.valueOf(enquiryId));
+                result.set(3, enquiry.getText());
             } else {
                 System.out.println("You are not authorized to reply to enquiries");
-                result[0] = "ERROR: Unauthorized to reply to enquiries";
+                result.set(0, "ERROR: Unauthorized to reply to enquiries");
             }
             return result;
 
         } catch (NumberFormatException e) {
             System.out.println("Invalid enquiry ID format");
-            result[0] = "ERROR: Invalid enquiry ID format";
+            result.set(0, "ERROR: Invalid enquiry ID format");
             return result;
         }
     }
@@ -256,7 +257,7 @@ public class EnquiriesManager implements EnquiryAction {
         System.out.println("Enquiries answered:" + answered);
     }
 
-    public String[] getUserEnquiries(user usr, String projectID) {
+    public List<String> getUserEnquiries(user usr, String projectID) {
         List<String> enquiryIds = new ArrayList<>();
 
         for (Enquiries e : enquiriesList) {
@@ -266,6 +267,6 @@ public class EnquiriesManager implements EnquiryAction {
             }
         }
 
-        return enquiryIds.toArray(new String[0]);
+        return enquiryIds;
     }
 }

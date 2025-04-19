@@ -114,9 +114,9 @@ public class ProjectManager {
             System.out.println("No perms to alter project visibility");
         }
     }
-    private List<Project> searchFilter(user usr, String name, String nameExact, String neighbourhood, String flat) {
+    private List<Project> searchFilter(user usr, String name, String nameExact, String neighbourhood, String flat, boolean visChk) {
         List<Project> out = new ArrayList<>();
-        boolean visible_check = true; //default to true so new roles default to minimum perms
+        boolean visible_check = visChk; //default to true so new roles default to minimum perms
         boolean date_check = true;
         if (usr instanceof HDBOfficer || usr instanceof HDBManager) {
             visible_check = false;
@@ -135,7 +135,7 @@ public class ProjectManager {
         List<Project> filteredProjects;
         List<String> out = new ArrayList<>(List.of(""));
         if (flatType.contains(getUserValidFlatTypes(usr))) {
-            filteredProjects = searchFilter(usr,"","","", flatType);
+            filteredProjects = searchFilter(usr,"","","", flatType,true);
             for (Project p : filteredProjects) {
                 out.set(0, out.get(0) + "\n" + p.view(getUserValidFlatTypes(usr)));
             }
@@ -146,7 +146,7 @@ public class ProjectManager {
     public List<String> filterNeighbourhood(user usr, String neighbourhood) {
         List<Project> filteredProjects;
         List<String> out = new ArrayList<>(List.of(""));
-        filteredProjects = searchFilter(usr,"","",neighbourhood,getUserValidFlatTypes(usr));
+        filteredProjects = searchFilter(usr,"","",neighbourhood,getUserValidFlatTypes(usr),true);
         for (Project p : filteredProjects) {
             out.set(0, out.get(0) + "\n" + p.view(getUserValidFlatTypes(usr)));
         }
@@ -155,17 +155,21 @@ public class ProjectManager {
     public List<String> searchName(user usr, String name) {
         List<Project> filteredProjects;
         List<String> out = new ArrayList<>(List.of(""));
-        filteredProjects = searchFilter(usr, name,"","",getUserValidFlatTypes(usr));
+        filteredProjects = searchFilter(usr, name,"","",getUserValidFlatTypes(usr),true);
         for (Project p : filteredProjects) {
             out.set(0, out.get(0) + "\n" + p.view(getUserValidFlatTypes(usr)));
         }
         return out;
     }
-
-    public List<String> getProjectByName(user usr, String projectName, EnquiriesManager enqMan) {
+    public int projectExists(user usr, String projectName, boolean visChk) {
+        List<Project> filteredProjects;
+        filteredProjects = searchFilter(usr,"",projectName,"", getUserValidFlatTypes(usr), visChk);
+        return filteredProjects.size();
+    }
+    public List<String> getProjectByName(user usr, String projectName, EnquiriesManager enqMan, boolean visChk) {
         List<Project> filteredProjects;
         List<String> out = new ArrayList<>(List.of(""));
-        filteredProjects = searchFilter(usr,"",projectName,"",getUserValidFlatTypes(usr));
+        filteredProjects = searchFilter(usr,"",projectName,"", getUserValidFlatTypes(usr), visChk);
         for (Project p : filteredProjects) {
             out.set(0, out.get(0) + "\n" + p.viewFull(usr, getUserValidFlatTypes(usr), enqMan));
         }
@@ -182,6 +186,18 @@ public class ProjectManager {
             }
         }
         return "NONE"; //if you fall outside those ranges, you cannot see anything according to SG law
+    }
+    public List<String> userFlatOptions(user usr) {
+        if (usr instanceof HDBOfficer || usr instanceof HDBManager) {
+            return List.of("2-Room","3-Room");
+        } else {
+            if (Objects.equals(usr.getMaritalStatus(), "Single") && usr.getAge() >= 35) {
+                return List.of("2-Room");
+            } else if (Objects.equals(usr.getMaritalStatus(), "Married") && usr.getAge() >= 21) {
+                return List.of("2-Room","3-Room"); //returns any flat type
+            }
+        }
+        return List.of("NONE"); //if you fall outside those ranges, you cannot see anything according to SG law
     }
     public List<String> getProjectList(user usr) {
         //Singles, 35 years old and above, can ONLY apply for 2-Room

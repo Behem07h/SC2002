@@ -45,6 +45,11 @@ public class Enquiries {
     public String getProjectID() {
         return projectID;
     }
+
+    public String getUsername() {
+        return username;
+    }
+
     @Override
     public String toString() {
         String shortText;

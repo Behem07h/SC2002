@@ -21,7 +21,7 @@ public class EnquiriesManager implements EnquiryAction {
         Map<String,String[]> enq_map = ldr.ReadToArrMap(path + filename);
         for (String key : enq_map.keySet()) {
             String[] items = enq_map.get(key);
-            if (items.length < 5) {
+            if (items.length < 6) {
                 System.out.println("Enquiry ID " + key + " missing params");
                 continue;
             } //if param length too short, skip
@@ -41,7 +41,7 @@ public class EnquiriesManager implements EnquiryAction {
         // run this when quitting program to store to csv
         Map<String,String[]> enq_map = new HashMap<>();
         for (Enquiries e : enquiriesList) {
-            String[] items = {e.getProjectID(),e.getUserID(),e.getText(),e.getReply(), String.valueOf(e.getTimestamp())};
+            String[] items = {e.getProjectID(),e.getUserID(),e.getUsername(),e.getText(),e.getReply(), String.valueOf(e.getTimestamp())};
             enq_map.put(String.valueOf(e.getID()),items);
         }
         ConfigLDR ldr = new ConfigLDR();
@@ -172,7 +172,7 @@ public class EnquiriesManager implements EnquiryAction {
                 System.out.println("Enquiry not found");
                 result.set(0, "ERROR: Enquiry not found");
                 return result;
-            } else if(enquiry.getUserID().equals(usr.getUserID()) || usr instanceof HDBManager || usr instanceof HDBOfficer) {
+            } else if ((enquiry.getUserID().equals(usr.getUserID()) && (enquiry.getReply().isEmpty())) || usr instanceof HDBManager || usr instanceof HDBOfficer) {
                 enquiriesList.remove(enquiry);
                 result.set(0, "SUCCESS");
                 result.set(1, "Enquiry " + enquiryId + " deleted successfully");

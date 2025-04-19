@@ -14,7 +14,7 @@ public class Application implements Act {
     private ApplicationStatus status;
     private LocalDate submissionDate;
     private LocalDate closingDate;
-    private boolean withdrawn = false;
+    private final String flatType;
     private final WithdrawalRequest withdrawalRequest;
 
     public enum ApplicationStatus {
@@ -31,7 +31,8 @@ public class Application implements Act {
         String projectId,
         ApplicationStatus status,
         LocalDate openingDate,
-        LocalDate closingDate
+        LocalDate closingDate,
+        String flatType
     ) {
         this.applicationId     = applicationId;
         this.applicantId       = applicantId;
@@ -39,15 +40,16 @@ public class Application implements Act {
         this.status            = status;
         this.submissionDate    = openingDate;
         this.closingDate       = closingDate;
+        this.flatType          = flatType;
         this.withdrawalRequest = new WithdrawalRequest(applicationId);
     }
 
     @Override
     public String view() {
-        if (withdrawn) {
+        if (status == ApplicationStatus.WITHDRAWN) {
             return "Application is withdrawn, cannot view";
         }
-        return String.format("Application %s for Project %s\nApplicant: %s\nStatus: %s\nSubmitted on: %s%s", applicationId, projectId, applicantId, status, submissionDate, (closingDate  != null ? String.format("| Closed on: %s",closingDate)  : ""));
+        return String.format("Application %s | Project %s\nApplicant: %s\nStatus: %s\nSubmitted on: %s%s", applicationId, projectId, applicantId, status, submissionDate, (closingDate  != null ? String.format("| Closed on: %s",closingDate)  : ""));
     }
 
     public void submit() {
@@ -82,10 +84,10 @@ public class Application implements Act {
 
     /** Applicant requests withdrawal (only if BOOKED). */
     public void withdrawApplication() {
-        if (!withdrawn && status == ApplicationStatus.BOOKED) {
+        if (status == ApplicationStatus.BOOKED) {
             withdrawalRequest.request();
         } else {
-            System.out.println("Cannot request withdrawal: status=" + status + ", withdrawn=" + withdrawn);
+            System.out.println("Cannot request withdrawal: status=" + status);
         }
     }
 
@@ -94,7 +96,6 @@ public class Application implements Act {
         if (withdrawalRequest.getApprovalStatus()
             == WithdrawalRequest.OfficerApprovalStatus.APPROVED) {
 
-            withdrawn   = true;
             status      = ApplicationStatus.WITHDRAWN;
             closingDate = LocalDate.now();
             System.out.println("Application " + applicationId +
@@ -115,7 +116,7 @@ public class Application implements Act {
         }
     }
 
-    public boolean filter(String userId, String projectId, String applicationId) {
+    public boolean filter(String userId, String projectId, String applicationId, ApplicationStatus statusBlacklist) {
         boolean out = true;
         if (!userId.isEmpty()) {
             out = Objects.equals(this.applicantId, userId);
@@ -125,6 +126,9 @@ public class Application implements Act {
         }
         if (!applicationId.isEmpty()) {
             out = out && Objects.equals(this.applicationId, applicationId);
+        }
+        if (statusBlacklist != null) {
+            out = out && (this.status != statusBlacklist);
         }
         return out;
     }
@@ -144,6 +148,16 @@ public class Application implements Act {
 
     public LocalDate getSubmissionDate() {
         return submissionDate;
+    }
+
+    public String getApplicationId() {return applicationId;}
+
+    public String getFlatType() {
+        return flatType;
+    }
+
+    public ApplicationStatus getStatus() {
+        return status;
     }
 
     /** Updates the application’s status. */

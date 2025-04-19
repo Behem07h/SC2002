@@ -1,10 +1,7 @@
 package org.UI;
 
 import java.io.*;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 
 public class ConfigLDR{
     public HashMap<String, String> ReadToMap(String filename) {
@@ -34,7 +31,9 @@ public class ConfigLDR{
         HashMap<String, String[]> cfg = new HashMap<>();
         try (BufferedReader br = new BufferedReader(new FileReader(file))) {
             String line;
-            br.readLine(); // Skip header line
+            System.out.println(br.readLine()); // Skip header line
+
+
             while ((line = br.readLine()) != null) {
                 String[] details = line.split(",");
                 if (details.length < 2) { // key and item
@@ -44,6 +43,8 @@ public class ConfigLDR{
                 String[] tmp = Arrays.copyOfRange(details, 1, details.length);
                 for (int i = 0; i < tmp.length; i++) {
                     tmp[i] = tmp[i].trim();
+                    System.out.println(tmp[i]);
+
                     if (Objects.equals(tmp[i], "NONE")) {
                         tmp[i] = "";
                     }

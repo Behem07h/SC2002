@@ -102,17 +102,24 @@ public class Context {
             //application methods
             case "view-applications":
                 //user input project id to view applications for project, or none to view own application
-                System.out.println("Enter project ID to view applications (Blank to view own applications): ");
+                System.out.println("Enter project name to view applications (Blank to view own applications): ");
                 input.set(0, sc.nextLine());
                 if (!input.get(0).isEmpty()) {
                     output = appMan.listByProject(usr, input.get(0));
                 } else {
-                    output = appMan.listByUser(usr);
+                    output = appMan.listByUser(usr, enqMan, proMan);
                 }
                 return output;
             case "add-application":
-                //??
-                break;
+                if (currentViewedProjectID.isEmpty()) {
+                    System.out.println("Enter project name to apply for: ");
+                    currentViewedProjectID = sc.nextLine();
+                }
+                System.out.println("Enter chosen flat type: ");
+                input.set(0, strIn(sc, proMan.userFlatOptions(usr)));
+                appMan.newApplication(usr, currentViewedProjectID, input.get(0), proMan);
+                output = appMan.listByUser(usr, enqMan, proMan);
+                return output;
             case "retrieve-application":
                 System.out.println("Enter an application ID to view: ");
                 input.set(0, sc.nextLine());
@@ -157,9 +164,9 @@ public class Context {
                 } else {
                     input.set(0, currentViewedProjectID);
                 }
-                output = proMan.getProjectByName(usr, input.get(0), enqMan);
+                output = proMan.getProjectByName(usr, input.get(0), enqMan, true);
                 currentViewedProjectID = input.get(0);
-                if (output.isEmpty()) {
+                if (output.get(0).isEmpty()) {
                     output.add("No projects found");
                 }
                 return output;
@@ -172,20 +179,21 @@ public class Context {
                 currentViewedEnquiryID = "";
                 return output;
             case "filter-projects":
-                System.out.println("Filter by [flat type] or [neighbourhood]?");
-                input.set(0, sc.nextLine());
+                System.out.println("Filter: ");
+                input.set(0, strIn(sc, List.of("Flat","Neighbourhood")));
                 switch (input.get(0)) {
-                    case "flat type":
+                    case "Flat":
                         System.out.println("Enter flat type to filter by: ");
-                        input.set(0, sc.nextLine());
+                        input.set(0, strIn(sc, proMan.userFlatOptions(usr)));
                         output = proMan.filterFlat(usr, input.get(0));
                         break;
-                    case "neighbourhood":
+                    case "Neighbourhood":
                         System.out.println("Enter neighbourhood to filter by: ");
+                        input.set(0, sc.nextLine());
                         output = proMan.filterNeighbourhood(usr, input.get(0));
                         break;
                     default:
-                        output = new ArrayList<>(List.of(""));
+                        output = new ArrayList<>(List.of("Invalid filter"));
                 }
                 //input category, output projects by category
                 currentViewedProjectID = "";
@@ -213,7 +221,7 @@ public class Context {
                 //input project id, output success/failure and new projects list
                 System.out.println("Enter project ID to edit: ");
                 input.set(0, sc.nextLine());
-                if (!proMan.getProjectByName(usr, input.get(0), enqMan).isEmpty()) {
+                if (!proMan.getProjectByName(usr, input.get(0), enqMan, true).isEmpty()) {
                     System.out.println("Enter new project ID (Blank to skip): ");
                     input.set(1, sc.nextLine());
                     System.out.println("Enter new neighbourhood (Blank to skip): ");
@@ -247,7 +255,7 @@ public class Context {
                 return output;
             case "create-project":
                 //input project id, output success/failure and new projects list
-                if (!proMan.getProjectByName(usr, input.get(0), enqMan).isEmpty()) {
+                if (!proMan.getProjectByName(usr, input.get(0), enqMan, true).isEmpty()) {
                     System.out.println("Enter new project ID: ");
                     input.set(1, sc.nextLine());
                     System.out.println("Enter neighbourhood: ");

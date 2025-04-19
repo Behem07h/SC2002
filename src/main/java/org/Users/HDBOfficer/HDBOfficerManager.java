@@ -2,9 +2,10 @@ package org.Users.HDBOfficer;
 
 
 import org.Users.GenericManager;
+import org.Users.user;
 
 
-public class HDBOfficerManager extends GenericManager<HDBOfficer> {
+public class HDBOfficerManager extends GenericManager<user> {
    @Override
    protected HDBOfficer parseUser(String line) {
        String[] details = line.split(",");

@@ -30,7 +30,9 @@ class ui_main {
 
     Context context;
     List<String> ctx;
+    List<String> tmpList;
     String ctx_idx; //fn that the ctx was returned from
+    String tmp;
     String ui_idx; //the name of the ui menu
     Scanner sc;
 
@@ -78,9 +80,15 @@ class ui_main {
 
                 if (ui_map.containsKey(next_alias)) { //check if next menu exists
                     //if the input was valid, run any relevant functions here and save the return values to a ctx local var
-                	ctx_idx = fn_map.get(ui_idx)[usr_in-1];
-                    ctx = context.act(ctx_idx,this.sc);
-                    ui_idx = next_alias; //get the next ui idx
+                	tmp = fn_map.get(ui_idx)[usr_in-1];
+                    tmpList = context.act(tmp,this.sc);
+                    if (!tmpList.get(0).isEmpty()) {
+                        System.out.println("Query returned blank");
+                        ctx_idx = tmp;
+                        ctx = tmpList;
+                        ui_idx = next_alias; //get the next ui idx
+                    }
+
                 } else if (Objects.equals(next_alias, "NIL")) {
                     //if the next menu is NIL, that means the ui doesn't move but fns are run.
                     ctx = context.act(fn_map.get(ui_idx)[usr_in-1],this.sc);

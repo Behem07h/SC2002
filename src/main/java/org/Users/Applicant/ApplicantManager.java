@@ -2,17 +2,19 @@ package org.Users.Applicant;
 
 
 import org.Users.GenericManager;
+import org.Users.user;
 
 
-public class ApplicantManager extends GenericManager<Applicant> {
+public class ApplicantManager extends GenericManager<user> {
    @Override
    protected Applicant parseUser(String line) {
+       System.out.println("Parse users");
        String[] details = line.split(",");
-       if (details.length != 5) return null;
+       if (details.length != 6) return null;
 
 
        int age = Integer.parseInt(details[4]);
-       Applicant.PermissionLevel perms = Applicant.PermissionLevel.NONE;
+       Applicant.PermissionLevel perms = Applicant.PermissionLevel.valueOf(details[5]);
 
 
        // CSV: userID, username, password, maritalStatus, age
@@ -29,11 +31,5 @@ public class ApplicantManager extends GenericManager<Applicant> {
        Applicant.PermissionLevel perms = Applicant.PermissionLevel.NONE;
        userDB.add(new Applicant(userID, username, "defaultPassword", maritalStatus, age, perms));
        System.out.println("Applicant added: " + userID);
-   }
-
-
-   public void add_user(String newUserID, String newUserID2, int age, String maritalStatus) {
-    // TODO Auto-generated method stub
-    throw new UnsupportedOperationException("Unimplemented method 'add_user'");
    }
 }

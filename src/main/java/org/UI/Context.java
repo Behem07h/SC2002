@@ -46,6 +46,9 @@ public class Context {
                     output = enqMan.getEnquiriesByProject(usr, currentViewedProjectID);
                 }
                 currentViewedEnquiryID = "";
+                if (output.get(0).isEmpty()) {
+                    output.add("No enquiries found");
+                }
                 return output;
             case "view-enquiry":
                 System.out.println("Enter enquiry ID: ");
@@ -109,6 +112,9 @@ public class Context {
                 } else {
                     output = appMan.listByUser(usr, enqMan, proMan);
                 }
+                if (output.get(0).isEmpty()) {
+                    output.add("No applications found");
+                }
                 return output;
             case "add-application":
                 if (currentViewedProjectID.isEmpty()) {
@@ -160,15 +166,12 @@ public class Context {
             case "view-project":
                 if (currentViewedProjectID.isEmpty()) {
                     System.out.println("Enter exact project name to view: ");
-                    input.set(0, sc.nextLine());
+                    input.set(0, strInNoBlank(sc));
                 } else {
                     input.set(0, currentViewedProjectID);
                 }
                 output = proMan.getProjectByName(usr, input.get(0), enqMan, true);
                 currentViewedProjectID = input.get(0);
-                if (output.get(0).isEmpty()) {
-                    output.add("No projects found");
-                }
                 return output;
             case "search-projects":
                 //input search term, output projects by keyword
@@ -177,6 +180,9 @@ public class Context {
                 output = proMan.searchName(usr, input.get(0));
                 currentViewedProjectID = "";
                 currentViewedEnquiryID = "";
+                if (output.get(0).isEmpty()) {
+                    output.add("No projects found");
+                }
                 return output;
             case "filter-projects":
                 System.out.println("Filter: ");
@@ -213,6 +219,9 @@ public class Context {
                 currentViewedProjectID = "";
                 currentViewedEnquiryID = "";
                 output = proMan.getProjectList(usr);
+                if (output.get(0).isEmpty()) {
+                    output.add("No projects found");
+                }
                 return output;
             case "hide-show-project":
                 //input project id, output success/failure and new projects list
@@ -320,6 +329,18 @@ public class Context {
         } while (!options.contains(input));
         return input;
     }
+
+    private String strInNoBlank(Scanner sc) {
+        String input;
+        do {
+            input = sc.nextLine();
+            if (input.isEmpty()) {
+                System.out.println("Input cannot be blank");
+            }
+        } while (input.isEmpty());
+        return input;
+    }
+
 
     private String dateIn(Scanner sc, String minDate, boolean allowBlank) {
         String input;

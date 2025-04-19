@@ -1,37 +1,44 @@
-package org;
+package org.UI;
 
-import org.UI.UI;
 import org.Users.Applicant.ApplicantManager;
+import org.Users.GenericManager;
+import org.Users.HDBManager.ManagerController;
+import org.Users.HDBOfficer.HDBOfficerManager;
 import org.Users.user;
 
 import java.util.Scanner;
 
-public class main {
+public class Main {
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
         int choice;
+        GenericManager<user> manager;
         do {
             System.out.println("1. Applicant\n2. HDB Officer\n3. HDB Manager\n4. Exit");
             choice = scanner.nextInt();
             switch (choice) {
                 case 1:
+                    manager = new ApplicantManager();
+                    new loginScreen(scanner, manager);
                     //initialise generic manager as applicant manager
                 case 2:
+                    manager = new HDBOfficerManager();
+                    new loginScreen(scanner, manager);
                     //initialise generic manager as officer manager
                 case 3:
-                    //initialise generic manager as manager manager
+                    manager = new ManagerController();
+                    new loginScreen(scanner, manager);
+                    //initialise generic manager as manager of manager
                 default:
                     System.out.println("Invalid option.");
             }
-            loginScreen login = new loginScreen(scanner);
         } while (choice < 4);
     }
 
 }
 
-class loginScreen() {
-    public loginScreen(Scanner sc) { //todo: pass manager as generic superclass
-        ApplicantManager userManager = new ApplicantManager();
+class loginScreen {
+    public loginScreen(Scanner scanner, GenericManager<user> userManager) { //todo: pass manager as generic superclass
         boolean loaded = userManager.loadUsersFromCSV("data/applicant.csv");
         if (!loaded) {
             System.out.println("Warning: Failed to load users from CSV file.");
@@ -45,7 +52,6 @@ class loginScreen() {
             System.out.print("Choose an option: ");
 
             int choice;
-            Scanner scanner;
             try {
                 choice = scanner.nextInt();
                 scanner.nextLine(); // Consume newline
@@ -70,6 +76,8 @@ class loginScreen() {
                 case 2:
                     System.out.print("Enter UserID (NRIC): ");
                     String newUserID = scanner.nextLine();
+                    System.out.print("Enter Username: ");
+                    String newUsername = scanner.nextLine();
 
                     int age;
                     try {
@@ -86,7 +94,7 @@ class loginScreen() {
                     String maritalStatus = getMaritalStatus(scanner);
 
                     // Corrected the method call with proper parameters
-                    userManager.add_user(newUserID, newUserID, age, maritalStatus);
+                    userManager.addUser(newUserID, newUsername, age, maritalStatus, "");
                     break;
                 case 3:
                     System.out.print("Enter UserID (NRIC): ");

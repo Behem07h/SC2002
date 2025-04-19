@@ -62,7 +62,7 @@ public class MainMenuUI {
                     String maritalStatus = getMaritalStatus(scanner);
                     
                     // Corrected the method call with proper parameters
-                    userManager.add_user(newUserID, newUserID, age, maritalStatus);
+                    userManager.addUser(newUserID, newUserID, age, maritalStatus,"");
                     break;
                 case 3:
                     System.out.print("Enter UserID (NRIC): ");

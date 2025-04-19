@@ -40,7 +40,9 @@ public abstract class GenericManager<T extends user> {
 
     // Login
     public T authenticate(String userID, String password) {
+        System.out.println("generic authenticate");
         for (T user : userDB) {
+            System.out.println(user.getUserID() + " " + user.getPassword());
             if (user.getUserID().equals(userID) && user.getPassword().equals(password)) {
                 System.out.println("Login successful! Welcome, " + user.getUsername());
                 return user;

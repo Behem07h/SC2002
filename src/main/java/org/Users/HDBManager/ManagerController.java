@@ -2,9 +2,10 @@ package org.Users.HDBManager;
 
 
 import org.Users.GenericManager;
+import org.Users.user;
 
 
-public class ManagerController extends GenericManager<HDBManager> {
+public class ManagerController extends GenericManager<user> {
    @Override
    protected HDBManager parseUser(String line) {
        String[] details = line.split(",");

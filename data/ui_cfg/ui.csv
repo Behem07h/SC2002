@@ -2,5 +2,5 @@ MENU_NAME           , MENU_CONTENT,
 Project_List        , Projects: \n{view-all-projects[0]}\n\n[4] - Search by name\n[3] - Filter projects\n[2] - View application\n[1] - View a project\n[0] - Log out,
 Project_Details     , Project details:\n{view-project[0]}\n\n[3] - Send application\n[2] - Enquiries\n[1] - Back\n[0] - Log out,
 Project_Enquiries   , Project Enquiries:\nProject: {view-enquiries[0]}\n{view-enquiries[1]}\n\n[3] - View Enquiry\n[2] - Submit Enquiry\n[1] - Back\n[0] - Log out,
-Enquiry_View        , Enquiry Details:\nProject: {view-enquiry[0]}\n{view-enquiry[1]}\n\n[3] - Delete Enquiry\n[2] - Edit Enquiry\n[1] - Back\n[0] - Log out,
+Enquiry_View        , Enquiry Details:\nProject: {view-enquiry[0]}\n{view-enquiry[1]}\n\n[4] - Reply\n[3] - Delete Enquiry\n[2] - Edit Enquiry\n[1] - Back\n[0] - Log out,
 Application_View    , Application Status:\n{view-applications[0]}\n\n[3] - Submit Flat Booking\n[2] - Request Application Withdrawal\n[1] - Back\n[0] - Log out

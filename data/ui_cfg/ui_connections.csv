@@ -3,5 +3,5 @@ DEFAULT             , Project_List,
 Project_List        , Project_Details,Application_View,NIL,NIL,
 Project_Details     , Project_List,Project_Enquiries,NIL,
 Project_Enquiries   , Project_Details,NIL,Enquiry_View,
-Enquiry_View        , Project_Enquiries,NIL,NIL,
+Enquiry_View        , Project_Enquiries,NIL,NIL,NIL,
 Application_View    , Project_List,NIL,NIL

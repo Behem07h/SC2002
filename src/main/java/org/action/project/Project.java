@@ -24,6 +24,7 @@ public class Project {
     String managerId;
     int officerSlotCount;
     List<String> officersList;
+    List<String> officersIDList;
     boolean visible;
 
     public String getProjectName() {
@@ -78,11 +79,15 @@ public class Project {
         return String.join(":",officersList);
     }
 
+    public String getOfficersIDList() {
+        return String.join(":",officersIDList);
+    }
+
     public boolean isVisible() {
         return visible;
     }
 
-    public Project(String projectName, String neighbourhood, String flatType1, int flatCount1, int flatPrice1, String flatType2, int flatCount2, int flatPrice2, LocalDate openingDate, LocalDate closingDate, String managerId, int officerSlotCount, String officersList, boolean visible) {
+    public Project(String projectName, String neighbourhood, String flatType1, int flatCount1, int flatPrice1, String flatType2, int flatCount2, int flatPrice2, LocalDate openingDate, LocalDate closingDate, String managerId, int officerSlotCount, String officersList, String officersIDList, boolean visible) {
         this.projectName = projectName;
         this.neighbourhood = neighbourhood;
         this.flatType1 = flatType1;
@@ -96,6 +101,7 @@ public class Project {
         this.managerId = managerId;
         this.officerSlotCount = officerSlotCount;
         this.officersList = new ArrayList<>(List.of(officersList.split(":")));
+        this.officersIDList = new ArrayList<>(List.of(officersIDList.split(":")));
         this.visible = visible;
         //todo: a project can have multiple flat types, but an applicant only can view and apply for specific flat types (is this always 1?)
     }

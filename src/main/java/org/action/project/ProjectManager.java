@@ -25,7 +25,7 @@ public class ProjectManager {
         Map<String,String[]> pro_map = ldr.ReadToArrMap(path + filename);
         for (String key : pro_map.keySet()) {
             String[] items = pro_map.get(key);
-            if (items.length < 13) {
+            if (items.length < 14) {
                 System.out.println("Project ID " + key + " missing params");
                 continue;
             } //if param length too short, skip
@@ -42,9 +42,10 @@ public class ProjectManager {
             String manager = items[9];
             int officer_slots = Integer.parseInt(items[10]);
             String officers = items[11];
-            boolean visible = Boolean.parseBoolean(items[12]);
+            String officersID = items[12];
+            boolean visible = Boolean.parseBoolean(items[13]);
 
-            this.projectList.add(new Project(key, neighbourhood, type1, type1_count, type1_price, type2, type2_count, type2_price, opening_date, closing_date, manager, officer_slots, officers, visible));
+            this.projectList.add(new Project(key, neighbourhood, type1, type1_count, type1_price, type2, type2_count, type2_price, opening_date, closing_date, manager, officer_slots, officers, officersID, visible));
         }
 
         registrationManager = new RegistrationManager();
@@ -54,7 +55,7 @@ public class ProjectManager {
         // run this when quitting program to store to csv
         Map<String,String[]> pro_map = new HashMap<>();
         for (Project p : projectList) {
-            String[] items = {p.getNeighbourhood(),p.getFlatType1(), String.valueOf(p.getFlatCount1()), String.valueOf(p.getFlatPrice1()),p.getFlatType2(), String.valueOf(p.getFlatCount2()), String.valueOf(p.getFlatPrice2()), String.valueOf(p.getOpeningDate()), String.valueOf(p.getClosingDate()),p.getManagerId(), String.valueOf(p.getOfficerSlotCount()),p.getOfficersList(), String.valueOf(p.isVisible())};
+            String[] items = {p.getNeighbourhood(),p.getFlatType1(), String.valueOf(p.getFlatCount1()), String.valueOf(p.getFlatPrice1()),p.getFlatType2(), String.valueOf(p.getFlatCount2()), String.valueOf(p.getFlatPrice2()), String.valueOf(p.getOpeningDate()), String.valueOf(p.getClosingDate()),p.getManagerId(), String.valueOf(p.getOfficerSlotCount()),p.getOfficersList(),p.getOfficersIDList(), String.valueOf(p.isVisible())};
             pro_map.put(String.valueOf(p.getProjectName()),items);
         }
         ConfigLDR ldr = new ConfigLDR();
@@ -73,7 +74,7 @@ public class ProjectManager {
             if (exists) {
                 System.out.println("Cannot create project with identical name");
             } else {
-                projectList.add(new Project(projectName, neighbourhood, type1, type1_count, type1_price, type2, type2_count, type2_price, LocalDate.parse(opening_date), LocalDate.parse(closing_date), manager, officer_slots, "", false));
+                projectList.add(new Project(projectName, neighbourhood, type1, type1_count, type1_price, type2, type2_count, type2_price, LocalDate.parse(opening_date), LocalDate.parse(closing_date), manager, officer_slots, "", "",false));
                 System.out.println("New project created: " + projectName);
             }
         } else {
@@ -172,12 +173,21 @@ public class ProjectManager {
         filteredProjects = searchFilter(usr,"",projectName,"", getUserValidFlatTypes(usr), visChk);
         return filteredProjects.size();
     }
-    public List<String> getProjectByName(user usr, String projectName, EnquiriesManager enqMan, boolean visChk) {
+
+    public Project getProjectObjByName(user usr, String projectName, boolean visChk) {
         List<Project> filteredProjects;
-        List<String> out = new ArrayList<>(List.of(""));
         filteredProjects = searchFilter(usr,"",projectName,"", getUserValidFlatTypes(usr), visChk);
-        for (Project p : filteredProjects) {
-            out.set(0, out.get(0) + "\n" + p.viewFull(usr, getUserValidFlatTypes(usr), enqMan));
+        if (!filteredProjects.isEmpty()) {
+            return filteredProjects.get(0);
+        } else {
+            return null;
+        }
+    }
+    public List<String> getProjectByName(user usr, String projectName, EnquiriesManager enqMan, boolean visChk) {
+        List<String> out = new ArrayList<>();
+        Project p = getProjectObjByName(usr, projectName, visChk);
+        if (p != null) {
+            out.set(0, "\n" + p.viewFull(usr, getUserValidFlatTypes(usr), enqMan));
         }
         return out;
     }
@@ -194,7 +204,7 @@ public class ProjectManager {
         return "NONE"; //if you fall outside those ranges, you cannot see anything according to SG law
     }
     public List<String> userFlatOptions(user usr, String projectName) {
-        List<String> flatChoices = new ArrayList<>();
+        List<String> flatChoices;
         List<String> outputChoices = new ArrayList<>();
         if (usr instanceof HDBOfficer || usr instanceof HDBManager) {
             flatChoices = List.of("2-Room","3-Room");

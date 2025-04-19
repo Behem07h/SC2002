@@ -95,9 +95,10 @@ public class Context {
                 //user input enquiry id and reply text
                 //return full enquiry details
                 if (currentViewedEnquiryID.isEmpty()) {
-                    System.out.println("Enter enquiry ID to edit: ");
+                    System.out.println("Enter enquiry ID to reply to: ");
                     currentViewedEnquiryID = sc.nextLine();
-                }
+                } //todo: add check that the enquiry is part of a project the officer is handling
+                //todo: also add check that the user is an officer
                 System.out.println("Enter reply to enquiry: ");
                 input.set(0, sc.nextLine());
                 output = enqMan.replyEnquiries(usr, input.get(0), currentViewedEnquiryID);
@@ -146,13 +147,16 @@ public class Context {
                 input.set(0, sc.nextLine());
                 //appMan.approveApplication(usr, input[0]);
                 break;
-            case "reject-application":
+            case "reject-application": //todo: add another enum that tracks this stage
                 //input application id, changes application status
                 //return new application status
                 System.out.println("Enter application ID to confirm rejection: ");
                 input.set(0, sc.nextLine());
                 //appMan.rejectApplication(usr, input[0]);
                 break;
+            //todo: add registration methods, which is just the application class but again
+            //todo: officers register for BTO, view their registered BTOs by viewing the associated registrations
+            //todo: filterable by visibility
             //project methods
             case "view-all-projects":
                 //returns list of visible projects based on user
@@ -184,7 +188,7 @@ public class Context {
                     output.add("No projects found");
                 }
                 return output;
-            case "filter-projects":
+            case "filter-projects": //todo: add variant for owned projects (for managers)
                 System.out.println("Filter: ");
                 input.set(0, strIn(sc, List.of("Flat","Neighbourhood","Reset Filter")));
                 switch (input.get(0)) {
@@ -215,7 +219,7 @@ public class Context {
                 //input project id, output success/failure and new projects list
                 System.out.println("Enter project ID to be deleted: ");
                 input.set(0, sc.nextLine());
-                proMan.deleteProject(usr, input.get(0));
+                proMan.deleteProject(usr, input.get(0)); //todo: check manager
                 currentViewedProjectID = "";
                 currentViewedEnquiryID = "";
                 output = proMan.getProjectList(usr);
@@ -227,7 +231,7 @@ public class Context {
                 //input project id, output success/failure and new projects list
                 System.out.println("Enter project ID to toggle visibility: ");
                 input.set(0, sc.nextLine());
-                proMan.toggleVisibility(usr, input.get(0));
+                proMan.toggleVisibility(usr, input.get(0)); //todo: check manager
                 currentViewedProjectID = "";
                 currentViewedEnquiryID = "";
                 output = proMan.getProjectList(usr);
@@ -235,7 +239,7 @@ public class Context {
             case "edit-project":
                 //input project id, output success/failure and new projects list
                 System.out.println("Enter project ID to edit: ");
-                input.set(0, sc.nextLine());
+                input.set(0, sc.nextLine()); //todo: check manager
                 if (!proMan.getProjectByName(usr, input.get(0), enqMan, true).isEmpty()) {
                     System.out.println("Enter new project ID (Blank to skip): ");
                     input.set(1, sc.nextLine());
@@ -268,7 +272,7 @@ public class Context {
                 currentViewedEnquiryID = "";
                 output = proMan.getProjectList(usr);
                 return output;
-            case "create-project":
+            case "create-project": //todo: check manager
                 //input project id, output success/failure and new projects list
                 if (!proMan.getProjectByName(usr, input.get(0), enqMan, true).isEmpty()) {
                     System.out.println("Enter new project ID: ");

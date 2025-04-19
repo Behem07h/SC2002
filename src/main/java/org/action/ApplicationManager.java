@@ -2,8 +2,10 @@ package org.action;
 
 import org.UI.ConfigLDR;
 import org.Users.Applicant.Applicant;
+import org.Users.HDBOfficer.HDBOfficer;
 import org.Users.user;
 import org.action.enquiry.EnquiriesManager;
+import org.action.project.Project;
 import org.action.project.ProjectManager;
 
 import java.time.LocalDate;
@@ -93,7 +95,13 @@ public class ApplicationManager {
         return maxId + 1;
     }
     public void newApplication(user usr, String projectId, String flatType, ProjectManager proMan) {
-        if (!(usr instanceof Applicant)) {
+        if (usr instanceof HDBOfficer) {
+            Project p = proMan.getProjectObjByName(usr, projectId, false);
+            if ((p != null) && (p.getOfficersIDList().contains(usr.getUserID()))) {
+                System.out.println("You cannot apply for a project you are officer of");
+                return;
+            } //else continue to check for existing applications
+        } else if (!(usr instanceof Applicant)) {
             System.out.println("Your user type cannot submit applications");
             return;
         }

@@ -3,5 +3,5 @@ DEFAULT             , view-all-projects,
 Project_List        , view-project,view-applications,filter-projects,search-projects,
 Project_Details     , view-all-projects,view-enquiries,add-application,
 Project_Enquiries   , view-project,submit-enquiry,view-enquiry,
-Enquiry_View        , view-enquiries,edit-enquiry,delete-enquiry,
+Enquiry_View        , view-enquiries,edit-enquiry,delete-enquiry,reply-enquiry,
 Application_View    , view-all-projects,Withdraw_Application,Submit_Booking

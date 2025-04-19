@@ -5,6 +5,9 @@ import org.Users.HDBManager.HDBManager;
 import org.Users.HDBOfficer.HDBOfficer;
 import org.Users.user;
 import org.action.enquiry.EnquiriesManager;
+import org.action.registration.Register;
+import org.action.registration.RegistrationCriteria;
+import org.action.registration.RegistrationManager;
 
 import java.time.LocalDate;
 import java.util.*;
@@ -13,7 +16,8 @@ public class ProjectManager {
     private final List<Project> projectList;
     private final String path = "data/db";
     private final String filename = "/project.csv";
-
+    private RegistrationManager registrationManager;
+    
     public ProjectManager() {
         projectList = new ArrayList<>();
 
@@ -42,6 +46,8 @@ public class ProjectManager {
 
             this.projectList.add(new Project(key, neighbourhood, type1, type1_count, type1_price, type2, type2_count, type2_price, opening_date, closing_date, manager, officer_slots, officers, visible));
         }
+
+        registrationManager = new RegistrationManager();
     }
 
     public void store() {
@@ -205,5 +211,17 @@ public class ProjectManager {
         //Room or 3-Room)
         return filterFlat(usr, getUserValidFlatTypes(usr));
     }
+
+    public void joinProject(user usr, String projectName, RegistrationCriteria criteria){
+        if(usr instanceof HDBOfficer) {
+            String regID = UUID.randomUUID().toString();
+            Register newRegistration = new Register(regID, usr.getUserID(), projectName, criteria);
+            registrationManager.addRegistration(newRegistration);
+            System.out.println("Registration submitted. Awaiting approval.");
+        } else {
+            System.out.println("No perms to join project");
+        }
+    }
+
 } 
 

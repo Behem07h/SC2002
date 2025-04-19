@@ -2,13 +2,13 @@ package org.action.registration;
 
 public class Register {
     private String status;
-    private String ID;
+    private String regID;
     private String user;
     private String projectID;
     private RegistrationCriteria criteria;
 
     public Register(String ID, String user, String projectID, RegistrationCriteria criteria) {
-        this.ID = ID;
+        this.regID = ID;
         this.status = "Pending";
         this.criteria = criteria;
         this.user = user;
@@ -24,7 +24,7 @@ public class Register {
     }
 
     public String getID() {
-        return ID;
+        return regID;
     }
 
     public RegistrationCriteria getCriteria() {

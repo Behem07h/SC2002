@@ -1,0 +1,7 @@
+MENU_NAME           , PERM1:PERM2:..., PERM1:PERM2:PERM3...,
+DEFAULT             , ALL,
+Project_List        , ALL,ALL,ALL,ALL,
+Project_Details     , ALL,ALL,ALL,
+Project_Enquiries   , ALL,APPLICANT,ALL,
+Enquiry_View        , ALL,APPLICANT,ALL,
+Application_View    , ALL,APPLICANT,NIL,

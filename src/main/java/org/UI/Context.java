@@ -116,7 +116,7 @@ public class Context {
                     currentViewedProjectID = sc.nextLine();
                 }
                 System.out.println("Enter chosen flat type: ");
-                input.set(0, strIn(sc, proMan.userFlatOptions(usr)));
+                input.set(0, strIn(sc, proMan.userFlatOptions(usr, currentViewedProjectID)));
                 appMan.newApplication(usr, currentViewedProjectID, input.get(0), proMan);
                 output = appMan.listByUser(usr, enqMan, proMan);
                 return output;
@@ -180,11 +180,11 @@ public class Context {
                 return output;
             case "filter-projects":
                 System.out.println("Filter: ");
-                input.set(0, strIn(sc, List.of("Flat","Neighbourhood")));
+                input.set(0, strIn(sc, List.of("Flat","Neighbourhood","Reset Filter")));
                 switch (input.get(0)) {
                     case "Flat":
                         System.out.println("Enter flat type to filter by: ");
-                        input.set(0, strIn(sc, proMan.userFlatOptions(usr)));
+                        input.set(0, strIn(sc, proMan.userFlatOptions(usr, "")));
                         output = proMan.filterFlat(usr, input.get(0));
                         break;
                     case "Neighbourhood":
@@ -192,12 +192,18 @@ public class Context {
                         input.set(0, sc.nextLine());
                         output = proMan.filterNeighbourhood(usr, input.get(0));
                         break;
+                    case "Reset Filter":
+                        output = proMan.getProjectList(usr);
+                        break;
                     default:
                         output = new ArrayList<>(List.of("Invalid filter"));
                 }
                 //input category, output projects by category
                 currentViewedProjectID = "";
                 currentViewedEnquiryID = "";
+                if (output.isEmpty()) {
+                    output.add("No projects found");
+                }
                 return output;
             case "delete-project":
                 //input project id, output success/failure and new projects list

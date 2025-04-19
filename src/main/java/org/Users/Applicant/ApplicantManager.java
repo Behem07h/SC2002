@@ -18,14 +18,14 @@ public class ApplicantManager {
             br.readLine(); // Skip header line
             while ((line = br.readLine()) != null) {
                 String[] details = line.split(",");
-                if (details.length != 5) {  // Now expect only 5 columns (userID, username, password, maritalStatus, age)
+                if (details.length != 6) {  // Now expect only 5 columns (userID, username, password, maritalStatus, age)
                     System.out.println("Skipping malformed line: " + line);
                     continue; // Skip lines that do not have exactly 5 columns
                 }
                 try {
                     int age = Integer.parseInt(details[4]); // Ensure age is an integer
                     // Default permission level since it's no longer in the CSV
-                    Applicant.PermissionLevel perms = Applicant.PermissionLevel.NONE;
+                    Applicant.PermissionLevel perms = Applicant.PermissionLevel.valueOf(details[5].trim());
                     // Debugging output to check what's being loaded
                     System.out.println("Loaded user: " + details[0] + " | Password: " + details[2]); // Print out loaded user info
                     usr_db.add(new Applicant(details[0], details[1], details[2], details[3], age, perms));
@@ -68,7 +68,7 @@ public class ApplicantManager {
         }
 
         // Default permissions or assign based on context
-        Applicant.PermissionLevel perms = Applicant.PermissionLevel.NONE;
+        Applicant.PermissionLevel perms = Applicant.PermissionLevel.APPLICANT;
         usr_db.add(new Applicant(userID, username, "defaultPassword", maritalStatus, age, perms));  // Create new applicant
         System.out.println("User added: " + userID);
     }

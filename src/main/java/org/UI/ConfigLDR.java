@@ -43,8 +43,6 @@ public class ConfigLDR{
                 String[] tmp = Arrays.copyOfRange(details, 1, details.length);
                 for (int i = 0; i < tmp.length; i++) {
                     tmp[i] = tmp[i].trim();
-                    System.out.println(tmp[i]);
-
                     if (Objects.equals(tmp[i], "NONE")) {
                         tmp[i] = "";
                     }

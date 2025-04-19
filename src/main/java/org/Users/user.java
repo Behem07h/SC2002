@@ -3,8 +3,6 @@ package org.Users;
 import java.util.Scanner;
 
 public interface user {
-    PermissionLevel perms = PermissionLevel.NONE;
-
 
     String getUserID();
 
@@ -26,14 +24,16 @@ public interface user {
 
     void setAge(int age);
 
+    PermissionLevel getPerms();
+
 
     boolean changePassword(String oldPassword, String newPassword);
 
     // Enum for Permission Levels
     public enum PermissionLevel {
-        READ,   // Read permission
-        WRITE,  // Write permission
-        ADMIN,  // Administrator privileges
+        APPLICANT,   // Read permission
+        OFFICER,  // Write permission
+        MANAGER,  // Administrator privileges
         NONE    // No special permissions (default value)
     }
 

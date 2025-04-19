@@ -90,7 +90,12 @@ public class HDBManager implements user {
     public void setPassword(String password) {
         this.password = password;
     }
-    
+
+    @Override
+    public PermissionLevel getPerms() {
+        return perms;
+    }
+
     @Override
     public String[] act(String something, Scanner sc) {
         System.out.println("HDBManager [" + username + "] is acting on: " + something);
@@ -116,13 +121,5 @@ public class HDBManager implements user {
                ", age=" + age +
                ", permissionLevel=" + perms +
                '}';
-    }
-    
-    // Enum for Permission Levels for HDBManager
-    public enum PermissionLevel {
-        READ,   // Read permission
-        WRITE,  // Write permission
-        ADMIN,  // Administrator privileges
-        NONE    // No special permissions
     }
 }

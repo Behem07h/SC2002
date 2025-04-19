@@ -10,7 +10,7 @@ public class Applicant implements user {
     private String password;  // Plain-text password
     private String maritalStatus;
     private int age;
-    private PermissionLevel perms = PermissionLevel.READ;  // Default permission level
+    private PermissionLevel perms = PermissionLevel.APPLICANT;  // Default permission level
 
     // Constructor
     public Applicant(String userID, String username, String password, String maritalStatus, int age, PermissionLevel perms) {
@@ -71,6 +71,11 @@ public class Applicant implements user {
     @Override
     public void setAge(int age) {
         this.age = age;
+    }
+
+    @Override
+    public PermissionLevel getPerms() {
+        return this.perms;
     }
 
     @Override

@@ -193,17 +193,34 @@ public class ProjectManager {
         }
         return "NONE"; //if you fall outside those ranges, you cannot see anything according to SG law
     }
-    public List<String> userFlatOptions(user usr) {
+    public List<String> userFlatOptions(user usr, String projectName) {
+        List<String> flatChoices = new ArrayList<>();
+        List<String> outputChoices = new ArrayList<>();
         if (usr instanceof HDBOfficer || usr instanceof HDBManager) {
-            return List.of("2-Room","3-Room");
+            flatChoices = List.of("2-Room","3-Room");
         } else {
             if (Objects.equals(usr.getMaritalStatus(), "Single") && usr.getAge() >= 35) {
-                return List.of("2-Room");
+                flatChoices = List.of("2-Room");
             } else if (Objects.equals(usr.getMaritalStatus(), "Married") && usr.getAge() >= 21) {
-                return List.of("2-Room","3-Room"); //returns any flat type
+                flatChoices = List.of("2-Room","3-Room"); //returns any flat type
+            } else {
+                flatChoices = List.of("NONE"); //if you fall outside those ranges, you cannot see anything according to SG law
             }
         }
-        return List.of("NONE"); //if you fall outside those ranges, you cannot see anything according to SG law
+
+        if (projectName.isEmpty()) {
+            for (String flatStr : flatChoices) {
+                if (!searchFilter(usr, "", projectName, "", flatStr, true).isEmpty()) {
+                    outputChoices.add(flatStr);
+                }
+            }
+            if (outputChoices.isEmpty()) {outputChoices.add("NONE");}
+            return outputChoices;
+        } else {
+            return flatChoices;
+        }
+
+
     }
     public List<String> getProjectList(user usr) {
         //Singles, 35 years old and above, can ONLY apply for 2-Room

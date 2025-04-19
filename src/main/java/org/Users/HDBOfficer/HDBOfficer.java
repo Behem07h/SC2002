@@ -74,6 +74,11 @@ public class HDBOfficer implements user {
     }
 
     @Override
+    public PermissionLevel getPerms() {
+        return null;
+    }
+
+    @Override
     public boolean changePassword(String oldPassword, String newPassword) {
         if (this.password.equals(oldPassword)) {  // Plain-text password comparison
             this.password = newPassword;  // Set new password
@@ -88,10 +93,4 @@ public class HDBOfficer implements user {
     }
 
     // Enum for Permission Levels
-    public enum PermissionLevel {
-        READ,  // Read permission
-        WRITE, // Write permission
-        ADMIN, // Administrator privileges
-        NONE   // No special permissions (default value)
-    }
 }

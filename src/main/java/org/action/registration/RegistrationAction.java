@@ -1,10 +1,11 @@
 package org.action.registration;
+import org.Users.user;
 
 public interface RegistrationAction{
-    void approveRegistration(Register registration);
-    void rejectRegistration(Register registration);
-    void registerProject(Register registration);
-    void viewRegistrationProject(Register registration);
+    void approveRegistration(Register registration, user usr);
+    void rejectRegistration(Register registration, user usr);
+    void registerProject(Register registration, user usr);
+    void viewRegistrationProject(Register registration, user usr);
 }
 
 

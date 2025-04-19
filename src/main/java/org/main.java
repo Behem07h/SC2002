@@ -45,6 +45,7 @@ class loginScreen() {
             System.out.print("Choose an option: ");
 
             int choice;
+            Scanner scanner;
             try {
                 choice = scanner.nextInt();
                 scanner.nextLine(); // Consume newline

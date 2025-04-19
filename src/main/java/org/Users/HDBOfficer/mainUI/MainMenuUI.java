@@ -7,7 +7,7 @@ import java.util.Scanner;
 public class MainMenuUI {
     public static void main(String[] args) {
         HDBOfficerManager officerManager = new HDBOfficerManager();
-        boolean loaded = officerManager.loadOfficersFromCSV("data/hdbofficer.csv");
+        boolean loaded = officerManager.loadUsersFromCSV("data/hdbofficer.csv");
         if (!loaded) {
             System.out.println("Warning: Failed to load officers from CSV file.");
         }
@@ -60,7 +60,7 @@ public class MainMenuUI {
                     String newPassword = scanner.nextLine();  // Asking for the officer's password
 
                     // Now add the officer with the name, marital status, and password included
-                    officerManager.addOfficer(newUserID, name, age, maritalStatus, newPassword);
+                    officerManager.addUser(newUserID, name, age, maritalStatus, newPassword);
                     break;
                 case 3:
                     System.out.print("Enter UserID: ");
@@ -72,7 +72,7 @@ public class MainMenuUI {
                     officerManager.changePassword(userIDToChange, oldPassword, newPasswordChange);
                     break;
                 case 4:
-                    officerManager.displayOfficers();
+                    officerManager.displayUsers();
                     break;
                 case 5:
                     System.out.println("Thank you for using HDB Officer Management System. Exiting...");

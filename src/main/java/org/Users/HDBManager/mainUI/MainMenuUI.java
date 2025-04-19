@@ -8,7 +8,7 @@ public class MainMenuUI {
     public static void main(String[] args) {
         // Create the manager controller (which loads managers from CSV)
         ManagerController managerController = new ManagerController();
-        boolean loaded = managerController.loadManagersFromCSV("data/hdbmanager.csv");
+        boolean loaded = managerController.loadUsersFromCSV("data/hdbmanager.csv");
         if (!loaded) {
             System.out.println("Warning: Failed to load managers from CSV file.");
         }
@@ -59,7 +59,7 @@ public class MainMenuUI {
                     String handleOneProject = scanner.nextLine();
                     System.out.print("Enter Password: ");
                     String newPassword = scanner.nextLine();
-                    managerController.addManager(newUserID, name, age, handleOneProject, newPassword);
+                    managerController.addUser(newUserID, name, age, handleOneProject, newPassword);
                     break;
                 case 3:
                     // Change a manager's password.
@@ -73,7 +73,7 @@ public class MainMenuUI {
                     break;
                 case 4:
                     // Display all loaded managers.
-                    managerController.displayManagers();
+                    managerController.displayUsers();
                     break;
                 case 5:
                     System.out.println("Exiting system. Goodbye!");

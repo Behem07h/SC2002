@@ -22,44 +22,52 @@ public class RegistrationManager implements RegistrationAction {
         this.registrations = new ArrayList<>();
     }
 
-    public void processRegistration(Register registration){
-        RegistrationCriteria criteria = registration.getCriteria();
-        String user = registration.getUser();
-        String projectID = registration.getProjectID();
+    // public void processRegistration(Register registration){
+    //     RegistrationCriteria criteria = registration.getCriteria();
+    //     String user = registration.getUser();
+    //     String projectID = registration.getProjectID();
 
-        if(criteria.noIntention(user, projectID) && criteria.notHDBofficer(user, projectID)){
-            registrations.add(registration);
-        }
-        else{
-            registration.setStatus("Rejected");
-        }
+    //     if(criteria.noIntention(user, projectID) && criteria.notHDBofficer(user, projectID)){
+    //         registrations.add(registration);
+    //     }
+    //     else{
+    //         registration.setStatus("Rejected");
+    //     }
+    // }
+
+    public void addRegistration(Register registration) {
+        registrations.add(registration);
     }
     
-    public void generateReport() {
-        System.out.println("=== Registration Report ===");
-        
-        int pendingCount = 0;
-        int approvedCount = 0;
-        int rejectedCount = 0;
-        
-        for (Register reg : registrations) {
-            switch (reg.getStatus()) {
-                case "Pending":
-                    pendingCount++;
-                    break;
-                case "Approved":
-                    approvedCount++;
-                    break;
-                case "Rejected":
-                    rejectedCount++;
-                    break;
+    public void generateReport(user usr) {
+        if(usr instanceof HDBManager) {
+            System.out.println("=== Registration Report ===");
+            
+            int pendingCount = 0;
+            int approvedCount = 0;
+            int rejectedCount = 0;
+            
+            for (Register reg : registrations) {
+                switch (reg.getStatus()) {
+                    case "Pending":
+                        pendingCount++;
+                        break;
+                    case "Approved":
+                        approvedCount++;
+                        break;
+                    case "Rejected":
+                        rejectedCount++;
+                        break;
+                }
             }
-        }
 
-        System.out.println("Pending registrations: " + pendingCount);
-        System.out.println("Approved registrations: " + approvedCount);
-        System.out.println("Rejected registrations: " + rejectedCount);
-        System.out.println("Total registrations: " + registrations.size());
+            System.out.println("Pending registrations: " + pendingCount);
+            System.out.println("Approved registrations: " + approvedCount);
+            System.out.println("Rejected registrations: " + rejectedCount);
+            System.out.println("Total registrations: " + registrations.size());
+        } else {
+            System.out.println("No perms to handle registrations");
+        }
     }
 
     @Override
@@ -77,7 +85,7 @@ public class RegistrationManager implements RegistrationAction {
                 rejectRegistration(registration, usr);
             }
         } else {
-            System.out.println("No perms to edit project");
+            System.out.println("No perms to handle registrations");
         }
     }
 
@@ -87,7 +95,7 @@ public class RegistrationManager implements RegistrationAction {
             registration.setStatus("Rejected");
             System.out.println("Registration denied for ID: " + registration.getID() + " due to criteria mismatch.");
         } else {
-            System.out.println("No perms to edit project");
+            System.out.println("No perms to handle registrations");
         }
     }
 
@@ -142,7 +150,7 @@ public class RegistrationManager implements RegistrationAction {
                 }
             }
         } else {
-            System.out.println("No perms to edit project");
+            System.out.println("No perms to handle registrations");
         }
     }
 
@@ -155,7 +163,7 @@ public class RegistrationManager implements RegistrationAction {
             System.out.println("User: " + registration.getUser());
             System.out.println("Project: " + registration.getProjectID());
         } else {
-            System.out.println("No perms to edit project");
+            System.out.println("No perms to handle registrations");
         }
     }
 }

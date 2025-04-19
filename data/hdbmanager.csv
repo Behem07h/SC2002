@@ -1,3 +1,3 @@
-userID,username,password,maritalStatus,age,perms
-T8765432F,Michael,password,Single,36,MANAGER
-S5678901G,Jessica,password,Married,26,MANAGER
+userID,username,password,maritalStatus,age,perms, Active Project ID
+T8765432F,Michael,password,Single,36,MANAGER, NONE
+S5678901G,Jessica,password,Married,26,MANAGER, NONE

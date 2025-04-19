@@ -6,7 +6,7 @@ import java.util.regex.*;
 
 public abstract class GenericManager<T extends user> {
     protected List<T> userDB = new ArrayList<>();
-
+    //todo: store users to csv
     // Load users from CSV
     public boolean loadUsersFromCSV(String filename) {
         File file = new File(filename);

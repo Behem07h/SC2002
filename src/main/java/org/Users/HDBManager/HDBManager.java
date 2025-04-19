@@ -9,9 +9,6 @@ public class HDBManager implements user {
     private String username;
     private String password;  // Plain-text password (note: consider hashing in production)
     
-    // Unique attribute for HDBManager: handles one project at a time
-    private String handleOneProject;
-    
     // Permission level for the manager
     private final PermissionLevel perms;
     
@@ -112,10 +109,10 @@ public class HDBManager implements user {
         return "HDBManager{" +
                "username='" + username + '\'' +
                ", userID='" + userID + '\'' +
-               ", handleOneProject='" + handleOneProject + '\'' +
                ", maritalStatus='" + maritalStatus + '\'' +
                ", age=" + age +
                ", permissionLevel=" + perms +
+                ", activeProjectId='" + activeProjectId + '\'' +
                '}';
     }
 }

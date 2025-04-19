@@ -25,7 +25,7 @@ public class HDBOfficerManager extends GenericManager<user> {
    @Override
    public void addUser(String userID, String username, int age, String maritalStatus, String unused2) {
        user.PermissionLevel perms = user.PermissionLevel.OFFICER;
-       userDB.add(new HDBOfficer(userID, username, "defaultPassword", maritalStatus, age, perms));
+       userDB.add(new HDBOfficer(userID, username, "password", maritalStatus, age, perms));
        System.out.println("HDB Officer added: " + userID);
    }
 }

@@ -13,30 +13,32 @@ public class HDBManager implements user {
     private String handleOneProject;
     
     // Permission level for the manager
-    private PermissionLevel perms;
+    private final PermissionLevel perms;
     
     // Additional fields from Excel
     private String maritalStatus;
     private int age;
+
+    private String activeProjectId; //todo: active projects can never overlap with the previous
     
     // Constructor for HDBManager with age and maritalStatus included
-    public HDBManager(String userID, String username, String password, String handleOneProject, PermissionLevel perms, String maritalStatus, int age) {
+    public HDBManager(String userID, String username, String password, String maritalStatus, int age, PermissionLevel perms, String activeProjectId) {
         this.userID = userID;
         this.username = username;
-        this.password = password;
-        this.handleOneProject = handleOneProject;
-        this.perms = perms;
+        this.password = password;  // Plain-text password
         this.maritalStatus = maritalStatus;
         this.age = age;
+        this.perms = perms;
+        this.activeProjectId = activeProjectId;
     }
     
     // Getter and Setter for handleOneProject
-    public String getHandleOneProject() {
-        return handleOneProject;
+    public String getActiveProjectId() {
+        return activeProjectId;
     }
     
-    public void setHandleOneProject(String handleOneProject) {
-        this.handleOneProject = handleOneProject;
+    public void setActiveProjectId(String activeProjectId) {
+        this.activeProjectId = activeProjectId;
     }
     
     // Getters and Setters for age and maritalStatus

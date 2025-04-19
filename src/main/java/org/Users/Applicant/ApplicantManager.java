@@ -28,7 +28,7 @@ public class ApplicantManager extends GenericManager<user> {
            return;
        }
        user.PermissionLevel perms = user.PermissionLevel.APPLICANT;
-       userDB.add(new Applicant(userID, username, "defaultPassword", maritalStatus, age, perms));
+       userDB.add(new Applicant(userID, username, "password", maritalStatus, age, perms));
        System.out.println("Applicant added: " + userID);
    }
 }

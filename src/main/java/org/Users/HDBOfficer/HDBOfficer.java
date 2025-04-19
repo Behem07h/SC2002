@@ -6,16 +6,16 @@ public class HDBOfficer implements user {
     private String userID;
     private String username;
     private String password; // Plain-text password
-    private String department;  // Officer's department
+    private String maritalStatus;
     private int age;
     private final PermissionLevel perms;  // Default to PermissionLevel.NONE
 
     // Constructor
-    public HDBOfficer(String userID, String username, String password, String department, int age, PermissionLevel perms) {
+    public HDBOfficer(String userID, String username, String password, String maritalStatus, int age, PermissionLevel perms) {
         this.userID = userID;
         this.username = username;
         this.password = password;  // Plain-text password
-        this.department = department;
+        this.maritalStatus = maritalStatus;
         this.age = age;
         this.perms = perms;
     }
@@ -53,12 +53,12 @@ public class HDBOfficer implements user {
 
     @Override
     public String getMaritalStatus() {
-        return department; // Department instead of marital status for HDBOfficer
+        return maritalStatus; // Department instead of marital status for HDBOfficer
     }
 
     @Override
-    public void setMaritalStatus(String department) {
-        this.department = department;
+    public void setMaritalStatus(String maritalStatus) {
+        this.maritalStatus = maritalStatus;
     }
 
     @Override

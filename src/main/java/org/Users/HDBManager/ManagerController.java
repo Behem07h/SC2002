@@ -9,17 +9,20 @@ public class ManagerController extends GenericManager<user> {
    @Override
    protected HDBManager parseUser(String line) {
        String[] details = line.split(",");
-       if (details.length != 3) return null;
+       if (details.length != 7) return null;
 
+       int age = Integer.parseInt(details[4]);
+       user.PermissionLevel perms = user.PermissionLevel.valueOf(details[5]);
 
        // CSV: userID, username, password
-       return new HDBManager(details[0], details[1], details[2], line, null, line, 0);
+       return new HDBManager(details[0], details[1], details[2], details[3], age, perms, details[6]);
    }
 
 
    @Override
-   public void addUser(String userID, String username, int age, String unused1, String unused2) {
-       userDB.add(new HDBManager(userID, username, "defaultPassword", unused2, null, unused2, age));
+   public void addUser(String userID, String username, int age, String maritalStatus, String unused2) {
+       user.PermissionLevel perms = user.PermissionLevel.MANAGER;
+       userDB.add(new HDBManager(userID, username, "password", maritalStatus, age, perms, ""));
        System.out.println("Manager added: " + userID);
    }
 }

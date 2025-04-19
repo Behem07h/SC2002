@@ -2,15 +2,13 @@ package org.Users.HDBOfficer;
 
 import org.Users.user;
 
-import java.util.Scanner;
-
 public class HDBOfficer implements user {
     private String userID;
     private String username;
     private String password; // Plain-text password
     private String department;  // Officer's department
     private int age;
-    private PermissionLevel perms = PermissionLevel.OFFICER;  // Default to PermissionLevel.NONE
+    private final PermissionLevel perms;  // Default to PermissionLevel.NONE
 
     // Constructor
     public HDBOfficer(String userID, String username, String password, String department, int age, PermissionLevel perms) {
@@ -75,7 +73,7 @@ public class HDBOfficer implements user {
 
     @Override
     public PermissionLevel getPerms() {
-        return null;
+        return this.perms;
     }
 
     @Override
@@ -86,11 +84,4 @@ public class HDBOfficer implements user {
         }
         return false;
     }
-
-    @Override
-    public String[] act(String action, Scanner sc) {
-        return new String[0];
-    }
-
-    // Enum for Permission Levels
 }

@@ -95,12 +95,6 @@ public class HDBManager implements user {
     public PermissionLevel getPerms() {
         return perms;
     }
-
-    @Override
-    public String[] act(String something, Scanner sc) {
-        System.out.println("HDBManager [" + username + "] is acting on: " + something);
-        return new String[0];
-    }
     
     @Override
     public boolean changePassword(String oldPassword, String newPassword) {

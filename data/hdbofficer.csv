@@ -1,4 +1,4 @@
-username,userID,age,maritalStatus,password
-Daniel,T2109876H,36,Single,password
-Emily,S6543210I,28,Single,password
-David,T1234567J,29,Married,password
+userID,username,password,maritalStatus,age,perms
+T2109876H,Daniel,password,Single,36,OFFICER,
+S6543210I,Emily,password,Single,28,OFFICER,
+T1234567J,David,password,Married,29,OFFICER,

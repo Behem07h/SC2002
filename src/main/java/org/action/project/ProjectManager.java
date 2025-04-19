@@ -183,7 +183,7 @@ public class ProjectManager {
     }
     private String getUserValidFlatTypes(user usr) {
         if (usr instanceof HDBOfficer || usr instanceof HDBManager) {
-            return "";
+            return "Room";
         } else {
             if (Objects.equals(usr.getMaritalStatus(), "Single") && usr.getAge() >= 35) {
                 return "2-Room";

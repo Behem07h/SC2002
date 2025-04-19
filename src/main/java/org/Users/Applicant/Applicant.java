@@ -2,15 +2,13 @@ package org.Users.Applicant;
 
 import org.Users.user;
 
-import java.util.Scanner;
-
 public class Applicant implements user {
     private String userID;
     private String username;
     private String password;  // Plain-text password
     private String maritalStatus;
     private int age;
-    private PermissionLevel perms = PermissionLevel.APPLICANT;  // Default permission level
+    private final PermissionLevel perms;  // Default permission level
 
     // Constructor
     public Applicant(String userID, String username, String password, String maritalStatus, int age, PermissionLevel perms) {
@@ -76,13 +74,6 @@ public class Applicant implements user {
     @Override
     public PermissionLevel getPerms() {
         return this.perms;
-    }
-
-    @Override
-    public String[] act(String something, Scanner sc) {
-        // Simple behavior — print something or log an action
-        System.out.println("Applicant [" + username + "] is acting on: " + something);
-        return new String[0];
     }
 
     @Override

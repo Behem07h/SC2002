@@ -19,15 +19,18 @@ public class Main {
             switch (choice) {
                 case 1:
                     manager = new ApplicantManager();
-                    new loginScreen(scanner, manager);
+                    new loginScreen(scanner, manager, "data/applicant.csv");
+                    break;
                     //initialise generic manager as applicant manager
                 case 2:
                     manager = new HDBOfficerManager();
-                    new loginScreen(scanner, manager);
+                    new loginScreen(scanner, manager, "data/hdbofficer.csv");
+                    break;
                     //initialise generic manager as officer manager
                 case 3:
                     manager = new ManagerController();
-                    new loginScreen(scanner, manager);
+                    new loginScreen(scanner, manager, "data/hdbmanager.csv");
+                    break;
                     //initialise generic manager as manager of manager
                 default:
                     System.out.println("Invalid option.");
@@ -38,8 +41,8 @@ public class Main {
 }
 
 class loginScreen {
-    public loginScreen(Scanner scanner, GenericManager<user> userManager) { //todo: pass manager as generic superclass
-        boolean loaded = userManager.loadUsersFromCSV("data/applicant.csv");
+    public loginScreen(Scanner scanner, GenericManager<user> userManager, String filename) { //todo: pass manager as generic superclass
+        boolean loaded = userManager.loadUsersFromCSV(filename);
         if (!loaded) {
             System.out.println("Warning: Failed to load users from CSV file.");
         }

@@ -36,8 +36,6 @@ public interface user {
         MANAGER,  // Administrator privileges
         NONE    // No special permissions (default value)
     }
-
-    String[] act(String action, Scanner sc); //wrapper fn that handles user inputs for all actions
 }
 
 

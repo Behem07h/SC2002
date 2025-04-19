@@ -10,7 +10,7 @@ public class HDBOfficer implements user {
     private String password; // Plain-text password
     private String department;  // Officer's department
     private int age;
-    private PermissionLevel perms;  // Default to PermissionLevel.NONE
+    private PermissionLevel perms = PermissionLevel.OFFICER;  // Default to PermissionLevel.NONE
 
     // Constructor
     public HDBOfficer(String userID, String username, String password, String department, int age, PermissionLevel perms) {

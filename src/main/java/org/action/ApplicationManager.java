@@ -34,8 +34,6 @@ public class ApplicationManager {
             System.out.println(items[3]);
             System.out.println(items[4]);
             LocalDate closingDate = (Objects.equals(items[4], "null") ? null : LocalDate.parse(items[4]));
-            //LocalDate openingDate = null;
-            //LocalDate closingDate = null;
             String flatType = items[5]; //todo: load and save withdrawal status as well
             this.applicationList.add(new Application(key, applicantId, projectID, status, openingDate, closingDate, flatType));
         }

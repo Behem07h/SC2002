@@ -1,169 +1,148 @@
 package org.action.registration;
 
 import org.Users.HDBManager.HDBManager;
+import org.Users.HDBOfficer.HDBOfficer;
+import org.action.project.Project;
+import org.action.project.ProjectManager;
+import org.UI.ConfigLDR;
 import org.Users.user;
+import org.Users.Applicant.Applicant;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Scanner;
-import java.util.Set;
+import java.time.LocalDate;
+import java.util.*;
 
-public class RegistrationManager implements RegistrationAction {
-    private List<Register> registrations;
+public class RegistrationManager{
+    private final List<Register> registrationList;
+    private final String path = "data/db";
+    private final String filename =  "/registrations.csv";
 
     public RegistrationManager(){
-        this.registrations = new ArrayList<>();
+        this.registrationList = new ArrayList<>();
+
+        ConfigLDR ldr = new ConfigLDR();
+        Map<String,String[]> reg_map = ldr.ReadToArrMap(path + filename);
+        for (String key : reg_map.keySet()) {
+            String[] items = reg_map.get(key);
+            if (items.length < 4) {
+                System.out.println("Registration ID " + key + " missing params");
+                continue;
+            } //if param length too short, skip
+            String projectID = items[0];
+            String userID = items[1];
+            Register.RegistrationStatus status = Register.RegistrationStatus.valueOf(items[2]);
+            String openingDate = items[3];
+            String closingDate = items[4];
+            this.registrationList.add(new Register(key, userID, projectID, status, openingDate, closingDate));
+        }
     }
 
-    // public void processRegistration(Register registration){
-    //     RegistrationCriteria criteria = registration.getCriteria();
-    //     String user = registration.getUser();
-    //     String projectID = registration.getProjectID();
-
-    //     if(criteria.noIntention(user, projectID) && criteria.notHDBofficer(user, projectID)){
-    //         registrations.add(registration);
-    //     }
-    //     else{
-    //         registration.setStatus("Rejected");
-    //     }
-    // }
-
-    public void addRegistration(Register registration) {
-        registrations.add(registration);
+    public void store() {
+        // run this when quitting program to store to csv
+        Map<String,String[]> reg_map = new HashMap<>();
+        for (Register reg : registrationList) {
+            String[] items = {reg.getProjectID(), reg.getUserID(), String.valueOf(reg.getStatus()), String.valueOf(reg.getSubmissionDate()), String.valueOf(reg.getClosingDate())};
+            reg_map.put(String.valueOf(reg.getRegistrationID()),items);
+        }
+        ConfigLDR ldr = new ConfigLDR();
+        ldr.saveCSV(path + filename,reg_map);
     }
+
+    private List<Register> searchFilter(String userID, String projectID, String registrationID, List<Register.RegistrationStatus> statusBlacklist) {
+        List<Register> out = new ArrayList<>();
+        for (Register reg : registrationList) {
+            if (reg.filter(userID, projectID, registrationID, statusBlacklist)) {
+                out.add(reg);
+            }
+        }
+        return out;
+    }
+
+    private int countByUser(user usr) {
+        List<Register> filteredReg = searchFilter(usr.getUserID(),"","", List.of(Register.RegistrationStatus.PENDING));
+        return filteredReg.size();
+    }
+
+    private int generateNewRegistrationID() {
+        int maxId = 0;
+        for (Register reg : registrationList) {
+            if (Integer.parseInt(reg.getRegistrationID()) > maxId) {
+                maxId = Integer.parseInt(reg.getRegistrationID());
+            }
+        }
+        return maxId + 1;
+    }
+
+    public void registerProject(user usr, String projectId, ProjectManager proMan) {
+        if (usr instanceof HDBOfficer) {
+            Project p = proMan.getProjectObjByName(usr, projectId, false);
+            if ((p != null) && (p.getOfficersIDList().contains(usr.getUserID()))) {
+                System.out.println("You are currently an officer for a project");
+                return;
+            } //else continue to check for existing applications
+        } else if (!(usr instanceof Applicant)) {
+            System.out.println("Your user type cannot register for projects");
+            return;
+        }
+        //todo: add another condition to check if officer applied to project as applicant
+        if (countByUser(usr) == 0) {
+            if (proMan.projectExists(usr, projectId, true) > 0) {
+                Register newRegistration =  new Register(
+                        String.valueOf(generateNewRegistrationID()),
+                        usr.getUserID(),
+                        projectId,
+                        Register.RegistrationStatus.PENDING,
+                        String.valueOf(LocalDate.now()),
+                        "" 
+                );
+                registrationList.add(newRegistration);
+            } else {
+                System.out.println("No such project");
+            }
+        } else {
+            System.out.println("You have already registered for another project");
+            // or already have intentions to apply as applicant for project
+        }
+    }
+
+    private Register retrieveRegistration(String registrationID) {
+        for (Register reg : registrationList) {
+            if (reg.getRegistrationID().equalsIgnoreCase(registrationID)) {
+                return reg;
+            }
+        }
+        System.out.println("No registration found with ID: " + registrationID);
+        return null;
+    }
+
+    public void processRegistration(user usr, String registrationID, String action, ProjectManager proMan) {
+        if (!(usr instanceof HDBManager)) {
+            System.out.println("You do not have the perms to process project registrations");
+            return;
+        }
+        Register reg = retrieveRegistration(registrationID);
+        if (reg == null) {
+            System.out.println("Registration ID \"" + registrationID + "\" not found.");
+            return;
+        }
+        switch (action) {
+            case "APPROVED":
+                System.out.println("Processing approval for registration ID: " + registrationID);
+                reg.approveRegistration();
+                break;
+
+            case "REJECTED":
+                System.out.println("Processing rejection for registration ID: " + registrationID);
+                reg.rejectRegistration();
+                break;
+
+            default:
+                System.out.println("Unsupported target status: " + action);
+        }
+    }
+
+    public List<Register> getRegistrationList() {
+        return registrationList;
+    }
+
     
-    public void generateReport(user usr) {
-        if(usr instanceof HDBManager) {
-            System.out.println("=== Registration Report ===");
-            
-            int pendingCount = 0;
-            int approvedCount = 0;
-            int rejectedCount = 0;
-            
-            for (Register reg : registrations) {
-                switch (reg.getStatus()) {
-                    case "Pending":
-                        pendingCount++;
-                        break;
-                    case "Approved":
-                        approvedCount++;
-                        break;
-                    case "Rejected":
-                        rejectedCount++;
-                        break;
-                }
-            }
-
-            System.out.println("Pending registrations: " + pendingCount);
-            System.out.println("Approved registrations: " + approvedCount);
-            System.out.println("Rejected registrations: " + rejectedCount);
-            System.out.println("Total registrations: " + registrations.size());
-        } else {
-            System.out.println("No perms to handle registrations");
-        }
-    }
-
-    @Override
-    public void approveRegistration(Register registration, user usr) {
-        RegistrationCriteria criteria = registration.getCriteria();
-        String user = registration.getUser();
-        String projectID = registration.getProjectID();
-
-        if(usr instanceof HDBManager) {
-            if(criteria.noIntention(user, projectID) && criteria.notHDBofficer(user, projectID)){
-                registration.setStatus("Approved");
-                System.out.println("Registration approved for ID: " + registration.getID());
-            }
-            else{
-                rejectRegistration(registration, usr);
-            }
-        } else {
-            System.out.println("No perms to handle registrations");
-        }
-    }
-
-    @Override
-    public void rejectRegistration(Register registration, user usr) {
-        if(usr instanceof HDBManager) {
-            registration.setStatus("Rejected");
-            System.out.println("Registration denied for ID: " + registration.getID() + " due to criteria mismatch.");
-        } else {
-            System.out.println("No perms to handle registrations");
-        }
-    }
-
-    @Override
-    public void registerProject(Register registration, user usr) {
-        String user = registration.getUser();
-        String projectID = registration.getProjectID();
-
-        if (usr instanceof HDBManager) {
-            String projectsFile = "projects.csv";
-            List<List<String>> data = new ArrayList<>();
-            try (Scanner scanner = new Scanner(new File(projectsFile))) {
-                while (scanner.hasNextLine()) {
-                    String line = scanner.nextLine();
-                    String[] values = line.split(",");
-                    List<String> lineData = Arrays.asList(values);
-                    data.add(lineData);
-                }
-            }
-            catch (FileNotFoundException e) {
-                e.printStackTrace();
-            }
-
-            for (int i = 1; i < data.size(); i++) {
-                List<String> row = data.get(i);
-                if (!row.isEmpty() && row.get(0).equalsIgnoreCase(projectID)) {
-                    while (row.size() <= 12) {
-                        row.add("");
-                    }
-
-                    String existing = row.get(12).trim();
-                    Set<String> officers = new LinkedHashSet<>(Arrays.asList(existing.split(",")));
-
-                    if (!officers.contains(user)) {
-                        officers.add(user);
-                        row.set(12, String.join(",", officers));
-                        System.out.println("Project registered for " + user);
-                    }
-                    else {
-                        System.out.println("Failed to register officer for project");
-                    }
-                    break;
-                }
-
-                try (PrintWriter writer = new PrintWriter(new FileWriter(projectsFile))) {
-                    for (List<String> rowData : data) {
-                        writer.println(String.join(",", rowData));
-                    }
-                } 
-                catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-        } else {
-            System.out.println("No perms to handle registrations");
-        }
-    }
-
-    @Override
-    public void viewRegistrationProject(Register registration, user usr) {
-        if (usr instanceof HDBManager) {
-            System.out.println("Status for ID: " + registration.getID());
-            System.out.println("Registration ID: " + registration.getID());
-            System.out.println("Status: " + registration.getStatus());
-            System.out.println("User: " + registration.getUser());
-            System.out.println("Project: " + registration.getProjectID());
-        } else {
-            System.out.println("No perms to handle registrations");
-        }
-    }
 }

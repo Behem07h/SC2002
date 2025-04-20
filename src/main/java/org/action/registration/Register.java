@@ -1,41 +1,115 @@
 package org.action.registration;
 
+import java.time.LocalDate;
+import java.util.List;
+import java.util.Objects;
+
+
 public class Register {
-    private String status;
-    private String regID;
-    private String user;
+    private String registrationID;
+    private String userID;
     private String projectID;
-    private RegistrationCriteria criteria;
+    private RegistrationStatus status;
+    private final LocalDate submissionDate;
+    private LocalDate closingDate;
 
-    public Register(String ID, String user, String projectID, RegistrationCriteria criteria) {
-        this.regID = ID;
-        this.status = "Pending";
-        this.criteria = criteria;
-        this.user = user;
-        this.projectID = projectID;
+    public enum RegistrationStatus {
+        NIL,
+        PENDING,
+        APPROVED,
+        REJECTED
     }
 
-    public String getStatus() {
-        return status;
+    public Register(
+        String registrationID, 
+        String userID, 
+        String projectID,
+        RegistrationStatus status,
+        String openingDate,
+        String closingDate
+    ) {
+        this.registrationID     = registrationID;
+        this.userID             = userID;
+        this.projectID          = projectID;
+        this.status             = status;
+        this.submissionDate     = LocalDate.parse(openingDate);
+        if (!closingDate.isEmpty()) {
+            this.closingDate    = LocalDate.parse(closingDate);
+        } else {
+            this.closingDate    = null;
+        }
     }
 
-    public void setStatus(String status) {
-        this.status = status;
+    public void approveRegistration() {
+        if (status == RegistrationStatus.PENDING) {
+            status      = RegistrationStatus.APPROVED;
+            System.out.println("Registration " + registrationID + " for project " + projectID + "approved");
+        } else {
+            System.out.println("Cannot accept: status is " + status);
+        }
     }
 
-    public String getID() {
-        return regID;
+    public void rejectRegistration() {
+        if (status == RegistrationStatus.PENDING) {
+            status      = RegistrationStatus.REJECTED;
+            closingDate = LocalDate.now();
+            System.out.println("Registration " + registrationID + " for project " + projectID + " rejected on " + closingDate);
+        } else {
+            System.out.println("Cannot reject: status is " + status);
+        }
     }
 
-    public RegistrationCriteria getCriteria() {
-        return criteria;
+    public boolean filter(String userID, String projectID, String registrationID, List<RegistrationStatus> statusBlacklist) {
+        boolean out = true;
+        if (!userID.isEmpty()) {
+            out = Objects.equals(this.registrationID, userID);
+        }
+        if (!projectID.isEmpty()) {
+            out = Objects.equals(this.projectID, projectID);
+        }
+        if (!registrationID.isEmpty()) {
+            out = out && Objects.equals(this.registrationID, registrationID);
+        }
+        for (RegistrationStatus status : statusBlacklist) {
+            out = out && (this.status != status);
+        }
+        return out;
     }
 
-    public String getUser() {
-        return user;
+    public String getRegistrationID() {
+        return registrationID;
+    }
+
+    public String getUserID(){
+        return userID;
     }
 
     public String getProjectID() {
         return projectID;
     }
+
+    public RegistrationStatus getStatus() {
+        return status;
+    }
+
+    public LocalDate getSubmissionDate() {
+        return submissionDate;
+    }
+
+    public String getClosingDate() {
+        if (closingDate == null) {
+            return "NONE";
+        } else {
+            return String.valueOf(closingDate);
+        }
+    }
+
+    public void setClosingDate(LocalDate now) {
+        this.closingDate = now;
+    }
+
+    public void setRegistrationStatus(RegistrationStatus newStatus) {
+        this.status = newStatus;
+    }
+
 }

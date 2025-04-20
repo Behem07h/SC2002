@@ -2,7 +2,10 @@
 package org.action;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Objects;
+
+import static org.action.Application.WithdrawalStatus.*;
 
 /**
  * A single application with full submit/approve/reject/withdrawal workflow.
@@ -12,10 +15,10 @@ public class Application implements Act {
     private final String applicantId;
     private final String projectId;
     private ApplicationStatus status;
-    private LocalDate submissionDate;
+    private final LocalDate submissionDate;
     private LocalDate closingDate;
     private final String flatType;
-    private final WithdrawalRequest withdrawalRequest;
+    private WithdrawalStatus withdrawStatus;
 
     public enum ApplicationStatus {
         PENDING,
@@ -25,23 +28,35 @@ public class Application implements Act {
         WITHDRAWN
     }
 
+    public enum WithdrawalStatus {
+        NIL,
+        PENDING,
+        WITHDRAWN,
+        REJECTED
+    }
+
     public Application(
         String applicationId,
         String applicantId,
         String projectId,
         ApplicationStatus status,
-        LocalDate openingDate,
-        LocalDate closingDate,
+        WithdrawalStatus withdrawStatus,
+        String openingDate,
+        String closingDate,
         String flatType
     ) {
         this.applicationId     = applicationId;
         this.applicantId       = applicantId;
         this.projectId         = projectId;
         this.status            = status;
-        this.submissionDate    = openingDate;
-        this.closingDate       = closingDate;
+        this.withdrawStatus    = withdrawStatus;
+        this.submissionDate    = LocalDate.parse(openingDate);
+        if (!closingDate.isEmpty()) {
+            this.closingDate       = LocalDate.parse(closingDate);
+        } else {
+            this.closingDate = null;
+        }
         this.flatType          = flatType;
-        this.withdrawalRequest = new WithdrawalRequest(applicationId);
     }
 
     @Override
@@ -49,23 +64,23 @@ public class Application implements Act {
         if (status == ApplicationStatus.WITHDRAWN) {
             return "Application is withdrawn, cannot view";
         }
-        return String.format("Application %s | Project %s\nApplicant: %s\nStatus: %s\nSubmitted on: %s%s", applicationId, projectId, applicantId, status, submissionDate, (closingDate  != null ? String.format("| Closed on: %s",closingDate)  : ""));
+        return String.format("Application %s | Project %s\nApplicant: %s\nStatus: %s%s\nSubmitted on: %s%s", applicationId, projectId, applicantId, status, ((withdrawStatus != NIL) ? String.format(" | Withdrawal: %s", withdrawStatus) : ""),submissionDate, (closingDate  != null ? String.format("| Closed on: %s",closingDate)  : ""));
     }
 
-    public void submit() {
+    public void acceptApplication() {
         if (status == ApplicationStatus.PENDING) {
-            status      = ApplicationStatus.BOOKED;
-            submissionDate = LocalDate.now();
-            System.out.println("Application " + applicationId + " booked on " + submissionDate);
+            status      = ApplicationStatus.SUCCESSFUL;
+            System.out.println("Application " + applicationId + " invited for flat booking");
         } else {
-            System.out.println("Cannot submit: status is " + status);
+            System.out.println("Cannot accept: status is " + status);
         }
     }
 
-    public void approveApplication() {
-        if (status == ApplicationStatus.BOOKED) {
-            status      = ApplicationStatus.SUCCESSFUL;
+    public void book_flat() {
+        if (status == ApplicationStatus.SUCCESSFUL) {
+            status      = ApplicationStatus.BOOKED;
             closingDate = LocalDate.now();
+            //todo: decrement project flats count & add application id to project data
             System.out.println("Application " + applicationId + " approved on " + closingDate);
         } else {
             System.out.println("Cannot approve: status is " + status);
@@ -73,7 +88,7 @@ public class Application implements Act {
     }
 
     public void rejectApplication() {
-        if (status == ApplicationStatus.BOOKED) {
+        if (status == ApplicationStatus.PENDING) {
             status      = ApplicationStatus.UNSUCCESSFUL;
             closingDate = LocalDate.now();
             System.out.println("Application " + applicationId + " rejected on " + closingDate);
@@ -83,9 +98,9 @@ public class Application implements Act {
     }
 
     /** Applicant requests withdrawal (only if BOOKED). */
-    public void withdrawApplication() {
-        if (status == ApplicationStatus.BOOKED) {
-            withdrawalRequest.request();
+    public void requestWithdrawal() {
+        if (status != ApplicationStatus.WITHDRAWN) {
+            withdrawStatus = PENDING;
         } else {
             System.out.println("Cannot request withdrawal: status=" + status);
         }
@@ -93,30 +108,29 @@ public class Application implements Act {
 
     /** Officer finalizes an approved withdrawal. */
     public void approveWithdrawal() {
-        if (withdrawalRequest.getApprovalStatus()
-            == WithdrawalRequest.OfficerApprovalStatus.APPROVED) {
-
+        if (withdrawStatus == PENDING) {
+            withdrawStatus = WITHDRAWN;
             status      = ApplicationStatus.WITHDRAWN;
             closingDate = LocalDate.now();
             System.out.println("Application " + applicationId +
                                " withdrawn successfully on " + closingDate);
         } else {
             System.out.println("Cannot finalize withdrawal: approval status is " +
-                               withdrawalRequest.getApprovalStatus());
+                    withdrawStatus);
         }
     }
 
     /** Officer processes a rejected withdrawal. */
     public void rejectWithdrawal() {
-        if (withdrawalRequest.getApprovalStatus()
-            == WithdrawalRequest.OfficerApprovalStatus.REJECTED) {
+        if (withdrawStatus == PENDING) {
+            withdrawStatus = REJECTED;
             System.out.println("Withdrawal request for " + applicationId + " was rejected.");
         } else {
             System.out.println("No rejected withdrawal to process for " + applicationId);
         }
     }
 
-    public boolean filter(String userId, String projectId, String applicationId, ApplicationStatus statusBlacklist) {
+    public boolean filter(String userId, String projectId, String applicationId, List<ApplicationStatus> statusBlacklist) {
         boolean out = true;
         if (!userId.isEmpty()) {
             out = Objects.equals(this.applicantId, userId);
@@ -127,8 +141,8 @@ public class Application implements Act {
         if (!applicationId.isEmpty()) {
             out = out && Objects.equals(this.applicationId, applicationId);
         }
-        if (statusBlacklist != null) {
-            out = out && (this.status != statusBlacklist);
+        for (ApplicationStatus status : statusBlacklist) {
+            out = out && (this.status != status);
         }
         return out;
     }
@@ -142,8 +156,12 @@ public class Application implements Act {
     return applicantId;
     }
 
-    public LocalDate getClosingDate() {
-        return closingDate;
+    public String getClosingDate() {
+        if (closingDate == null) {
+            return "NONE";
+        } else {
+            return String.valueOf(closingDate);
+        }
     }
 
     public LocalDate getSubmissionDate() {
@@ -158,6 +176,10 @@ public class Application implements Act {
 
     public ApplicationStatus getStatus() {
         return status;
+    }
+
+    public WithdrawalStatus getWithdrawStatus() {
+        return withdrawStatus;
     }
 
     /** Updates the application’s status. */

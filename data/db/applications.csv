@@ -1,2 +1,2 @@
-Application ID,     Project Name    ,User ID,   Status,     Submission Date,    Closing Date,   Flat Type,
-1   ,Acacia Breeze, T7654321B, PENDING, 2025-04-19, null, 2-Room,
+Application ID,     Project Name    ,User ID,   Status,     Withdrawal Status,  Submission Date,    Closing Date,   Flat Type,
+1   ,Acacia Breeze, T7654321B, PENDING, NIL, 2025-04-19, NONE, 2-Room,

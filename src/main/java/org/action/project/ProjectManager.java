@@ -12,11 +12,13 @@ import org.action.registration.RegistrationManager;
 import java.time.LocalDate;
 import java.util.*;
 
+import static java.lang.Integer.max;
+
 public class ProjectManager {
     private final List<Project> projectList;
     private final String path = "data/db";
     private final String filename = "/project.csv";
-    private RegistrationManager registrationManager;
+    //private RegistrationManager registrationManager;
     
     public ProjectManager() {
         projectList = new ArrayList<>();
@@ -25,7 +27,7 @@ public class ProjectManager {
         Map<String,String[]> pro_map = ldr.ReadToArrMap(path + filename);
         for (String key : pro_map.keySet()) {
             String[] items = pro_map.get(key);
-            if (items.length < 14) {
+            if (items.length < 16) {
                 System.out.println("Project ID " + key + " missing params");
                 continue;
             } //if param length too short, skip
@@ -43,19 +45,21 @@ public class ProjectManager {
             int officer_slots = Integer.parseInt(items[10]);
             String officers = items[11];
             String officersID = items[12];
-            boolean visible = Boolean.parseBoolean(items[13]);
+            String flatType1Bookings = items[13];
+            String flatType2Bookings = items[14];
+            boolean visible = Boolean.parseBoolean(items[15]);
 
-            this.projectList.add(new Project(key, neighbourhood, type1, type1_count, type1_price, type2, type2_count, type2_price, opening_date, closing_date, manager, officer_slots, officers, officersID, visible));
+             this.projectList.add(new Project(key, neighbourhood, type1, type1_count, type1_price, type2, type2_count, type2_price, opening_date, closing_date, manager, officer_slots, officers, officersID, flatType1Bookings, flatType2Bookings, visible));
         }
 
-        registrationManager = new RegistrationManager();
+        //registrationManager = new RegistrationManager();
     }
 
     public void store() {
         // run this when quitting program to store to csv
         Map<String,String[]> pro_map = new HashMap<>();
         for (Project p : projectList) {
-            String[] items = {p.getNeighbourhood(),p.getFlatType1(), String.valueOf(p.getFlatCount1()), String.valueOf(p.getFlatPrice1()),p.getFlatType2(), String.valueOf(p.getFlatCount2()), String.valueOf(p.getFlatPrice2()), String.valueOf(p.getOpeningDate()), String.valueOf(p.getClosingDate()),p.getManagerId(), String.valueOf(p.getOfficerSlotCount()),p.getOfficersList(),p.getOfficersIDList(), String.valueOf(p.isVisible())};
+            String[] items = {p.getNeighbourhood(),p.getFlatType1(), String.valueOf(p.getFlatCount1()), String.valueOf(p.getFlatPrice1()),p.getFlatType2(), String.valueOf(p.getFlatCount2()), String.valueOf(p.getFlatPrice2()), String.valueOf(p.getOpeningDate()), String.valueOf(p.getClosingDate()),p.getManagerId(), String.valueOf(p.getOfficerSlotCount()),p.getOfficersList(),p.getOfficersIDList(), p.getFlatType1Bookings(), p.getFlatType2Bookings(), String.valueOf(p.isVisible())};
             pro_map.put(String.valueOf(p.getProjectName()),items);
         }
         ConfigLDR ldr = new ConfigLDR();
@@ -73,16 +77,16 @@ public class ProjectManager {
             }
             if (exists) {
                 System.out.println("Cannot create project with identical name");
-            } else {
-                projectList.add(new Project(projectName, neighbourhood, type1, type1_count, type1_price, type2, type2_count, type2_price, LocalDate.parse(opening_date), LocalDate.parse(closing_date), manager, officer_slots, "", "",false));
+            } else { //todo: check that they have no active projects
+                projectList.add(new Project(projectName, neighbourhood, type1, type1_count, type1_price, type2, type2_count, type2_price, LocalDate.parse(opening_date), LocalDate.parse(closing_date), manager, officer_slots, "", "","","",false));
                 System.out.println("New project created: " + projectName);
             }
         } else {
-            System.out.println("No perms to edit project");
+            System.out.println("No perms to create project");
         }
     }
     public void deleteProject(user usr, String projectName) {
-        if (usr instanceof HDBManager) {
+        if (usr instanceof HDBManager) { //todo: check this is a project they are managing
             boolean removed = projectList.removeIf(p -> p.filter("",projectName,"","",false,false));
             if (removed) {
                 System.out.println("Project '" + projectName + "' deleted from the system.");
@@ -94,10 +98,10 @@ public class ProjectManager {
         }
     }
     public void editProject(user usr, String projectNameOld, String projectName, String neighbourhood, String flatType1, int flatCount1, int flatPrice1, String flatType2, int flatCount2, int flatPrice2, String openingDate, String closingDate, int officerSlots) {
-        if (usr instanceof HDBManager) {
+        if (usr instanceof HDBManager) { //todo: check this is a project they are managing
             for (Project p : projectList) {
                 if (p.filter("", projectNameOld,"","",false,false)) {
-                    p.edit(projectName, neighbourhood, flatType1, flatCount1, flatPrice1, flatType2, flatCount2, flatPrice2, openingDate, closingDate, officerSlots);
+                    p.edit(projectName, neighbourhood, flatType1, max(p.getBookingCount1(),flatCount1), flatPrice1, flatType2, max(p.getBookingCount2(),flatCount2), flatPrice2, openingDate, closingDate, officerSlots);
                     System.out.println("Project updated for keyword: " + projectName);
                     return;
                 }
@@ -109,7 +113,7 @@ public class ProjectManager {
     }
 
     public void toggleVisibility(user usr, String keyword) {
-        if (usr instanceof HDBManager) {
+        if (usr instanceof HDBManager) { //todo: check this is a project they are managing
             for (Project p : projectList) {
                 if (p.filter("",keyword,"","",false,false)) {
                     p.toggle_visibility();
@@ -184,7 +188,7 @@ public class ProjectManager {
         }
     }
     public List<String> getProjectByName(user usr, String projectName, EnquiriesManager enqMan, boolean visChk) {
-        List<String> out = new ArrayList<>();
+        List<String> out = new ArrayList<>(List.of(""));
         Project p = getProjectObjByName(usr, projectName, visChk);
         if (p != null) {
             out.set(0, "\n" + p.viewFull(usr, getUserValidFlatTypes(usr), enqMan));
@@ -239,6 +243,7 @@ public class ProjectManager {
         return filterFlat(usr, getUserValidFlatTypes(usr));
     }
 
+    /*
     public void joinProject(user usr, String projectName, RegistrationCriteria criteria){
         if(usr instanceof HDBOfficer) {
             String regID = UUID.randomUUID().toString();
@@ -249,6 +254,6 @@ public class ProjectManager {
             System.out.println("No perms to join project");
         }
     }
-
+    */
 } 
 

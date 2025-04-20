@@ -27,6 +27,8 @@ public class ConfigLDR{
         }
     }
     public HashMap<String, String[]> ReadToArrMap(String filename) {
+        Scanner sc = new Scanner(System.in);
+        sc.nextLine();
         File file = new File(filename);
         HashMap<String, String[]> cfg = new HashMap<>();
         try (BufferedReader br = new BufferedReader(new FileReader(file))) {

@@ -9,6 +9,7 @@ import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Scanner;
 
 public class Context {
@@ -27,8 +28,12 @@ public class Context {
     }
 
     public void endContext() {
+        Scanner sc = new Scanner(System.in);
+        System.out.println("Saving Enquiries");
         enqMan.store();
+        System.out.println("Saving Applications");
         appMan.store();
+        System.out.println("Saving Projects");
         proMan.store();
     }
 
@@ -37,7 +42,6 @@ public class Context {
         List<String> input = new ArrayList<>(List.of(""));
         switch (action){
             //enquiry methods
-            //todo: add a view enquiries option. projects store list of enquiry ids, use that to look up and list enquiries
             //if no current project, show the user's submitted enquiries (user also stores a list of enquiry ids that are owned by them, as well as applications that are owned by them
             case "view-enquiries":
                 if (currentViewedProjectID.isEmpty()) {
@@ -47,7 +51,7 @@ public class Context {
                 }
                 currentViewedEnquiryID = "";
                 if (output.get(0).isEmpty()) {
-                    output.add("No enquiries found");
+                    System.out.println("No enquiries found");
                 }
                 return output;
             case "view-enquiry":
@@ -114,7 +118,7 @@ public class Context {
                     output = appMan.listByUser(usr, enqMan, proMan);
                 }
                 if (output.get(0).isEmpty()) {
-                    output.add("No applications found");
+                    System.out.println("No applications found");
                 }
                 return output;
             case "add-application":
@@ -132,31 +136,55 @@ public class Context {
                 input.set(0, sc.nextLine());
                 //appMan.retrieveApplication(usr,input[0]);
                 //??
-                break;
+                return List.of("");
             case "withdraw-application":
                 //input application id, sends withdrawal for current application view
                 //return withdrawal status
                 System.out.println("Enter application ID to confirm withdrawal request: ");
                 input.set(0, sc.nextLine());
-                //appMan.withdrawApplication(usr, input[0]);
-                break;
-            case "approve-application":
+                appMan.requestWithdrawal(usr, input.get(0));
+                return List.of("");
+            case "process-application":
                 //input application id, changes application status
                 //return new application status
-                System.out.println("Enter application ID to confirm approval: ");
+                System.out.println("Enter application ID to update status: ");
                 input.set(0, sc.nextLine());
-                //appMan.approveApplication(usr, input[0]);
-                break;
-            case "reject-application": //todo: add another enum that tracks this stage
+                System.out.println("Enter new application status (CANCEL to exit): ");
+                input.set(1, strIn(sc, List.of("SUCCESSFUL","UNSUCCESSFUL","CANCEL")));
+                if (!Objects.equals(input.get(1), "CANCEL")) {
+                    appMan.processApplication(usr, input.get(0), input.get(1), proMan);
+                }
+                return List.of("");
+            case "process-withdrawal":
                 //input application id, changes application status
                 //return new application status
-                System.out.println("Enter application ID to confirm rejection: ");
+                System.out.println("Enter application ID to update withdrawal status: ");
                 input.set(0, sc.nextLine());
-                //appMan.rejectApplication(usr, input[0]);
-                break;
+                System.out.println("Enter new application status (CANCEL to exit): ");
+                input.set(1, strIn(sc, List.of("WITHDRAW","REJECT","CANCEL")));
+                if (!Objects.equals(input.get(1), "CANCEL")) {
+                    appMan.processWithdrawal(usr, input.get(0), input.get(1), proMan);
+                }
+                return List.of("");
             //todo: add registration methods, which is just the application class but again
             //todo: officers register for BTO, view their registered BTOs by viewing the associated registrations
             //todo: filterable by visibility
+            case "list-registrations":
+                //todo: managers need a way to see all pending registrations for a project
+                //todo: officers need a way to see their own pending registrations
+                return List.of("");
+            case "add-registration":
+                //todo:officers register to manage project
+                //todo:check the project application period does not overlap with other ones they are managing
+                //todo:check that they have no pending or successful applications for the project
+                return List.of("");
+            case "process-registration":
+                //todo:managers acccept or reject registrations
+                return List.of("");
+            case "bookings-receipt":
+                //todo: officers and managers can print the application details of all applications in the project's flatType1Bookings and flatType2Bookings, as well as the applicant details
+                //todo: can filter by flat type, age, marital status. can do the same as a combined reciept of all their projects
+                return List.of("");
             //project methods
             case "view-all-projects":
                 //returns list of visible projects based on user
@@ -188,7 +216,7 @@ public class Context {
                     output.add("No projects found");
                 }
                 return output;
-            case "filter-projects": //todo: add variant for owned projects (for managers)
+            case "filter-projects": //todo: add variant for owned projects (for managers & officers)
                 System.out.println("Filter: ");
                 input.set(0, strIn(sc, List.of("Flat","Neighbourhood","Reset Filter")));
                 switch (input.get(0)) {
@@ -218,8 +246,8 @@ public class Context {
             case "delete-project":
                 //input project id, output success/failure and new projects list
                 System.out.println("Enter project ID to be deleted: ");
-                input.set(0, sc.nextLine());
-                proMan.deleteProject(usr, input.get(0)); //todo: check manager
+                input.set(0, strInNoBlank(sc));
+                proMan.deleteProject(usr, input.get(0));
                 currentViewedProjectID = "";
                 currentViewedEnquiryID = "";
                 output = proMan.getProjectList(usr);
@@ -231,7 +259,7 @@ public class Context {
                 //input project id, output success/failure and new projects list
                 System.out.println("Enter project ID to toggle visibility: ");
                 input.set(0, sc.nextLine());
-                proMan.toggleVisibility(usr, input.get(0)); //todo: check manager
+                proMan.toggleVisibility(usr, input.get(0));
                 currentViewedProjectID = "";
                 currentViewedEnquiryID = "";
                 output = proMan.getProjectList(usr);
@@ -239,7 +267,7 @@ public class Context {
             case "edit-project":
                 //input project id, output success/failure and new projects list
                 System.out.println("Enter project ID to edit: ");
-                input.set(0, sc.nextLine()); //todo: check manager
+                input.set(0, sc.nextLine());
                 if (!proMan.getProjectByName(usr, input.get(0), enqMan, true).isEmpty()) {
                     System.out.println("Enter new project ID (Blank to skip): ");
                     input.set(1, sc.nextLine());
@@ -272,7 +300,7 @@ public class Context {
                 currentViewedEnquiryID = "";
                 output = proMan.getProjectList(usr);
                 return output;
-            case "create-project": //todo: check manager
+            case "create-project":
                 //input project id, output success/failure and new projects list
                 if (!proMan.getProjectByName(usr, input.get(0), enqMan, true).isEmpty()) {
                     System.out.println("Enter new project ID: ");
@@ -310,7 +338,6 @@ public class Context {
                 System.out.printf("Invalid action [%s]\n", action);
                 return output;
         }
-        return output;
     }
 
     private String numberIn(Scanner sc, int min, int max) {
@@ -341,7 +368,7 @@ public class Context {
             if (input.isEmpty()) {
                 System.out.println("Input cannot be blank");
             }
-        } while (input.isEmpty());
+        } while (input.trim().isEmpty());
         return input;
     }
 

@@ -1,7 +1,7 @@
 MENU_NAME           , PERM1:PERM2:..., PERM1:PERM2:PERM3...,
 DEFAULT             , ALL,
-Project_List        , ALL,ALL,ALL,ALL,
-Project_Details     , ALL,ALL,ALL,
+Project_List        , ALL,ALL,ALL,ALL,MANAGER,MANAGER,MANAGER
+Project_Details     , ALL,ALL,APPLICANT:OFFICER,
 Project_Enquiries   , ALL,APPLICANT,ALL,
-Enquiry_View        , ALL,APPLICANT,ALL,OFFICER:MANAGER,
-Application_View    , ALL,APPLICANT,NIL,
+Enquiry_View        , ALL,APPLICANT:OFFICER,APPLICANT:OFFICER,OFFICER:MANAGER,
+Application_View    , ALL,APPLICANT:OFFICER,OFFICER:MANAGER,OFFICER:MANAGER,

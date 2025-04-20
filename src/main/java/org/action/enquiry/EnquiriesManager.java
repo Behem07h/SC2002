@@ -172,7 +172,7 @@ public class EnquiriesManager implements EnquiryAction {
                 System.out.println("Enquiry not found");
                 result.set(0, "ERROR: Enquiry not found");
                 return result;
-            } else if ((enquiry.getUserID().equals(usr.getUserID()) && (enquiry.getReply().isEmpty())) || usr instanceof HDBManager || usr instanceof HDBOfficer) {
+            } else if ((enquiry.getUserID().equals(usr.getUserID()) && (enquiry.getReply().isEmpty())) || usr instanceof HDBManager) {
                 enquiriesList.remove(enquiry);
                 result.set(0, "SUCCESS");
                 result.set(1, "Enquiry " + enquiryId + " deleted successfully");
@@ -200,7 +200,7 @@ public class EnquiriesManager implements EnquiryAction {
                 System.out.println("Enquiry not found");
                 result.set(0, "ERROR: Enquiry not found");
                 return result;
-            } else if(enquiry.getUserID().equals(usr.getUserID()) || usr instanceof HDBManager || usr instanceof HDBOfficer) {
+            } else if(enquiry.getUserID().equals(usr.getUserID()) && enquiry.getReply().isEmpty()) {
                 enquiry.setText(newText);
                 result = getEnquiriesByProject(usr,enquiry.getProjectID());
                 return result;
@@ -216,12 +216,6 @@ public class EnquiriesManager implements EnquiryAction {
         }
     }
 
-//    @Override
-//    public void editEnquiries() {
-//        // Interface implementation - used as placeholder
-//        System.out.println("Default edit enquiries method called");
-//    }
-
     @Override
     public List<String> replyEnquiries(user usr, String reply, String enquiryId) {
         List<String> result = new ArrayList<>(List.of("",""));
@@ -235,12 +229,8 @@ public class EnquiriesManager implements EnquiryAction {
                 return result;
             }
 
-            if(usr instanceof HDBManager || usr instanceof HDBOfficer) {
+            if(usr instanceof HDBManager || usr instanceof HDBOfficer) { //todo: check that the enquiry is for a project they manage
                 enquiry.setReply(reply);
-                //result.set(0, "SUCCESS");
-                //result.set(1, reply);
-                //result.set(2, String.valueOf(enquiryId));
-                //result.set(3, enquiry.getText());
                 result = getEnquiriesById(usr,enquiryId);
             } else {
                 System.out.println("You are not authorized to reply to enquiries");
@@ -255,11 +245,6 @@ public class EnquiriesManager implements EnquiryAction {
         }
     }
 
-//    @Override
-//    public void replyEnquiries() {
-//        // Interface implementation - used as placeholder
-//        System.out.println("Default reply enquiries method called");
-//    }
 
     public void processEnquiries(){
         int pending = 0;

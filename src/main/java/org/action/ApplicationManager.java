@@ -24,20 +24,18 @@ public class ApplicationManager {
         Map<String,String[]> appl_map = ldr.ReadToArrMap(path + filename);
         for (String key : appl_map.keySet()) {
             String[] items = appl_map.get(key);
-            if (items.length < 6) {
+            if (items.length < 7) {
                 System.out.println("Application ID " + key + " missing params");
                 continue;
             } //if param length too short, skip
-
             String projectID = items[0];
             String applicantId = items[1];
             Application.ApplicationStatus status = Application.ApplicationStatus.valueOf(items[2]);
-            LocalDate openingDate = (Objects.equals(items[3], "null") ? null : LocalDate.parse(items[3]));
-            System.out.println(items[3]);
-            System.out.println(items[4]);
-            LocalDate closingDate = (Objects.equals(items[4], "null") ? null : LocalDate.parse(items[4]));
-            String flatType = items[5]; //todo: load and save withdrawal status as well
-            this.applicationList.add(new Application(key, applicantId, projectID, status, openingDate, closingDate, flatType));
+            Application.WithdrawalStatus withdrawStatus = Application.WithdrawalStatus.valueOf(items[3]);
+            String openingDate = items[4];
+            String closingDate = items[5];
+            String flatType = items[6];
+            this.applicationList.add(new Application(key, applicantId, projectID, status, withdrawStatus, openingDate, closingDate, flatType));
         }
     }
 
@@ -45,7 +43,7 @@ public class ApplicationManager {
         // run this when quitting program to store to csv
         Map<String,String[]> appl_map = new HashMap<>();
         for (Application a : applicationList) {
-            String[] items = {a.getProjectId(), a.getApplicantId(), String.valueOf(a.getStatus()), String.valueOf(a.getSubmissionDate()), String.valueOf(a.getClosingDate()), a.getFlatType()};
+            String[] items = {a.getProjectId(), a.getApplicantId(), String.valueOf(a.getStatus()), String.valueOf(a.getWithdrawStatus()), String.valueOf(a.getSubmissionDate()), String.valueOf(a.getClosingDate()), a.getFlatType()};
             appl_map.put(String.valueOf(a.getApplicationId()),items);
         }
         ConfigLDR ldr = new ConfigLDR();
@@ -54,7 +52,7 @@ public class ApplicationManager {
 
 
 
-    private List<Application> searchFilter(String userId, String projectId, String applicationId, Application.ApplicationStatus statusBlacklist) {
+    private List<Application> searchFilter(String userId, String projectId, String applicationId, List<Application.ApplicationStatus> statusBlacklist) {
         List<Application> out = new ArrayList<>();
         for (Application a : applicationList) {
             if (a.filter(userId, projectId, applicationId, statusBlacklist)) {
@@ -65,11 +63,11 @@ public class ApplicationManager {
     }
 
     private int countByUser(user usr) {
-        List<Application> filteredApps = searchFilter(usr.getUserID(),"","", Application.ApplicationStatus.WITHDRAWN);
+        List<Application> filteredApps = searchFilter(usr.getUserID(),"","", List.of(Application.ApplicationStatus.WITHDRAWN,Application.ApplicationStatus.UNSUCCESSFUL));
         return filteredApps.size();
     }
     public List<String> listByUser(user usr, EnquiriesManager enqMan, ProjectManager proMan) {
-        List<Application> filteredApps = searchFilter(usr.getUserID(),"","", null);
+        List<Application> filteredApps = searchFilter(usr.getUserID(),"","", List.of());
         List<String> output = new ArrayList<>(List.of(""));
         for (Application a : filteredApps) {
             output.set(0, output.get(0) + proMan.getProjectByName(usr, a.getProjectId(), enqMan, false).get(0) + "\n\n" + a.view());
@@ -112,8 +110,9 @@ public class ApplicationManager {
                         usr.getUserID(),
                         projectId,
                         Application.ApplicationStatus.PENDING,
-                        LocalDate.now(),
-                        null,
+                        Application.WithdrawalStatus.NIL,
+                        String.valueOf(LocalDate.now()),
+                        "",
                         flatType
                 );
                 applicationList.add(newApplication);
@@ -125,9 +124,9 @@ public class ApplicationManager {
         }
     }
 
-    public Application retrieveApplication(String applicationId) {
+    private Application retrieveApplication(String applicationId) {
         for (Application app : applicationList) {
-            if (app.getApplicantId().equalsIgnoreCase(applicationId)) {
+            if (app.getApplicationId().equalsIgnoreCase(applicationId)) {
                 return app;
             }
         }
@@ -135,59 +134,93 @@ public class ApplicationManager {
         return null;
     }
 
-    public void processApplication(String applicationId, Application.ApplicationStatus targetStatus) {
+    public void processApplication(user usr, String applicationId, String action, ProjectManager proMan) {
+        if (!(usr instanceof HDBOfficer)) {
+            System.out.println("You do not have the perms to process project applications");
+            return;
+        }
         Application app = retrieveApplication(applicationId);
         if (app == null) {
             System.out.println("Application ID \"" + applicationId + "\" not found.");
             return;
         }
-
-        switch (targetStatus) {
-            case BOOKED:
+        Project pro = proMan.getProjectObjByName(usr, app.getProjectId(), false);
+        if (!(pro != null && pro.getOfficersIDList().contains(usr.getUserID()))) {
+            System.out.println("You are not an officer for this project");
+            return;
+        }
+        switch (action) {
+            case "BOOKED":
                 System.out.println("Processing submission for application ID: " + applicationId);
-                app.submit();
+                app.book_flat();
+                pro.addBooking(applicationId, app.getFlatType());
                 break;
 
-            case SUCCESSFUL:
+            case "SUCCESSFUL":
                 System.out.println("Processing approval for application ID: " + applicationId);
-                app.approveApplication();
+                app.acceptApplication();
                 break;
 
-            case UNSUCCESSFUL:
+            case "UNSUCCESSFUL":
                 System.out.println("Processing rejection for application ID: " + applicationId);
                 app.rejectApplication();
                 break;
 
             default:
-                System.out.println("Unsupported target status: " + targetStatus);
+                System.out.println("Unsupported target status: " + action);
         }
     }
 
-    public void updateApplicationStatus(String applicationId, Application.ApplicationStatus newStatus) {
+    public void processWithdrawal(user usr, String applicationId, String action, ProjectManager proMan) {
+        if (!(usr instanceof HDBOfficer)) {
+            System.out.println("You do not have the perms to process project withdrawal");
+            return;
+        }
         Application app = retrieveApplication(applicationId);
-        if (app != null) {
-            app.setApplicationStatus(newStatus);
-            if (newStatus == Application.ApplicationStatus.SUCCESSFUL || newStatus == Application.ApplicationStatus.UNSUCCESSFUL) {
-                app.setClosingDate(java.time.LocalDate.now());
-            }
-            System.out.println("Status updated to: " + newStatus);
+        if (app == null) {
+            System.out.println("Application ID \"" + applicationId + "\" not found.");
+            return;
+        }
+        Project pro = proMan.getProjectObjByName(usr, app.getProjectId(), false);
+        if (!(pro != null && pro.getOfficersIDList().contains(usr.getUserID()))) {
+            System.out.println("You are not an officer for this project");
+            return;
+        }
+        switch (action) {
+            case "WITHDRAW":
+                System.out.println("Processing submission for application ID: " + applicationId);
+                app.approveWithdrawal();
+                pro.removeBooking(applicationId, app.getFlatType());
+                break;
+
+            case "REJECT":
+                System.out.println("Processing approval for application ID: " + applicationId);
+                app.rejectWithdrawal();
+                break;
+
+            default:
+                System.out.println("Unsupported target status: " + action);
         }
     }
 
-
-    public void approveApplication(String applicationId) {
+    public void requestWithdrawal(user usr, String applicationId) {
+        if (!(usr instanceof HDBOfficer || usr instanceof Applicant)) {
+            System.out.println("You do not have the perms to request withdrawal from projects");
+            return;
+        }
         Application app = retrieveApplication(applicationId);
-        if (app != null) {
-            app.approveApplication();
+        if (app == null) {
+            System.out.println("Application ID \"" + applicationId + "\" not found.");
+            return;
+        } else if (!Objects.equals(app.getApplicantId(), usr.getUserID())) {
+            System.out.println("You cannot request withdrawal for somebody else's application.");
+            return;
         }
+
+        app.requestWithdrawal();
     }
 
-    public void rejectApplication(String applicationId) {
-        Application app = retrieveApplication(applicationId);
-        if (app != null) {
-            app.rejectApplication();
-        }
-    }
+
 
     public List<Application> getApplicationList() {
         return applicationList;

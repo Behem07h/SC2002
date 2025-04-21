@@ -6,7 +6,6 @@ import org.Users.HDBOfficer.HDBOfficer;
 import org.Users.user;
 import org.action.enquiry.EnquiriesManager;
 import org.action.registration.Register;
-import org.action.registration.RegistrationCriteria;
 import org.action.registration.RegistrationManager;
 
 import java.time.LocalDate;

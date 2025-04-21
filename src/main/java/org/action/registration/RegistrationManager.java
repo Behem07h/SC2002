@@ -4,6 +4,7 @@ import org.Users.HDBManager.HDBManager;
 import org.Users.HDBOfficer.HDBOfficer;
 import org.action.project.Project;
 import org.action.project.ProjectManager;
+//import org.action.registration.Register.RegistrationStatus;
 import org.UI.ConfigLDR;
 import org.Users.user;
 import org.Users.Applicant.Applicant;
@@ -23,7 +24,7 @@ public class RegistrationManager{
         Map<String,String[]> reg_map = ldr.ReadToArrMap(path + filename);
         for (String key : reg_map.keySet()) {
             String[] items = reg_map.get(key);
-            if (items.length < 4) {
+            if (items.length < 5) {
                 System.out.println("Registration ID " + key + " missing params");
                 continue;
             } //if param length too short, skip
@@ -74,8 +75,8 @@ public class RegistrationManager{
 
     public void registerProject(user usr, String projectId, ProjectManager proMan) {
         if (usr instanceof HDBOfficer) {
-            Project p = proMan.getProjectObjByName(usr, projectId, false);
-            if ((p != null) && (p.getOfficersIDList().contains(usr.getUserID()))) {
+            Project proj = proMan.getProjectObjByName(usr, projectId, false);
+            if ((proj != null) && (proj.getOfficersIDList().contains(usr.getUserID()))) {
                 System.out.println("You are currently an officer for a project");
                 return;
             } //else continue to check for existing applications
@@ -138,6 +139,39 @@ public class RegistrationManager{
             default:
                 System.out.println("Unsupported target status: " + action);
         }
+    }
+
+    public void listPendingReg(user usr, String projectID, ProjectManager proMan) {
+        if(usr instanceof HDBManager) {
+            List<Register> pendingReg = searchFilter("","","", List.of(Register.RegistrationStatus.PENDING));
+            if (pendingReg.isEmpty()) {
+                System.out.println("No pending registrations found");
+                return;
+            }
+            System.out.println("Pending Registrations:");
+            for (Register reg : pendingReg) {
+                System.out.println("RegID: " + reg.getRegistrationID() +
+                                ", Officer: " + reg.getUserID() +
+                                ", Project: " + reg.getProjectID() +
+                                ", Submitted On: " + reg.getSubmissionDate());
+            }
+        } else if(usr instanceof HDBOfficer) {
+            List<Register> ownPendingReg = searchFilter(usr.getUserID(),"","", List.of(Register.RegistrationStatus.PENDING));
+            if (ownPendingReg.isEmpty()) {
+                System.out.println("No pending registrations found");
+                return;
+            }
+            System.out.println("Your Pending Registrations:");
+            for (Register reg : ownPendingReg) {
+                System.out.println("RegID: " + reg.getRegistrationID() +
+                                ", Project: " + reg.getProjectID() +
+                                ", Submitted On: " + reg.getSubmissionDate());
+            }
+        } else {
+            System.out.println("You do not have the perms to view pending project registrations");
+            return;
+        }
+
     }
 
     public List<Register> getRegistrationList() {

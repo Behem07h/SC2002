@@ -4,6 +4,7 @@ import org.Users.user;
 import org.action.ApplicationManager;
 import org.action.enquiry.EnquiriesManager;
 import org.action.project.ProjectManager;
+import org.action.registration.RegistrationManager;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
@@ -16,6 +17,7 @@ public class Context {
     private final EnquiriesManager enqMan;
     private final ApplicationManager appMan;
     private final ProjectManager proMan;
+    private final RegistrationManager regMan;
     private final user usr;
     private String currentViewedProjectID;
     private String currentViewedEnquiryID;
@@ -25,6 +27,7 @@ public class Context {
         enqMan = new EnquiriesManager();
         appMan = new ApplicationManager();
         proMan = new ProjectManager();
+        regMan = new RegistrationManager();
     }
 
     public void endContext() {
@@ -180,6 +183,13 @@ public class Context {
                 return List.of("");
             case "process-registration":
                 //todo:managers acccept or reject registrations
+                System.out.println("Enter registration ID to update status: ");
+                input.set(0, sc.nextLine());
+                System.out.println("Enter new registration status (CANCEL to exit): ");
+                input.set(1, strIn(sc, List.of("APPROVED","REJECTED","CANCEL")));
+                if (!Objects.equals(input.get(1), "CANCEL")) {
+                    regMan.processRegistration(usr, input.get(0), input.get(1), proMan);
+                }
                 return List.of("");
             case "bookings-receipt":
                 //todo: officers and managers can print the application details of all applications in the project's flatType1Bookings and flatType2Bookings, as well as the applicant details

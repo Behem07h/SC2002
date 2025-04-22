@@ -26,7 +26,7 @@ public class ProjectManager {
         Map<String,String[]> pro_map = ldr.ReadToArrMap(path + filename);
         for (String key : pro_map.keySet()) {
             String[] items = pro_map.get(key);
-            if (items.length < 16) {
+            if (items.length < 17) {
                 System.out.println("Project ID " + key + " missing params");
                 continue;
             } //if param length too short, skip
@@ -41,14 +41,15 @@ public class ProjectManager {
             LocalDate opening_date = LocalDate.parse(items[7]);
             LocalDate closing_date = LocalDate.parse(items[8]);
             String manager = items[9];
-            int officer_slots = Integer.parseInt(items[10]);
-            String officers = items[11];
-            String officersID = items[12];
-            String flatType1Bookings = items[13];
-            String flatType2Bookings = items[14];
-            boolean visible = Boolean.parseBoolean(items[15]);
+            String managerID = items[10];
+            int officer_slots = Integer.parseInt(items[11]);
+            String officers = items[12];
+            String officersID = items[13];
+            String flatType1Bookings = items[14];
+            String flatType2Bookings = items[15];
+            boolean visible = Boolean.parseBoolean(items[16]);
 
-             this.projectList.add(new Project(key, neighbourhood, type1, type1_count, type1_price, type2, type2_count, type2_price, opening_date, closing_date, manager, officer_slots, officers, officersID, flatType1Bookings, flatType2Bookings, visible));
+             this.projectList.add(new Project(key, neighbourhood, type1, type1_count, type1_price, type2, type2_count, type2_price, opening_date, closing_date, manager, managerID, officer_slots, officers, officersID, flatType1Bookings, flatType2Bookings, visible));
         }
 
         //registrationManager = new RegistrationManager();
@@ -58,14 +59,14 @@ public class ProjectManager {
         // run this when quitting program to store to csv
         Map<String,String[]> pro_map = new HashMap<>();
         for (Project p : projectList) {
-            String[] items = {p.getNeighbourhood(),p.getFlatType1(), String.valueOf(p.getFlatCount1()), String.valueOf(p.getFlatPrice1()),p.getFlatType2(), String.valueOf(p.getFlatCount2()), String.valueOf(p.getFlatPrice2()), String.valueOf(p.getOpeningDate()), String.valueOf(p.getClosingDate()),p.getManagerId(), String.valueOf(p.getOfficerSlotCount()),p.getOfficersList(),p.getOfficersIDList(), p.getFlatType1Bookings(), p.getFlatType2Bookings(), String.valueOf(p.isVisible())};
+            String[] items = {p.getNeighbourhood(),p.getFlatType1(), String.valueOf(p.getFlatCount1()), String.valueOf(p.getFlatPrice1()),p.getFlatType2(), String.valueOf(p.getFlatCount2()), String.valueOf(p.getFlatPrice2()), String.valueOf(p.getOpeningDate()), String.valueOf(p.getClosingDate()),p.getManagerName(),p.getManagerId(), String.valueOf(p.getOfficerSlotCount()),p.getOfficersList(),p.getOfficersIDList(), p.getFlatType1Bookings(), p.getFlatType2Bookings(), String.valueOf(p.isVisible())};
             pro_map.put(String.valueOf(p.getProjectName()),items);
         }
         ConfigLDR ldr = new ConfigLDR();
         ldr.saveCSV(path + filename,pro_map);
     }
 
-    public void createProject(user usr, String projectName, String neighbourhood, String type1, int type1_count, int type1_price, String type2, int type2_count, int type2_price, String opening_date, String closing_date, String manager, int officer_slots) {
+    public void createProject(user usr, String projectName, String neighbourhood, String type1, int type1_count, int type1_price, String type2, int type2_count, int type2_price, String opening_date, String closing_date, int officer_slots) {
         if (usr instanceof HDBManager) {
             boolean exists = false;
             for (Project p : projectList) {
@@ -77,7 +78,7 @@ public class ProjectManager {
             if (exists) {
                 System.out.println("Cannot create project with identical name");
             } else { //todo: check that they have no active projects
-                projectList.add(new Project(projectName, neighbourhood, type1, type1_count, type1_price, type2, type2_count, type2_price, LocalDate.parse(opening_date), LocalDate.parse(closing_date), manager, officer_slots, "", "","","",false));
+                projectList.add(new Project(projectName, neighbourhood, type1, type1_count, type1_price, type2, type2_count, type2_price, LocalDate.parse(opening_date), LocalDate.parse(closing_date), usr.getUsername(), usr.getUserID(), officer_slots, "", "","","",false));
                 System.out.println("New project created: " + projectName);
             }
         } else {

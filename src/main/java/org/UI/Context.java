@@ -182,7 +182,7 @@ public class Context {
                 //todo:check that they have no pending or successful applications for the project
                 return List.of("");
             case "process-registration":
-                //todo:managers acccept or reject registrations
+                //todo:managers accept or reject registrations
                 System.out.println("Enter registration ID to update status: ");
                 input.set(0, sc.nextLine());
                 System.out.println("Enter new registration status (CANCEL to exit): ");
@@ -314,29 +314,29 @@ public class Context {
                 //input project id, output success/failure and new projects list
                 if (!proMan.getProjectByName(usr, input.get(0), enqMan, true).isEmpty()) {
                     System.out.println("Enter new project ID: ");
-                    input.set(1, sc.nextLine());
+                    input.set(0, sc.nextLine());
                     System.out.println("Enter neighbourhood: ");
-                    input.set(2, sc.nextLine());
+                    input.set(1, sc.nextLine());
                     System.out.println("Enter flat type 1: ");
-                    input.set(3, strIn(sc, List.of("2-Room","3-Room")));
+                    input.set(2, strIn(sc, List.of("2-Room","3-Room")));
                     System.out.println("Enter flat type 1 amount: ");
-                    input.set(4, numberIn(sc, 1, -1));
+                    input.set(3, numberIn(sc, 1, -1));
                     System.out.println("Enter flat type 1 price: ");
-                    input.set(5, numberIn(sc, 1, -1));
+                    input.set(4, numberIn(sc, 1, -1));
                     System.out.println("Enter flat type 2 (\"None\" to set no 2nd type): ");
-                    input.set(6, strIn(sc, List.of("2-Room","3-Room","None")));
+                    input.set(5, strIn(sc, List.of("2-Room","3-Room","None")));
                     System.out.println("Enter flat type 2 amount: ");
-                    input.set(7, numberIn(sc, 0, -1));
+                    input.set(6, numberIn(sc, 0, -1));
                     System.out.println("Enter flat type 2 price: ");
-                    input.set(8, numberIn(sc, 0, -1));
+                    input.set(7, numberIn(sc, 0, -1));
                     System.out.println("Enter new opening date: ");
-                    input.set(9, dateIn(sc, "", false));
+                    input.set(8, dateIn(sc, "", false));
                     System.out.println("Enter new closing date: ");
-                    input.set(10, dateIn(sc, input.get(9), false));
+                    input.set(9, dateIn(sc, input.get(9), false));
                     System.out.println("Enter amt of Officer slots: ");
-                    input.set(11, numberIn(sc, 1, -1));
+                    input.set(10, numberIn(sc, 1, 10));
 
-                    proMan.createProject(usr,input.get(0),input.get(1),input.get(2),Integer.getInteger(input.get(3)),Integer.getInteger(input.get(4)),input.get(5),Integer.getInteger(input.get(6)),Integer.getInteger(input.get(7)),input.get(8),input.get(9),input.get(10),Integer.getInteger(input.get(11)));
+                    proMan.createProject(usr,input.get(0),input.get(1),input.get(2),Integer.getInteger(input.get(3)),Integer.getInteger(input.get(4)),input.get(5),Integer.getInteger(input.get(6)),Integer.getInteger(input.get(7)),input.get(8),input.get(9),Integer.getInteger(input.get(10)));
                 }
 
                 proMan.toggleVisibility(usr, input.get(0));

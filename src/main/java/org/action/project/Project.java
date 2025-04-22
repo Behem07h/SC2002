@@ -19,6 +19,7 @@ public class Project {
     int flatPrice2;
     LocalDate openingDate;
     LocalDate closingDate;
+    String managerName;
     String managerId;
     int officerSlotCount;
     List<String> officersList;
@@ -67,6 +68,10 @@ public class Project {
         return closingDate;
     }
 
+    public String getManagerName() {
+        return managerName;
+    }
+
     public String getManagerId() {
         return managerId;
     }
@@ -98,7 +103,7 @@ public class Project {
         return visible;
     }
 
-    public Project(String projectName, String neighbourhood, String flatType1, int flatCount1, int flatPrice1, String flatType2, int flatCount2, int flatPrice2, LocalDate openingDate, LocalDate closingDate, String managerId, int officerSlotCount, String officersList, String officersIDList, String flatType1Bookings, String flatType2Bookings, boolean visible) {
+    public Project(String projectName, String neighbourhood, String flatType1, int flatCount1, int flatPrice1, String flatType2, int flatCount2, int flatPrice2, LocalDate openingDate, LocalDate closingDate, String managerName, String managerId, int officerSlotCount, String officersList, String officersIDList, String flatType1Bookings, String flatType2Bookings, boolean visible) {
         this.projectName = projectName;
         this.neighbourhood = neighbourhood;
         this.flatType1 = flatType1;
@@ -109,6 +114,7 @@ public class Project {
         this.flatPrice2 = flatPrice2;
         this.openingDate = openingDate;
         this.closingDate = closingDate;
+        this.managerName = managerName;
         this.managerId = managerId;
         this.officerSlotCount = officerSlotCount;
         this.officersList = new ArrayList<>(List.of(officersList.split(":")));
@@ -124,7 +130,7 @@ public class Project {
 
     public String viewFull(user usr, String flatsFilter, EnquiriesManager enqMan) {
         int enquiriesCount = enqMan.countProjectEnquiries(usr, projectName);
-        return String.format("%s | %s\nApplication Period: %s to %s\nManager: %s\nOfficers: %s\nVisible: %s\n\nEnquiries: %s",projectName, viewFlatDetails(flatsFilter,true), openingDate, closingDate, managerId, officersList, visible, enquiriesCount);
+        return String.format("%s | %s\nApplication Period: %s to %s\nManager: %s\nOfficers: %s\nVisible: %s\n\nEnquiries: %s",projectName, viewFlatDetails(flatsFilter,true), openingDate, closingDate, managerName, officersList, visible, enquiriesCount);
     }
 
     public void addBooking(String appID, String flatType) {

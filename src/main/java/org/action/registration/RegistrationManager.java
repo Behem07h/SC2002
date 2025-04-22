@@ -16,11 +16,9 @@ public class RegistrationManager{
     private final List<Register> registrationList;
     private final String path = "data/db";
     private final String filename =  "/registrations.csv";
-    private final ApplicationManager appMan;
 
-    public RegistrationManager(ApplicationManager appMan){
+    public RegistrationManager(){
         this.registrationList = new ArrayList<>();
-        this.appMan = appMan;
 
         ConfigLDR ldr = new ConfigLDR();
         Map<String,String[]> reg_map = ldr.ReadToArrMap(path + filename);
@@ -76,14 +74,12 @@ public class RegistrationManager{
         return maxId + 1;
     }
 
-    public boolean appliedAsApplicant(user usr, String projectID){
-        List<Application> applicationList = appMan.getApplicationList();
-        for (Application a : applicationList) {
-            if (a.getApplicantId().equals(usr.getUserID())) {
-                return true;
-            }
+    public boolean appliedAsApplicant(user usr, String projectID, ApplicationManager appMan) {
+        if (appMan.checkForOfficer(usr, projectID) != 0) {
+            return true;
+        } else {
+            return false;
         }
-        return false;
     }
 
     public void registerProject(user usr, String projectId, ProjectManager proMan) {
@@ -98,7 +94,7 @@ public class RegistrationManager{
             return;
         }
         // allow reg if user does not have approved registration and has not applied as applicant
-        if (countByUser(usr) == 0 && !(appliedAsApplicant(usr, projectId))) {
+        if (countByUser(usr) == 0 && !(appliedAsApplicant(usr, projectId, null))) {
             if (proMan.projectExists(usr, projectId, true) > 0) {
                 Register newRegistration =  new Register(
                         String.valueOf(generateNewRegistrationID()),
@@ -117,10 +113,9 @@ public class RegistrationManager{
         if (countByUser(usr) != 0) {
             System.out.println("You have already registered for another project");
         }
-        if (appliedAsApplicant(usr, projectId)) {
+        if (appliedAsApplicant(usr, projectId, null)) {
             System.out.println("You have applied for this project as an applicant");
         }
-
     }
 
     private Register retrieveRegistration(String registrationID) {
@@ -218,5 +213,4 @@ public class RegistrationManager{
         return registrationList;
     }
 
-    
 }

@@ -68,6 +68,7 @@ public class ApplicationManager {
         List<Application> filteredApps = searchFilter(usr.getUserID(),"","", List.of(Application.ApplicationStatus.WITHDRAWN,Application.ApplicationStatus.UNSUCCESSFUL));
         return filteredApps.size();
     }
+
     public List<String> listByUser(user usr, EnquiriesManager enqMan, ProjectManager proMan) {
         List<Application> filteredApps = searchFilter(usr.getUserID(),"","", List.of());
         List<String> output = new ArrayList<>(List.of(""));
@@ -96,6 +97,13 @@ public class ApplicationManager {
         }
         return output;
     }
+
+    public int checkForOfficer(user usr, String projectId) {
+        List<Application> filteredApps = searchFilter(usr.getUserID(), projectId, "",
+        List.of(Application.ApplicationStatus.PENDING,Application.ApplicationStatus.BOOKED,Application.ApplicationStatus.SUCCESSFUL));
+        return filteredApps.size();
+    }
+
     private int generateNewApplicationId() {
         int maxId = 0;
         for (Application a : applicationList) {

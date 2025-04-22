@@ -9,7 +9,7 @@ public class WithdrawalRequest{
         PENDING,
         APPROVED,
         REJECTED
-    } //todo: tbh we can probably just make this part of application
+    }
 
     public WithdrawalRequest(String applicationId) {
         this.applicationId = applicationId;

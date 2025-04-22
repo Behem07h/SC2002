@@ -116,10 +116,9 @@ public class Project {
         this.flatType1Bookings = new ArrayList<>(List.of(flatType1Bookings.split(":")));
         this.flatType2Bookings = new ArrayList<>(List.of(flatType2Bookings.split(":")));
         this.visible = visible;
-        //todo: a project can have multiple flat types, but an applicant only can view and apply for specific flat types (is this always 1?)
     }
 
-    public String view(String flatsFilter) { //todo: hide flat details based on user group
+    public String view(String flatsFilter) {
         return String.format("%s | %s",projectName, viewFlatDetails(flatsFilter,false));
     }
 

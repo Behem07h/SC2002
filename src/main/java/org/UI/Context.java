@@ -1,5 +1,7 @@
 package org.UI;
 
+import org.Users.HDBManager.HDBManager;
+import org.Users.HDBOfficer.HDBOfficer;
 import org.Users.user;
 import org.action.ApplicationManager;
 import org.action.enquiry.EnquiriesManager;
@@ -106,6 +108,31 @@ public class Context {
                     currentViewedEnquiryID = sc.nextLine();
                 } //todo: add check that the enquiry is part of a project the officer is handling
                 //todo: also add check that the user is an officer
+                if (!(usr instanceof HDBOfficer) && !(usr instanceof HDBManager)) {
+                    System.out.println("Only HDB Officers and Managers can reply to enquiries.");
+                    return List.of("ERROR", "Only HDB Officers and Managers can reply to enquiries.");
+                }
+
+                // Get the enquiry details to check the project
+                List<String> enquiryDetails = enqMan.getEnquiriesById(usr, currentViewedEnquiryID);
+                if (enquiryDetails.get(0).isEmpty() || enquiryDetails.get(1).equals("No such enquiry")) {
+                    System.out.println("Enquiry not found.");
+                    return List.of("ERROR", "Enquiry not found.");
+                }
+
+                // Get the project ID from the enquiry
+                String enquiryProjectID = enquiryDetails.get(0);
+
+                // If user is an officer, check if they are handling this project
+                if (usr instanceof HDBOfficer) {
+                    HDBOfficer officer = (HDBOfficer) usr;
+                    // Check if officer is assigned to this project by checking if their ID is in the project's officers list
+                    if (!proMan.getProjectObjByName(usr, enquiryProjectID, true).getOfficersIDList().contains(officer.getUserID())) {
+                        System.out.println("You are not assigned to handle this project.");
+                        return List.of("ERROR", "You are not assigned to handle this project.");
+                    }
+                }
+
                 System.out.println("Enter reply to enquiry: ");
                 input.set(0, sc.nextLine());
                 output = enqMan.replyEnquiries(usr, input.get(0), currentViewedEnquiryID);
@@ -175,11 +202,17 @@ public class Context {
             case "list-registrations":
                 //todo: managers need a way to see all pending registrations for a project
                 //todo: officers need a way to see their own pending registrations
+                System.out.println("Enter project name to view pending registration: ");
+                input.set(0, sc.nextLine());
+                regMan.listPendingReg(usr, input.get(0));
                 return List.of("");
             case "add-registration":
                 //todo:officers register to manage project
                 //todo:check the project application period does not overlap with other ones they are managing
                 //todo:check that they have no pending or successful applications for the project
+                System.out.println("Enter project name you want to register for: ");
+                input.set(0, sc.nextLine());
+                regMan.registerProject(usr, input.get(0), proMan);
                 return List.of("");
             case "process-registration":
                 //todo:managers accept or reject registrations

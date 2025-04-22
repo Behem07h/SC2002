@@ -80,7 +80,7 @@ public class RegistrationManager{
                 System.out.println("You are currently an officer for a project");
                 return;
             } //else continue to check for existing applications
-        } else if (!(usr instanceof Applicant)) {
+        } else if (!(usr instanceof HDBOfficer)) {
             System.out.println("Your user type cannot register for projects");
             return;
         }
@@ -141,22 +141,21 @@ public class RegistrationManager{
         }
     }
 
-    public void listPendingReg(user usr, String projectID, ProjectManager proMan) {
+    public void listPendingReg(user usr, String projectID) {
         if(usr instanceof HDBManager) {
-            List<Register> pendingReg = searchFilter("","","", List.of(Register.RegistrationStatus.PENDING));
+            List<Register> pendingReg = searchFilter("",projectID,"", List.of(Register.RegistrationStatus.PENDING));
             if (pendingReg.isEmpty()) {
                 System.out.println("No pending registrations found");
                 return;
             }
-            System.out.println("Pending Registrations:");
+            System.out.println("Pending Registrations for " + projectID);
             for (Register reg : pendingReg) {
                 System.out.println("RegID: " + reg.getRegistrationID() +
                                 ", Officer: " + reg.getUserID() +
-                                ", Project: " + reg.getProjectID() +
                                 ", Submitted On: " + reg.getSubmissionDate());
             }
         } else if(usr instanceof HDBOfficer) {
-            List<Register> ownPendingReg = searchFilter(usr.getUserID(),"","", List.of(Register.RegistrationStatus.PENDING));
+            List<Register> ownPendingReg = searchFilter(usr.getUserID(),projectID,"", List.of(Register.RegistrationStatus.PENDING));
             if (ownPendingReg.isEmpty()) {
                 System.out.println("No pending registrations found");
                 return;

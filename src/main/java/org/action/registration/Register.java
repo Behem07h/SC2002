@@ -8,6 +8,7 @@ import java.util.Objects;
 public class Register {
     private String registrationID;
     private String userID;
+    private String username;
     private String projectID;
     private RegistrationStatus status;
     private final LocalDate submissionDate;
@@ -22,7 +23,8 @@ public class Register {
 
     public Register(
         String registrationID, 
-        String userID, 
+        String userID,
+        String username,
         String projectID,
         RegistrationStatus status,
         String openingDate,
@@ -30,6 +32,7 @@ public class Register {
     ) {
         this.registrationID     = registrationID;
         this.userID             = userID;
+        this.username           = username;
         this.projectID          = projectID;
         this.status             = status;
         this.submissionDate     = LocalDate.parse(openingDate);
@@ -59,10 +62,13 @@ public class Register {
         }
     }
 
-    public boolean filter(String userID, String projectID, String registrationID, List<RegistrationStatus> statusBlacklist) {
+    public boolean filter(String userID, String username, String projectID, String registrationID, List<RegistrationStatus> statusBlacklist) {
         boolean out = true;
         if (!userID.isEmpty()) {
-            out = Objects.equals(this.registrationID, userID);
+            out = Objects.equals(this.userID, userID);
+        }
+        if (!username.isEmpty()) {
+            out = Objects.equals(this.username, username);
         }
         if (!projectID.isEmpty()) {
             out = Objects.equals(this.projectID, projectID);
@@ -80,8 +86,12 @@ public class Register {
         return registrationID;
     }
 
-    public String getUserID(){
+    public String getUserID() {
         return userID;
+    }
+
+    public String getUsername() {
+        return username;
     }
 
     public String getProjectID() {

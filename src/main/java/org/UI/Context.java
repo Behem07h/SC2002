@@ -3,6 +3,7 @@ package org.UI;
 import org.Users.user;
 import org.action.ApplicationManager;
 import org.action.enquiry.EnquiriesManager;
+import org.action.project.Project;
 import org.action.project.ProjectManager;
 import org.action.registration.RegistrationManager;
 import org.receipt.BookingReceipt;
@@ -46,8 +47,9 @@ public class Context {
     }
 
     public List<String> act(String action, Scanner sc) {
-        List<String> output = new ArrayList<>(List.of(""));
-        List<String> input = new ArrayList<>(List.of(""));
+        List<String> output = new ArrayList<>(List.of("",""));
+        List<String> input = new ArrayList<>(List.of("","","","","","","","","","","",""));
+        //need as many entries in the initial array as we have expected inputs
         switch (action){
             //enquiry methods
             //if no current project, show the user's submitted enquiries (user also stores a list of enquiry ids that are owned by them, as well as applications that are owned by them
@@ -342,6 +344,10 @@ public class Context {
                 //input project id, output success/failure and new projects list
                 System.out.println("Enter project ID to edit: ");
                 input.set(0, sc.nextLine());
+                if (!proMan.checkManagedOfficerOf(usr, input.get(0), true, true)) {
+                    System.out.println("You cannot edit this project");
+                    return List.of("");
+                }
                 if (!proMan.getProjectByName(usr, input.get(0), enqMan, true).isEmpty()) {
                     System.out.println("Enter new project ID (Blank to skip): ");
                     input.set(1, sc.nextLine());
@@ -366,19 +372,21 @@ public class Context {
                     System.out.println("Enter amt of Officer slots (0 to skip): ");
                     input.set(11, numberIn(sc, -1, -1));
 
-                    proMan.editProject(usr,input.get(0),input.get(1),input.get(2),input.get(3),Integer.getInteger(input.get(4)),Integer.getInteger(input.get(5)),input.get(6),Integer.getInteger(input.get(7)),Integer.getInteger(input.get(8)),input.get(9),input.get(10),Integer.getInteger(input.get(11)));
+                    proMan.editProject(usr,input.get(0),input.get(1),input.get(2),input.get(3),Integer.parseInt(input.get(4)),Integer.parseInt(input.get(5)),input.get(6),Integer.parseInt(input.get(7)),Integer.parseInt(input.get(8)),input.get(9),input.get(10),Integer.parseInt(input.get(11)));
                 }
-
-                proMan.toggleVisibility(usr, input.get(0));
                 currentViewedProjectID = "";
                 currentViewedEnquiryID = "";
                 output = proMan.getProjectList(usr);
                 return output;
             case "create-project":
                 //input project id, output success/failure and new projects list
-                if (!proMan.getProjectByName(usr, input.get(0), enqMan, true).isEmpty()) {
-                    System.out.println("Enter new project ID: ");
-                    input.set(0, sc.nextLine());
+                if (!proMan.checkManagedOfficerOf(usr, null, false, true)) {
+                    System.out.println("You do not have the permissions to create projects");
+                    return List.of("");
+                }
+                System.out.println("Enter new project ID: ");
+                input.set(0, sc.nextLine());
+                if (!proMan.getProjectByName(usr, input.get(0), enqMan, false).isEmpty()) {
                     System.out.println("Enter neighbourhood: ");
                     input.set(1, sc.nextLine());
                     System.out.println("Enter flat type 1: ");
@@ -400,10 +408,8 @@ public class Context {
                     System.out.println("Enter amt of Officer slots: ");
                     input.set(10, numberIn(sc, 1, 10));
 
-                    proMan.createProject(usr,input.get(0),input.get(1),input.get(2),Integer.getInteger(input.get(3)),Integer.getInteger(input.get(4)),input.get(5),Integer.getInteger(input.get(6)),Integer.getInteger(input.get(7)),input.get(8),input.get(9),Integer.getInteger(input.get(10)));
+                    proMan.createProject(usr,input.get(0),input.get(1),input.get(2),Integer.parseInt(input.get(3)),Integer.parseInt(input.get(4)),input.get(5),Integer.parseInt(input.get(6)),Integer.parseInt(input.get(7)),input.get(8),input.get(9),Integer.parseInt(input.get(10)));
                 }
-
-                proMan.toggleVisibility(usr, input.get(0));
                 currentViewedProjectID = "";
                 currentViewedEnquiryID = "";
                 output = proMan.getProjectList(usr);

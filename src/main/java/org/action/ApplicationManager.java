@@ -77,14 +77,20 @@ public class ApplicationManager {
         return output;
     }
 
-    public List<String> listByProject(user usr, String projectId) {
+    public List<String> listByProject(user usr, String projectId) {//todo: perms checking.
         List<Application> filteredApps;
+        List<String> output = new ArrayList<>(List.of(""));
+
         if (usr instanceof Applicant) {
             filteredApps = searchFilter(usr.getUserID(), projectId, "", List.of());
-        } else {
+            if (filteredApps.isEmpty()) {
+                output.set(0, "You have no applications for this project.");
+                return output;
+            }
+        }
+        else {
             filteredApps = searchFilter("", projectId, "", List.of());
         }
-        List<String> output = new ArrayList<>(List.of(""));
         for (Application a : filteredApps) {
             output.set(0, output.get(0) + a.view());
         }

@@ -75,7 +75,7 @@ public class ApplicationManager {
         return output;
     }
 
-    public List<String> listByProject(user usr, String projectId) { //todo: perms checking. combine into 1 fn?
+    public List<String> listByProject(user usr, String projectId) { //todo: perms checking.
         List<Application> filteredApps = searchFilter("",projectId,"",  List.of());
         List<String> output = new ArrayList<>(List.of(""));
         for (Application a : filteredApps) {

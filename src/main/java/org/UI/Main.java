@@ -40,7 +40,7 @@ public class Main {
 }
 
 class loginScreen {
-    public loginScreen(Scanner scanner, GenericManager<user> userManager, String filename) { //todo: pass manager as generic superclass
+    public loginScreen(Scanner scanner, GenericManager<user> userManager, String filename) {
         boolean loaded = userManager.loadUsersFromCSV(filename);
         if (!loaded) {
             System.out.println("Warning: Failed to load users from CSV file.");

@@ -80,7 +80,6 @@ public class Application implements Act {
         if (status == ApplicationStatus.SUCCESSFUL) {
             status      = ApplicationStatus.BOOKED;
             closingDate = LocalDate.now();
-            //todo: decrement project flats count & add application id to project data
             System.out.println("Application " + applicationId + " approved on " + closingDate);
         } else {
             System.out.println("Cannot approve: status is " + status);

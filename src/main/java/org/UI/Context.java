@@ -6,6 +6,10 @@ import org.action.enquiry.EnquiriesManager;
 import org.action.project.Project;
 import org.action.project.ProjectManager;
 import org.action.registration.RegistrationManager;
+import org.receipt.BookingReceipt;
+import org.Users.GenericManager;
+import org.Users.Applicant.ApplicantManager;
+
 
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
@@ -20,6 +24,7 @@ public class Context {
     private final ProjectManager proMan;
     private final RegistrationManager regMan;
     private final user usr;
+    private final  ApplicantManager applicantMan;
     private String currentViewedProjectID;
     private String currentViewedEnquiryID;
 
@@ -29,6 +34,7 @@ public class Context {
         appMan = new ApplicationManager();
         proMan = new ProjectManager();
         regMan = new RegistrationManager();
+        applicantMan = new ApplicantManager();
     }
 
     public void endContext() {
@@ -204,10 +210,40 @@ public class Context {
                     regMan.processRegistration(usr, input.get(0), input.get(1), proMan);
                 }
                 return List.of("");
-            case "bookings-receipt":
-                //todo: officers and managers can print the application details of all applications in the project's flatType1Bookings and flatType2Bookings, as well as the applicant details
-                //todo: can filter by flat type, age, marital status. can do the same as a combined reciept of all their projects
+                case "bookings-receipt":
+                // 1) Project filter (blank = all)
+                System.out.println("Enter project ID (blank = all your projects):");
+                String projectFilter  = sc.nextLine().trim();
+            
+                // 2) Flat‑type filter
+                System.out.println("Filter by flat type (blank = any):");
+                String flatTypeFilter = sc.nextLine().trim();
+            
+                // 3) Marital‑status filter
+                System.out.println("Filter by marital status (blank = any):");
+                String maritalFilter  = sc.nextLine().trim();
+            
+                // 4) Fetch and print receipts
+                List<BookingReceipt> receipts = appMan.getBookingReceipts(
+                    usr,
+                    projectFilter,
+                    flatTypeFilter,
+                    maritalFilter,
+                    proMan,
+                    id -> applicantMan.findById(id)
+                    );
+            
+                if (receipts.isEmpty()) {
+                    System.out.println("No bookings match your criteria.");
+                } else {
+                    for (BookingReceipt r : receipts) {
+                        r.generateReceipt();
+                        System.out.println();
+                    }
+                }
                 return List.of("");
+            
+
             //project methods
             case "view-all-projects":
                 //returns list of visible projects based on user
@@ -380,7 +416,7 @@ public class Context {
         String input;
         System.out.println("Options:");
         for (String i : options) {
-            System.out.printf("%s\n", i);
+        System.out.printf("%s\n", i);
         }
         do {
             input = sc.nextLine();

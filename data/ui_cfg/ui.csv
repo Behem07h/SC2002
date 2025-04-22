@@ -1,5 +1,5 @@
 MENU_NAME           , MENU_CONTENT,
-Project_List        , Projects: \n{view-all-projects[0]}\n\n[7] - Delete Project\n[6] - Edit Project\n[5] - Create Project\n[4] - Search by name\n[3] - Filter projects\n[2] - View application\n[1] - View a project\n[0] - Log out,
+Project_List        , Projects: \n{view-all-projects[0]}\n\n[8] - Delete Project\n[7] - Edit Project\n[6] - Create Project\n[5] - Generate bookings receipt\n[4] - Search by name\n[3] - Filter projects\n[2] - View application\n[1] - View a project\n[0] - Log out,
 Project_Details     , Project details:\n{view-project[0]}\n\n[3] - Send application\n[2] - Enquiries\n[1] - Back\n[0] - Log out,
 Project_Enquiries   , Project Enquiries:\nProject: {view-enquiries[0]}\n{view-enquiries[1]}\n\n[3] - View Enquiry\n[2] - Submit Enquiry\n[1] - Back\n[0] - Log out,
 Enquiry_View        , Enquiry Details:\nProject: {view-enquiry[0]}\n{view-enquiry[1]}\n\n[4] - Reply\n[3] - Delete Enquiry\n[2] - Edit Enquiry\n[1] - Back\n[0] - Log out,

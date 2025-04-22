@@ -1,5 +1,7 @@
 package org.action.project;
 
+import org.Users.HDBManager.HDBManager;
+import org.Users.HDBOfficer.HDBOfficer;
 import org.Users.user;
 import org.action.enquiry.EnquiriesManager;
 
@@ -221,11 +223,13 @@ public class Project {
         }
         return 0;
     }
-    public boolean managerOfficerOf(user usr, boolean manager) {
-        if (manager) {
+    public boolean managerOfficerOf(user usr) {
+        if (usr instanceof HDBManager) {
             return getManagerId().contains(usr.getUserID());
-        } else {
+        } else if (usr instanceof HDBOfficer) {
             return getOfficersIDList().contains(usr.getUserID());
+        } else {
+            return false;
         }
     }
     private boolean beforeEq(LocalDate date1, LocalDate date2) {
@@ -247,7 +251,7 @@ public class Project {
         }
         return false;
     }
-    public boolean filter(String name, String nameExact, String neighbourhood, String flat, String managedBy, boolean date, boolean visible) {
+    public boolean filter(String name, String nameExact, String neighbourhood, String flat, user usr, boolean date, boolean visible) {
         boolean out = true;
         if (!nameExact.isEmpty()) {
             out = projectName.equalsIgnoreCase(nameExact);
@@ -260,8 +264,8 @@ public class Project {
         if (!flat.isEmpty()) {
             out = out && (flatType1.toLowerCase().contains(flat.toLowerCase()) || flatType2.toLowerCase().contains(flat.toLowerCase()));
         }
-        if (!managedBy.isEmpty()) {
-            out = out && String.format("%s:%s",getOfficersIDList(),getManagerId()).contains(managedBy);
+        if (usr != null) {
+            return managerOfficerOf(usr);
         }
         if (visible && date) {
             out = out && ((LocalDate.now().isAfter(openingDate) || LocalDate.now().isEqual(openingDate)) && LocalDate.now().isBefore(closingDate));

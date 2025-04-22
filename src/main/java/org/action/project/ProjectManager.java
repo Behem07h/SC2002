@@ -77,7 +77,7 @@ public class ProjectManager {
         if (usr instanceof HDBManager) {
             boolean exists = false;
             for (Project p : projectList) {
-                if (p.filter("", projectName,"","", "",false, false)) {
+                if (p.filter("", projectName,"","", null,false, false)) {
                     exists = true;
                     break;
                 }
@@ -89,7 +89,7 @@ public class ProjectManager {
                     LocalDate start_date = LocalDate.parse(opening_date);
                     LocalDate end_date = LocalDate.parse(closing_date);
                     for (Project p : projectList) {
-                        if (p.filter("", "","","", usr.getUserID(),false, false) && p.overlapCheck(start_date, end_date)) {
+                        if (p.filter("", "","","", usr,false, false) && p.overlapCheck(start_date, end_date)) {
                             System.out.println("You are already managing a project that overlaps this application period: " + p.getProjectName());
                             return;
                         }
@@ -107,7 +107,7 @@ public class ProjectManager {
     }
     public void deleteProject(user usr, String projectName) {
         if (usr instanceof HDBManager) {
-            boolean removed = projectList.removeIf(p -> p.filter("",projectName,"","",usr.getUserID(),false,false));
+            boolean removed = projectList.removeIf(p -> p.filter("",projectName,"","",usr,false,false));
             if (removed) {
                 System.out.println("Project '" + projectName + "' deleted from the system.");
             } else {
@@ -120,7 +120,7 @@ public class ProjectManager {
     public void editProject(user usr, String projectNameOld, String projectName, String neighbourhood, String flatType1, int flatCount1, int flatPrice1, String flatType2, int flatCount2, int flatPrice2, String openingDate, String closingDate, int officerSlots) {
         if (usr instanceof HDBManager) {
             for (Project p : projectList) {
-                if (p.filter("", projectNameOld,"","",usr.getUserID(),false,false)) {
+                if (p.filter("", projectNameOld,"","",usr,false,false)) {
                     p.edit(projectName, neighbourhood, flatType1, max(p.getBookingCount1(),flatCount1), flatPrice1, flatType2, max(p.getBookingCount2(),flatCount2), flatPrice2, openingDate, closingDate, officerSlots);
                     System.out.println("Project updated for keyword: " + projectName);
                     return;
@@ -135,8 +135,8 @@ public class ProjectManager {
     public void toggleVisibility(user usr, String keyword) {
         if (usr instanceof HDBManager) {
             for (Project p : projectList) {
-                if (p.filter("",keyword,"","","",false,false)) {
-                    if (p.managerOfficerOf(usr, true)) {
+                if (p.filter("",keyword,"","",null,false,false)) {
+                    if (p.managerOfficerOf(usr)) {
                         p.toggle_visibility();
                     } else {
                         System.out.println("You are not the manager of this project");
@@ -149,39 +149,54 @@ public class ProjectManager {
             System.out.println("No perms to alter project visibility");
         }
     }
-    private List<Project> searchFilter(user usr, String name, String nameExact, String neighbourhood, String flat, String managedBy, boolean visChk) {
+    private List<Project> searchFilter(user usr, String name, String nameExact, String neighbourhood, String flat, boolean managedBy, boolean visChk) {
         List<Project> out = new ArrayList<>();
         boolean visible_check = visChk; //default to true so new roles default to minimum perms
         boolean date_check = true;
-        if (usr instanceof HDBOfficer || usr instanceof HDBManager) {
+        if (usr instanceof HDBManager) {
             visible_check = false;
             date_check = false;
         }
 
         for (Project p : projectList) {
-            if (p.filter(name,nameExact,neighbourhood,flat, managedBy, date_check, visible_check)) {
+            if (p.filter(name,nameExact,neighbourhood,flat, (managedBy ? usr : null), date_check, visible_check)) {
                 out.add(p);
             }
         }
         return out;
     }
 
-    public List<String> filterFlat(user usr, String flatType) {
-        List<Project> filteredProjects;
+    public List<String> projectsToString(user usr, List<Project> projects) {
         List<String> out = new ArrayList<>(List.of(""));
-        if (flatType.contains(getUserValidFlatTypes(usr))) {
-            filteredProjects = searchFilter(usr,"","","", flatType,"",true);
-            for (Project p : filteredProjects) {
-                out.set(0, out.get(0) + "\n" + p.view(getUserValidFlatTypes(usr)));
-            }
-            return out;
+        for (Project p : projects) {
+            out.set(0, out.get(0) + "\n" + p.view(getUserValidFlatTypes(usr)));
         }
-        return new ArrayList<>(List.of(""));
+        return out;
+    }
+
+    public List<Project> mergeProjects(List<Project> p1, List<Project> p2) {
+        Set<Project> set = new HashSet<>(p1);
+        set.addAll(p2);
+        return new ArrayList<>(set);
+    }
+
+    public List<Project> filterRelated(user usr) {
+        List<Project> filteredProjects;
+        filteredProjects = searchFilter(usr,"","","", "",true,false);
+        return filteredProjects;
+    }
+
+    public List<Project> filterFlat(user usr, String flatType) {
+        List<Project> filteredProjects = new ArrayList<>();
+        if (flatType.contains(getUserValidFlatTypes(usr))) {
+            filteredProjects = searchFilter(usr,"","","", flatType,false,true);
+        }
+        return filteredProjects;
     }
     public List<String> filterNeighbourhood(user usr, String neighbourhood) {
         List<Project> filteredProjects;
         List<String> out = new ArrayList<>(List.of(""));
-        filteredProjects = searchFilter(usr,"","",neighbourhood,getUserValidFlatTypes(usr),"",true);
+        filteredProjects = searchFilter(usr,"","",neighbourhood,getUserValidFlatTypes(usr),false,true);
         for (Project p : filteredProjects) {
             out.set(0, out.get(0) + "\n" + p.view(getUserValidFlatTypes(usr)));
         }
@@ -190,7 +205,7 @@ public class ProjectManager {
     public List<String> searchName(user usr, String name) {
         List<Project> filteredProjects;
         List<String> out = new ArrayList<>(List.of(""));
-        filteredProjects = searchFilter(usr, name,"","",getUserValidFlatTypes(usr),"",true);
+        filteredProjects = searchFilter(usr, name,"","",getUserValidFlatTypes(usr),false,true);
         for (Project p : filteredProjects) {
             out.set(0, out.get(0) + "\n" + p.view(getUserValidFlatTypes(usr)));
         }
@@ -198,7 +213,7 @@ public class ProjectManager {
     }
     public int projectExists(user usr, String projectName, boolean visChk) {
         List<Project> filteredProjects;
-        filteredProjects = searchFilter(usr,"",projectName,"", getUserValidFlatTypes(usr),"", visChk);
+        filteredProjects = searchFilter(usr,"",projectName,"", getUserValidFlatTypes(usr),false, visChk);
         return filteredProjects.size();
     }
 
@@ -211,7 +226,7 @@ public class ProjectManager {
         }
         Project pro = getProjectObjByName(usr, projectName, visChk);
         if (pro != null) {
-            return pro.managerOfficerOf(usr, manager);
+            return pro.managerOfficerOf(usr);
         } else {
             return false;
         }
@@ -219,7 +234,7 @@ public class ProjectManager {
 
     public Project getProjectObjByName(user usr, String projectName, boolean visChk) {
         List<Project> filteredProjects;
-        filteredProjects = searchFilter(usr,"",projectName,"", getUserValidFlatTypes(usr), "",visChk);
+        filteredProjects = searchFilter(usr,"",projectName,"", getUserValidFlatTypes(usr), false,visChk);
         if (!filteredProjects.isEmpty()) {
             return filteredProjects.get(0);
         } else {
@@ -246,6 +261,14 @@ public class ProjectManager {
         }
         return "NONE"; //if you fall outside those ranges, you cannot see anything according to SG law
     }
+
+    public List<String> getValidFilters(user usr) {
+        if (usr instanceof HDBOfficer || usr instanceof HDBManager) {
+            return List.of("Flat", "Neighbourhood", "My Projects","Reset Filter");
+        } else {
+            return List.of("Flat", "Neighbourhood","Reset Filter");
+        }
+    }
     public List<String> userFlatOptions(user usr, String projectName) {
         List<String> flatChoices;
         List<String> outputChoices = new ArrayList<>();
@@ -263,7 +286,7 @@ public class ProjectManager {
 
         if (projectName.isEmpty()) {
             for (String flatStr : flatChoices) {
-                if (!searchFilter(usr, "", projectName, "", flatStr, "",true).isEmpty()) {
+                if (!searchFilter(usr, "", projectName, "", flatStr, false,true).isEmpty()) {
                     outputChoices.add(flatStr);
                 }
             }
@@ -279,6 +302,7 @@ public class ProjectManager {
    
     
     public List<String> getProjectList(user usr) {
+        /*
         // Managers see *all* project IDs
         if (usr.getPerms() == user.PermissionLevel.MANAGER) {
             return projectList.stream()
@@ -305,6 +329,9 @@ public class ProjectManager {
                 .map(Project::getProjectName)
                 .collect(Collectors.toList());
         }
+        */
+        //return projectsToString(filterFlat(usr, getUserValidFlatTypes(usr)));
+        return projectsToString(usr, mergeProjects(filterFlat(usr, getUserValidFlatTypes(usr)), filterRelated(usr)));
     }
     
 /**

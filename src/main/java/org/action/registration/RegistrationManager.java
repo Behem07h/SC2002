@@ -75,12 +75,12 @@ public class RegistrationManager{
 
     public void registerProject(user usr, String projectId, ProjectManager proMan) {
         if (usr instanceof HDBOfficer) {
-            Project proj = proMan.getProjectObjByName(usr, projectId, false);
+            Project proj = proMan.getProjectObjByName(usr, projectId, true);
             if ((proj != null) && (proj.getOfficersIDList().contains(usr.getUserID()))) {
                 System.out.println("You are currently an officer for a project");
                 return;
             } //else continue to check for existing applications
-        } else if (!(usr instanceof HDBOfficer)) {
+        } else {
             System.out.println("Your user type cannot register for projects");
             return;
         }

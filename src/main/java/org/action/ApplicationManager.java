@@ -260,7 +260,7 @@ public class ApplicationManager {
              && !applicant.getMaritalStatus().equalsIgnoreCase(maritalFilter))
                 continue;
     
-            // build the flat‐type details from the Project
+            // build the flat-type details from the Project
             Project p = proMan.getProjectObjByName(actor, a.getProjectId(), true);
             if (p == null) continue;
             int free1 = p.getFlatCount1() - p.getBookingCount1();

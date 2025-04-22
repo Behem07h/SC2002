@@ -4,7 +4,6 @@ import org.Users.HDBManager.HDBManager;
 import org.Users.HDBOfficer.HDBOfficer;
 import org.action.project.Project;
 import org.action.project.ProjectManager;
-//import org.action.registration.Register.RegistrationStatus;
 import org.UI.ConfigLDR;
 import org.Users.user;
 import org.Users.Applicant.Applicant;
@@ -80,7 +79,7 @@ public class RegistrationManager{
                 System.out.println("You are currently an officer for a project");
                 return;
             } //else continue to check for existing applications
-        } else {
+        } else if (!(usr instanceof HDBOfficer)) {
             System.out.println("Your user type cannot register for projects");
             return;
         }
@@ -165,7 +164,7 @@ public class RegistrationManager{
         if(usr instanceof HDBManager) {
             List<Register> pendingReg = searchFilter("",projectID,"", List.of(Register.RegistrationStatus.PENDING));
             if (pendingReg.isEmpty()) {
-                System.out.println("No pending registrations found");
+                System.out.println("No pending registrations found for this project");
                 return;
             }
             System.out.println("Pending Registrations for " + projectID);
@@ -174,14 +173,21 @@ public class RegistrationManager{
                                 ", Officer: " + reg.getUserID() +
                                 ", Submitted On: " + reg.getSubmissionDate());
             }
-        } else if(usr instanceof HDBOfficer) {
-            List<Register> ownPendingReg = searchFilter(usr.getUserID(),projectID,"", List.of(Register.RegistrationStatus.PENDING));
-            if (ownPendingReg.isEmpty()) {
+        } else {
+            System.out.println("You do not have the perms to view pending project registrations");
+            return;
+        }
+    }
+
+    public void listPendingReg(user usr) {
+        if(usr instanceof HDBOfficer) {
+            List<Register> pendingReg = searchFilter(usr.getUserID(),"","", List.of(Register.RegistrationStatus.PENDING));
+            if (pendingReg.isEmpty()) {
                 System.out.println("No pending registrations found");
                 return;
             }
             System.out.println("Your Pending Registrations:");
-            for (Register reg : ownPendingReg) {
+            for (Register reg : pendingReg) {
                 System.out.println("RegID: " + reg.getRegistrationID() +
                                 ", Project: " + reg.getProjectID() +
                                 ", Submitted On: " + reg.getSubmissionDate());
@@ -190,7 +196,6 @@ public class RegistrationManager{
             System.out.println("You do not have the perms to view pending project registrations");
             return;
         }
-
     }
 
     public List<Register> getRegistrationList() {

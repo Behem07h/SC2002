@@ -3,6 +3,7 @@ package org.UI;
 import org.Users.user;
 import org.action.ApplicationManager;
 import org.action.enquiry.EnquiriesManager;
+import org.action.project.Project;
 import org.action.project.ProjectManager;
 import org.action.registration.RegistrationManager;
 import org.receipt.BookingReceipt;
@@ -43,8 +44,6 @@ public class Context {
         appMan.store();
         System.out.println("Saving Projects");
         proMan.store();
-        System.out.println("Saving Registrations");
-        regMan.store();
     }
 
     public List<String> act(String action, Scanner sc) {
@@ -188,10 +187,13 @@ public class Context {
             case "list-registrations":
                 //todo: managers need a way to see all pending registrations for a project
                 //todo: officers need a way to see their own pending registrations
-                System.out.println("Enter project name to view pending registration: ");
+                System.out.println("Enter project name to view pending registrations (Blank to view own applications): ");
                 input.set(0, sc.nextLine());
-                regMan.listPendingReg(usr, input.get(0));
-                return List.of("");
+                if (!input.get(0).isEmpty()) {
+                    regMan.listPendingReg(usr, input.get(0));
+                } else {
+                    regMan.listPendingReg(usr);
+                }
             case "add-registration":
                 //todo:officers register to manage project
                 //todo:check the project application period does not overlap with other ones they are managing
@@ -201,7 +203,6 @@ public class Context {
                 regMan.registerProject(usr, input.get(0), proMan);
                 return List.of("");
             case "process-registration":
-                //todo:managers accept or reject registrations
                 System.out.println("Enter registration ID to update status: ");
                 input.set(0, sc.nextLine());
                 System.out.println("Enter new registration status (CANCEL to exit): ");
@@ -210,6 +211,7 @@ public class Context {
                     regMan.processRegistration(usr, input.get(0), input.get(1), proMan);
                 }
                 return List.of("");
+
             case "bookings-receipt":
                 // 1) Project filter (blank = all)
                 System.out.println("Enter project ID (blank = all your projects):");
@@ -230,7 +232,7 @@ public class Context {
                     flatTypeFilter,
                     maritalFilter,
                     proMan,
-                        applicantMan::findById
+                    id -> applicantMan.findById(id)
                     );
             
                 if (receipts.isEmpty()) {
@@ -278,25 +280,29 @@ public class Context {
                 case "filter-projects": {
                     System.out.println("Filter by:");
                     // Build the menu
-                    List<String> options = proMan.getValidFilters(usr);
-                    input.set(1, strIn(sc, options));
+                    List<String> options = new ArrayList<>(List.of(
+                        "Flat", "Neighbourhood", "My Projects", "Reset Filter"
+                    ));
+                    String choice = strIn(sc, options);
                 
-                    switch (input.get(1)) {
+                    switch (choice) {
                         case "Flat":
                             System.out.println("Enter flat type to filter by:");
-                            input.set(2, strIn(sc, proMan.userFlatOptions(usr, "")));
-                            output = proMan.projectsToString(usr,proMan.filterFlat(usr, input.get(2)));
+                            String flat = strIn(sc, proMan.userFlatOptions(usr, ""));
+                            output = proMan.filterFlat(usr, flat);
                             break;
                 
                         case "Neighbourhood":
                             System.out.println("Enter neighbourhood to filter by:");
-                            input.set(2, sc.nextLine());
-                            output = proMan.filterNeighbourhood(usr, input.get(2));
+                            String hood = sc.nextLine();
+                            output = proMan.filterNeighbourhood(usr, hood);
                             break;
-
+                
                         case "My Projects":
-                            output = proMan.projectsToString(usr,proMan.filterRelated(usr));
+                            // getProjectList() now returns exactly the right IDs for managers, officers or applicants
+                            output = proMan.getProjectList(usr);
                             break;
+                        
                 
                         case "Reset Filter":
                             output = proMan.getProjectList(usr);

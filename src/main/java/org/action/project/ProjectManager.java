@@ -7,9 +7,13 @@ import org.Users.user;
 import org.action.enquiry.EnquiriesManager;
 import org.action.registration.Register;
 import org.action.registration.RegistrationManager;
+import org.action.project.Project;
+
+
 
 import java.time.LocalDate;
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static java.lang.Integer.max;
 
@@ -17,6 +21,7 @@ public class ProjectManager {
     private final List<Project> projectList;
     private final String path = "data/db";
     private final String filename = "/project.csv";
+    
     //private RegistrationManager registrationManager;
     
     public ProjectManager() {
@@ -236,12 +241,47 @@ public class ProjectManager {
 
 
     }
+    
+   
+    
     public List<String> getProjectList(user usr) {
-        //Singles, 35 years old and above, can ONLY apply for 2-Room
-        //Married, 21 years old and above, can apply for any flat types (2-
-        //Room or 3-Room)
-        return filterFlat(usr, getUserValidFlatTypes(usr));
+        // Managers see *all* project IDs
+        if (usr.getPerms() == user.PermissionLevel.MANAGER) {
+            return projectList.stream()
+                              .map(Project::getProjectName)
+                              .collect(Collectors.toList());
+        }
+        // Officers see only those they’re assigned to
+        else if (usr.getPerms() == user.PermissionLevel.OFFICER) {
+            return projectList.stream()
+                              .filter(p -> p.getOfficersIDList().contains(usr.getUserID()))
+                              .map(Project::getProjectName)
+                              .collect(Collectors.toList());
+        }
+        // Applicants (and everyone else) now also see only the IDs of projects
+        // they’re eligible for, filtered by flat‑type legality
+        else {
+            return projectList.stream()
+                .filter(p -> {
+                    // reuse your flat‑type weeding logic
+                    String legal = getUserValidFlatTypes(usr);
+                    return p.getFlatType1().contains(legal)
+                        || p.getFlatType2().contains(legal);
+                })
+                .map(Project::getProjectName)
+                .collect(Collectors.toList());
+        }
     }
+    
+/**
+ * Returns the names (IDs) of all projects this officer is assigned to.
+ */
+
+
+
+
+
+
 
 
     /*

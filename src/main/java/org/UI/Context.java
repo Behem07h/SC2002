@@ -6,7 +6,6 @@ import org.action.enquiry.EnquiriesManager;
 import org.action.project.ProjectManager;
 import org.action.registration.RegistrationManager;
 import org.receipt.BookingReceipt;
-import org.Users.GenericManager;
 import org.Users.Applicant.ApplicantManager;
 
 
@@ -273,33 +272,51 @@ public class Context {
                     output.add("No projects found");
                 }
                 return output;
-            case "filter-projects": //todo: add variant for owned projects (for managers & officers)
-                System.out.println("Filter: ");
-                input.set(0, strIn(sc, List.of("Flat","Neighbourhood","Reset Filter")));
-                switch (input.get(0)) {
-                    case "Flat":
-                        System.out.println("Enter flat type to filter by: ");
-                        input.set(0, strIn(sc, proMan.userFlatOptions(usr, "")));
-                        output = proMan.filterFlat(usr, input.get(0));
-                        break;
-                    case "Neighbourhood":
-                        System.out.println("Enter neighbourhood to filter by: ");
-                        input.set(0, sc.nextLine());
-                        output = proMan.filterNeighbourhood(usr, input.get(0));
-                        break;
-                    case "Reset Filter":
-                        output = proMan.getProjectList(usr);
-                        break;
-                    default:
-                        output = new ArrayList<>(List.of("Invalid filter"));
+                case "filter-projects": {
+                    System.out.println("Filter by:");
+                    // Build the menu
+                    List<String> options = new ArrayList<>(List.of(
+                        "Flat", "Neighbourhood", "My Projects", "Reset Filter"
+                    ));
+                    String choice = strIn(sc, options);
+                
+                    switch (choice) {
+                        case "Flat":
+                            System.out.println("Enter flat type to filter by:");
+                            String flat = strIn(sc, proMan.userFlatOptions(usr, ""));
+                            output = proMan.filterFlat(usr, flat);
+                            break;
+                
+                        case "Neighbourhood":
+                            System.out.println("Enter neighbourhood to filter by:");
+                            String hood = sc.nextLine();
+                            output = proMan.filterNeighbourhood(usr, hood);
+                            break;
+                
+                        case "My Projects":
+                            // getProjectList() now returns exactly the right IDs for managers, officers or applicants
+                            output = proMan.getProjectList(usr);
+                            break;
+                        
+                
+                        case "Reset Filter":
+                            output = proMan.getProjectList(usr);
+                            break;
+                
+                        default:
+                            output = List.of("Invalid filter");
+                    }
+                
+                    // clear any context
+                    currentViewedProjectID = "";
+                    currentViewedEnquiryID = "";
+                
+                    // ensure we always return at least one line
+                    if (output.isEmpty() || output.get(0).isEmpty()) {
+                        output = List.of("No projects found");
+                    }
+                    return output;
                 }
-                //input category, output projects by category
-                currentViewedProjectID = "";
-                currentViewedEnquiryID = "";
-                if (output.isEmpty()) {
-                    output.add("No projects found");
-                }
-                return output;
             case "delete-project":
                 //input project id, output success/failure and new projects list
                 System.out.println("Enter project ID to be deleted: ");

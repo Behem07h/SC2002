@@ -242,6 +242,7 @@ public class ProjectManager {
         return filterFlat(usr, getUserValidFlatTypes(usr));
     }
 
+
     /*
     public void joinProject(user usr, String projectName, RegistrationCriteria criteria){
         if(usr instanceof HDBOfficer) {

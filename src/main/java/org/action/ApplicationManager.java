@@ -76,7 +76,7 @@ public class ApplicationManager {
     }
 
     public List<String> listByProject(user usr, String projectId) { //todo: perms checking. combine into 1 fn?
-        List<Application> filteredApps = searchFilter("",projectId,"", null);
+        List<Application> filteredApps = searchFilter("",projectId,"",  List.of());
         List<String> output = new ArrayList<>(List.of(""));
         for (Application a : filteredApps) {
             output.set(0, output.get(0) + a.view());
@@ -151,9 +151,14 @@ public class ApplicationManager {
         }
         switch (action) {
             case "BOOKED":
-                System.out.println("Processing submission for application ID: " + applicationId);
-                app.book_flat();
-                pro.addBooking(applicationId, app.getFlatType());
+                if (pro.flatAvailability(app.getFlatType()) > 0) {
+                    System.out.println("Processing submission for application ID: " + applicationId);
+                    app.book_flat();
+                    pro.addBooking(applicationId, app.getFlatType());
+                } else {
+                    System.out.println("Project has no more available flats");
+                }
+
                 break;
 
             case "SUCCESSFUL":

@@ -120,7 +120,9 @@ public class Project {
         this.officersList = new ArrayList<>(List.of(officersList.split(":")));
         this.officersIDList = new ArrayList<>(List.of(officersIDList.split(":")));
         this.flatType1Bookings = new ArrayList<>(List.of(flatType1Bookings.split(":")));
+        this.flatType1Bookings.remove("");
         this.flatType2Bookings = new ArrayList<>(List.of(flatType2Bookings.split(":")));
+        this.flatType2Bookings.remove("");
         this.visible = visible;
     }
 
@@ -166,19 +168,44 @@ public class Project {
     }
 
     public void edit(String projectName, String neighbourhood, String flatType1, int flatCount1, int flatPrice1, String flatType2, int flatCount2, int flatPrice2, String openingDate, String closingDate, int officerSlots) {
-        if (!projectName.isEmpty()) {this.projectName = projectName;}
-        if (!neighbourhood.isEmpty()) {this.neighbourhood = neighbourhood;}
-        if (!flatType1.isEmpty()) {this.flatType1 = flatType1;}
-        if (flatCount1 > 0) {this.flatCount1 = flatCount1;}
-        if (flatPrice1 > 0) {this.flatPrice1 = flatPrice1;}
-        if (!flatType2.isEmpty()) {this.flatType2 = flatType2;}
-        if (flatCount2 > 0) {this.flatCount2 = flatCount2;}
-        if (flatPrice2 > 0) {this.flatPrice2 = flatPrice2;}
-        if (!openingDate.isEmpty()) {this.openingDate = LocalDate.parse(openingDate);}
-        if (!closingDate.isEmpty()) {this.closingDate = LocalDate.parse(closingDate);}
-        if (officerSlots > 0) {this.officerSlotCount = officerSlots;}
-        System.out.println("Project details updated successfully.");
-
+        try {
+            if (!projectName.isEmpty()) {
+                this.projectName = projectName;
+            }
+            if (!neighbourhood.isEmpty()) {
+                this.neighbourhood = neighbourhood;
+            }
+            if (!flatType1.isEmpty()) {
+                this.flatType1 = flatType1;
+            }
+            if (flatCount1 > 0) {
+                this.flatCount1 = flatCount1;
+            }
+            if (flatPrice1 > 0) {
+                this.flatPrice1 = flatPrice1;
+            }
+            if (!flatType2.isEmpty()) {
+                this.flatType2 = flatType2;
+            }
+            if (flatCount2 > 0) {
+                this.flatCount2 = flatCount2;
+            }
+            if (flatPrice2 > 0) {
+                this.flatPrice2 = flatPrice2;
+            }
+            if (!openingDate.isEmpty()) {
+                this.openingDate = LocalDate.parse(openingDate);
+            }
+            if (!closingDate.isEmpty()) {
+                this.closingDate = LocalDate.parse(closingDate);
+            }
+            if (officerSlots > 0) {
+                this.officerSlotCount = officerSlots;
+            }
+            System.out.println("Project details updated successfully.");
+        } catch (Error e) {
+            System.out.println(e.getMessage());
+        }
     }
 
     public int flatAvailability(String flat_type) {
@@ -189,8 +216,33 @@ public class Project {
         }
         return 0;
     }
-
-    public boolean filter(String name, String nameExact, String neighbourhood, String flat, boolean date, boolean visible) {
+    public boolean managerOfficerOf(user usr, boolean manager) {
+        if (manager) {
+            return getManagerId().contains(usr.getUserID());
+        } else {
+            return getOfficersIDList().contains(usr.getUserID());
+        }
+    }
+    private boolean beforeEq(LocalDate date1, LocalDate date2) {
+        return date1.isBefore(date2) || date1.isEqual(date2);
+    }
+    public boolean overlapCheck(LocalDate start_date, LocalDate end_date) {
+        if (beforeEq(openingDate, start_date) && beforeEq(start_date, closingDate)) {
+            //if start of p lies between the opening and closing of this project, they overlap
+            return true;
+        } else if (beforeEq(openingDate, end_date) && beforeEq(end_date, closingDate)) {
+            //if end of p lies between the opening and closing of this project, they overlap
+            return true;
+        } else if (beforeEq(start_date, openingDate) && beforeEq(openingDate, end_date)) {
+            //if the start of this lies between the opening and closing of p, they overlap
+            return true;
+        } else if (beforeEq(start_date, closingDate) && beforeEq(closingDate, end_date)) {
+            //if the end of this lies between the opening and closing of p, they overlap
+            return true;
+        }
+        return false;
+    }
+    public boolean filter(String name, String nameExact, String neighbourhood, String flat, String managedBy, boolean date, boolean visible) {
         boolean out = true;
         if (!nameExact.isEmpty()) {
             out = projectName.equalsIgnoreCase(nameExact);
@@ -202,6 +254,9 @@ public class Project {
         }
         if (!flat.isEmpty()) {
             out = out && (flatType1.toLowerCase().contains(flat.toLowerCase()) || flatType2.toLowerCase().contains(flat.toLowerCase()));
+        }
+        if (!managedBy.isEmpty()) {
+            out = out && String.format("%s:%s",getOfficersIDList(),getManagerId()).contains(managedBy);
         }
         if (visible && date) {
             out = out && ((LocalDate.now().isAfter(openingDate) || LocalDate.now().isEqual(openingDate)) && LocalDate.now().isBefore(closingDate));

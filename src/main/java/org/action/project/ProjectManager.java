@@ -9,6 +9,7 @@ import org.action.registration.Register;
 import org.action.registration.RegistrationManager;
 
 import java.time.LocalDate;
+import java.time.format.DateTimeParseException;
 import java.util.*;
 
 import static java.lang.Integer.max;
@@ -66,18 +67,32 @@ public class ProjectManager {
         ldr.saveCSV(path + filename,pro_map);
     }
 
+
     public void createProject(user usr, String projectName, String neighbourhood, String type1, int type1_count, int type1_price, String type2, int type2_count, int type2_price, String opening_date, String closing_date, int officer_slots) {
         if (usr instanceof HDBManager) {
             boolean exists = false;
             for (Project p : projectList) {
-                if (p.filter("", projectName,"","", false, false)) {
+                if (p.filter("", projectName,"","", "",false, false)) {
                     exists = true;
                     break;
                 }
             }
             if (exists) {
                 System.out.println("Cannot create project with identical name");
-            } else { //todo: check that they have no active projects
+            } else {
+                try {
+                    LocalDate start_date = LocalDate.parse(opening_date);
+                    LocalDate end_date = LocalDate.parse(closing_date);
+                    for (Project p : projectList) {
+                        if (p.filter("", "","","", usr.getUserID(),false, false) && p.overlapCheck(start_date, end_date)) {
+                            System.out.println("You are already managing a project that overlaps this application period: " + p.getProjectName());
+                            return;
+                        }
+                    }
+                } catch (DateTimeParseException e) {
+                    System.out.println("Invalid date. Dates must be in format YYYY-MM-DD");
+                    return;
+                }
                 projectList.add(new Project(projectName, neighbourhood, type1, type1_count, type1_price, type2, type2_count, type2_price, LocalDate.parse(opening_date), LocalDate.parse(closing_date), usr.getUsername(), usr.getUserID(), officer_slots, "", "","","",false));
                 System.out.println("New project created: " + projectName);
             }
@@ -86,8 +101,8 @@ public class ProjectManager {
         }
     }
     public void deleteProject(user usr, String projectName) {
-        if (usr instanceof HDBManager) { //todo: check this is a project they are managing
-            boolean removed = projectList.removeIf(p -> p.filter("",projectName,"","",false,false));
+        if (usr instanceof HDBManager) {
+            boolean removed = projectList.removeIf(p -> p.filter("",projectName,"","",usr.getUserID(),false,false));
             if (removed) {
                 System.out.println("Project '" + projectName + "' deleted from the system.");
             } else {
@@ -98,9 +113,9 @@ public class ProjectManager {
         }
     }
     public void editProject(user usr, String projectNameOld, String projectName, String neighbourhood, String flatType1, int flatCount1, int flatPrice1, String flatType2, int flatCount2, int flatPrice2, String openingDate, String closingDate, int officerSlots) {
-        if (usr instanceof HDBManager) { //todo: check this is a project they are managing
+        if (usr instanceof HDBManager) {
             for (Project p : projectList) {
-                if (p.filter("", projectNameOld,"","",false,false)) {
+                if (p.filter("", projectNameOld,"","",usr.getUserID(),false,false)) {
                     p.edit(projectName, neighbourhood, flatType1, max(p.getBookingCount1(),flatCount1), flatPrice1, flatType2, max(p.getBookingCount2(),flatCount2), flatPrice2, openingDate, closingDate, officerSlots);
                     System.out.println("Project updated for keyword: " + projectName);
                     return;
@@ -113,10 +128,14 @@ public class ProjectManager {
     }
 
     public void toggleVisibility(user usr, String keyword) {
-        if (usr instanceof HDBManager) { //todo: check this is a project they are managing
+        if (usr instanceof HDBManager) {
             for (Project p : projectList) {
-                if (p.filter("",keyword,"","",false,false)) {
-                    p.toggle_visibility();
+                if (p.filter("",keyword,"","","",false,false)) {
+                    if (p.managerOfficerOf(usr, true)) {
+                        p.toggle_visibility();
+                    } else {
+                        System.out.println("You are not the manager of this project");
+                    }
                     return;
                 }
             }
@@ -125,7 +144,7 @@ public class ProjectManager {
             System.out.println("No perms to alter project visibility");
         }
     }
-    private List<Project> searchFilter(user usr, String name, String nameExact, String neighbourhood, String flat, boolean visChk) {
+    private List<Project> searchFilter(user usr, String name, String nameExact, String neighbourhood, String flat, String managedBy, boolean visChk) {
         List<Project> out = new ArrayList<>();
         boolean visible_check = visChk; //default to true so new roles default to minimum perms
         boolean date_check = true;
@@ -135,7 +154,7 @@ public class ProjectManager {
         }
 
         for (Project p : projectList) {
-            if (p.filter(name,nameExact,neighbourhood,flat, date_check, visible_check)) {
+            if (p.filter(name,nameExact,neighbourhood,flat, managedBy, date_check, visible_check)) {
                 out.add(p);
             }
         }
@@ -146,7 +165,7 @@ public class ProjectManager {
         List<Project> filteredProjects;
         List<String> out = new ArrayList<>(List.of(""));
         if (flatType.contains(getUserValidFlatTypes(usr))) {
-            filteredProjects = searchFilter(usr,"","","", flatType,true);
+            filteredProjects = searchFilter(usr,"","","", flatType,"",true);
             for (Project p : filteredProjects) {
                 out.set(0, out.get(0) + "\n" + p.view(getUserValidFlatTypes(usr)));
             }
@@ -157,7 +176,7 @@ public class ProjectManager {
     public List<String> filterNeighbourhood(user usr, String neighbourhood) {
         List<Project> filteredProjects;
         List<String> out = new ArrayList<>(List.of(""));
-        filteredProjects = searchFilter(usr,"","",neighbourhood,getUserValidFlatTypes(usr),true);
+        filteredProjects = searchFilter(usr,"","",neighbourhood,getUserValidFlatTypes(usr),"",true);
         for (Project p : filteredProjects) {
             out.set(0, out.get(0) + "\n" + p.view(getUserValidFlatTypes(usr)));
         }
@@ -166,7 +185,7 @@ public class ProjectManager {
     public List<String> searchName(user usr, String name) {
         List<Project> filteredProjects;
         List<String> out = new ArrayList<>(List.of(""));
-        filteredProjects = searchFilter(usr, name,"","",getUserValidFlatTypes(usr),true);
+        filteredProjects = searchFilter(usr, name,"","",getUserValidFlatTypes(usr),"",true);
         for (Project p : filteredProjects) {
             out.set(0, out.get(0) + "\n" + p.view(getUserValidFlatTypes(usr)));
         }
@@ -174,13 +193,28 @@ public class ProjectManager {
     }
     public int projectExists(user usr, String projectName, boolean visChk) {
         List<Project> filteredProjects;
-        filteredProjects = searchFilter(usr,"",projectName,"", getUserValidFlatTypes(usr), visChk);
+        filteredProjects = searchFilter(usr,"",projectName,"", getUserValidFlatTypes(usr),"", visChk);
         return filteredProjects.size();
+    }
+
+    public boolean checkManagedOfficerOf(user usr, String projectName, boolean visChk, boolean manager) {
+        if (!((manager && usr instanceof HDBManager) || (!manager && usr instanceof HDBOfficer))) {
+            return false;
+        }
+        if (projectName == null) {
+            return true;
+        }
+        Project pro = getProjectObjByName(usr, projectName, visChk);
+        if (pro != null) {
+            return pro.managerOfficerOf(usr, manager);
+        } else {
+            return false;
+        }
     }
 
     public Project getProjectObjByName(user usr, String projectName, boolean visChk) {
         List<Project> filteredProjects;
-        filteredProjects = searchFilter(usr,"",projectName,"", getUserValidFlatTypes(usr), visChk);
+        filteredProjects = searchFilter(usr,"",projectName,"", getUserValidFlatTypes(usr), "",visChk);
         if (!filteredProjects.isEmpty()) {
             return filteredProjects.get(0);
         } else {
@@ -224,7 +258,7 @@ public class ProjectManager {
 
         if (projectName.isEmpty()) {
             for (String flatStr : flatChoices) {
-                if (!searchFilter(usr, "", projectName, "", flatStr, true).isEmpty()) {
+                if (!searchFilter(usr, "", projectName, "", flatStr, "",true).isEmpty()) {
                     outputChoices.add(flatStr);
                 }
             }

@@ -5,6 +5,7 @@ import org.action.enquiry.EnquiriesManager;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
@@ -206,6 +207,10 @@ public class Project {
         } catch (Error e) {
             System.out.println(e.getMessage());
         }
+    }
+
+    public void editOfficerList(String officersIDList) {
+         this.officersIDList = new ArrayList<>(Arrays.asList(officersIDList.split(":")));
     }
 
     public int flatAvailability(String flat_type) {

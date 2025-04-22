@@ -84,7 +84,7 @@ public class RegistrationManager{
             System.out.println("Your user type cannot register for projects");
             return;
         }
-        //todo: add another condition to check if officer applied to project as applicant
+        // checks if user have a pending application
         if (countByUser(usr) == 0) {
             if (proMan.projectExists(usr, projectId, true) > 0) {
                 Register newRegistration =  new Register(
@@ -99,10 +99,13 @@ public class RegistrationManager{
             } else {
                 System.out.println("No such project");
             }
-        } else {
+        }
+        if (countByUser(usr) != 0) {
             System.out.println("You have already registered for another project");
             // or already have intentions to apply as applicant for project
         }
+        //todo: add another condition to check if officer applied to project as applicant
+        
     }
 
     private Register retrieveRegistration(String registrationID) {
@@ -129,6 +132,7 @@ public class RegistrationManager{
             case "APPROVED":
                 System.out.println("Processing approval for registration ID: " + registrationID);
                 reg.approveRegistration();
+                assignOfficer(reg, proMan);
                 break;
 
             case "REJECTED":
@@ -138,6 +142,22 @@ public class RegistrationManager{
 
             default:
                 System.out.println("Unsupported target status: " + action);
+        }
+    }
+
+    public void assignOfficer(Register reg, ProjectManager proMan) {
+        Project proj = proMan.getProjectObjByName(null, reg.getProjectID(), false);
+
+        if (proj != null) {
+            String officerID = reg.getUserID();
+            String currentOfficerIDList = proj.getOfficersIDList();
+
+            if(!currentOfficerIDList.contains(reg.getUserID())) {
+                List<String> officersIDList;
+                officersIDList = new ArrayList<>(Arrays.asList(currentOfficerIDList.split(":")));
+                officersIDList.add(officerID);
+                proj.editOfficerList(String.join(":", officersIDList));
+            }
         }
     }
 

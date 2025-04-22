@@ -7,9 +7,11 @@ import org.Users.user;
 import org.action.enquiry.EnquiriesManager;
 import org.action.project.Project;
 import org.action.project.ProjectManager;
+import org.receipt.BookingReceipt;
 
 import java.time.LocalDate;
 import java.util.*;
+import java.util.function.Function;
 
 public class ApplicationManager {
     private final List<Application> applicationList;
@@ -225,6 +227,57 @@ public class ApplicationManager {
         app.requestWithdrawal();
     }
 
+    
+    public List<BookingReceipt> getBookingReceipts(
+            user actor,
+            String projectFilter,
+            String flatTypeFilter,
+            String maritalFilter,
+            ProjectManager proMan,
+            Function<String, user> lookupUser
+    ) {
+        List<BookingReceipt> receipts = new ArrayList<>();
+    
+        for (Application a : applicationList) {
+            if (a.getStatus() != Application.ApplicationStatus.BOOKED) continue;
+            if (!projectFilter.isEmpty() && !a.getProjectId().equals(projectFilter)) continue;
+            if (!flatTypeFilter.isEmpty() && !a.getFlatType().equals(flatTypeFilter)) continue;
+    
+            user applicant = lookupUser.apply(a.getApplicantId());
+            if (applicant == null) continue;
+            if (!maritalFilter.isEmpty()
+             && !applicant.getMaritalStatus().equalsIgnoreCase(maritalFilter))
+                continue;
+    
+            // build the flat‐type details from the Project
+            Project p = proMan.getProjectObjByName(actor, a.getProjectId(), true);
+            if (p == null) continue;
+            int free1 = p.getFlatCount1() - p.getBookingCount1();
+            String details = String.format(
+                "%s – $%d; %d/%d free",
+                p.getFlatType1(), p.getFlatPrice1(), free1, p.getFlatCount1()
+            );
+            if (p.getFlatType2() != null && !p.getFlatType2().isEmpty()) {
+                int free2 = p.getFlatCount2() - p.getBookingCount2();
+                details += String.format(
+                  ", %s – $%d; %d/%d free",
+                  p.getFlatType2(), p.getFlatPrice2(), free2, p.getFlatCount2()
+                );
+            }
+            String projDetails = String.format("%s: %s", p.getProjectName(), details);
+    
+            receipts.add(new BookingReceipt(
+                a.getFlatType(),
+                applicant.getUsername(),
+                applicant.getAge(),
+                applicant.getUserID(),
+                projDetails,
+                applicant.getMaritalStatus()
+            ));
+        }
+    
+        return receipts;
+    }
 
 
     public List<Application> getApplicationList() {

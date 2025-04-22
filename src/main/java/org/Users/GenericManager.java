@@ -88,6 +88,14 @@ public abstract class GenericManager<T extends user> {
             System.out.println(user);
         }
     }
+    public T findById(String userID) {
+        for (T u : userDB) {
+            if (u.getUserID().equals(userID)) {
+                return u;
+            }
+        }
+        return null;
+    }
 
     // Abstract: manually add user
     public abstract void addUser(String userID, String username, int age, String extra1, String extra2);

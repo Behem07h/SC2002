@@ -175,11 +175,17 @@ public class Context {
             case "list-registrations":
                 //todo: managers need a way to see all pending registrations for a project
                 //todo: officers need a way to see their own pending registrations
+                System.out.println("Enter project name to view pending registration: ");
+                input.set(0, sc.nextLine());
+                regMan.listPendingReg(usr, input.get(0));
                 return List.of("");
             case "add-registration":
                 //todo:officers register to manage project
                 //todo:check the project application period does not overlap with other ones they are managing
                 //todo:check that they have no pending or successful applications for the project
+                System.out.println("Enter project name you want to register for: ");
+                input.set(0, sc.nextLine());
+                regMan.registerProject(usr, input.get(0), proMan);
                 return List.of("");
             case "process-registration":
                 //todo:managers acccept or reject registrations

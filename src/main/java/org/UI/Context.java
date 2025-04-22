@@ -1,7 +1,5 @@
 package org.UI;
 
-import org.Users.HDBManager.HDBManager;
-import org.Users.HDBOfficer.HDBOfficer;
 import org.Users.user;
 import org.action.ApplicationManager;
 import org.action.enquiry.EnquiriesManager;
@@ -106,36 +104,16 @@ public class Context {
                 if (currentViewedEnquiryID.isEmpty()) {
                     System.out.println("Enter enquiry ID to reply to: ");
                     currentViewedEnquiryID = sc.nextLine();
-                } //todo: add check that the enquiry is part of a project the officer is handling
-                //todo: also add check that the user is an officer
-                if (!(usr instanceof HDBOfficer) && !(usr instanceof HDBManager)) {
-                    System.out.println("Only HDB Officers and Managers can reply to enquiries.");
-                    return List.of("ERROR", "Only HDB Officers and Managers can reply to enquiries.");
+                }
+                if (enqMan.canReply(usr, currentViewedEnquiryID, proMan)) {
+                    System.out.println("Enter reply to enquiry: ");
+                    input.set(0, sc.nextLine());
+                    output = enqMan.replyEnquiries(usr, input.get(0), currentViewedEnquiryID);
+                } else {
+                    output = List.of("");
                 }
 
-                // Get the enquiry details to check the project
-                List<String> enquiryDetails = enqMan.getEnquiriesById(usr, currentViewedEnquiryID);
-                if (enquiryDetails.get(0).isEmpty() || enquiryDetails.get(1).equals("No such enquiry")) {
-                    System.out.println("Enquiry not found.");
-                    return List.of("ERROR", "Enquiry not found.");
-                }
 
-                // Get the project ID from the enquiry
-                String enquiryProjectID = enquiryDetails.get(0);
-
-                // If user is an officer, check if they are handling this project
-                if (usr instanceof HDBOfficer) {
-                    HDBOfficer officer = (HDBOfficer) usr;
-                    // Check if officer is assigned to this project by checking if their ID is in the project's officers list
-                    if (!proMan.getProjectObjByName(usr, enquiryProjectID, true).getOfficersIDList().contains(officer.getUserID())) {
-                        System.out.println("You are not assigned to handle this project.");
-                        return List.of("ERROR", "You are not assigned to handle this project.");
-                    }
-                }
-
-                System.out.println("Enter reply to enquiry: ");
-                input.set(0, sc.nextLine());
-                output = enqMan.replyEnquiries(usr, input.get(0), currentViewedEnquiryID);
                 return output;
             //application methods
             case "view-applications":

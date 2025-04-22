@@ -4,6 +4,8 @@ import org.UI.ConfigLDR;
 import org.Users.*;
 import org.Users.HDBManager.HDBManager;
 import org.Users.HDBOfficer.HDBOfficer;
+import org.action.project.Project;
+import org.action.project.ProjectManager;
 
 import java.time.LocalDateTime;
 import java.util.*;
@@ -28,8 +30,8 @@ public class EnquiriesManager implements EnquiryAction {
             String projectID = items[0];
             String userId = items[1];
             String username = items[2];
-            String text = items[3];
-            String reply = items[4];
+            String text = items[3].replace("\\:",",");
+            String reply = items[4].replace("\\:",",");
             LocalDateTime timestamp = LocalDateTime.parse(items[5]);
 
             this.enquiriesList.add(new Enquiries(key, projectID, userId, username, text, reply, timestamp));
@@ -40,7 +42,7 @@ public class EnquiriesManager implements EnquiryAction {
         // run this when quitting program to store to csv
         Map<String,String[]> enq_map = new HashMap<>();
         for (Enquiries e : enquiriesList) {
-            String[] items = {e.getProjectID(),e.getUserID(),e.getUsername(),e.getText(),e.getReply(), String.valueOf(e.getTimestamp())};
+            String[] items = {e.getProjectID(),e.getUserID(),e.getUsername(),e.getText().replace(",","\\:"),e.getReply().replace(",","\\:"), String.valueOf(e.getTimestamp())};
             enq_map.put(String.valueOf(e.getID()),items);
         }
         ConfigLDR ldr = new ConfigLDR();
@@ -188,6 +190,30 @@ public class EnquiriesManager implements EnquiryAction {
         }
     }
 
+    public boolean canReply(user usr, String enquiryID, ProjectManager proMan) {
+        if (!(usr instanceof HDBOfficer) && !(usr instanceof HDBManager)) {
+            System.out.println("Only HDB Officers and Managers can reply to enquiries.");
+            return false;
+        }
+
+        // Get the enquiry details to check the project
+        Enquiries enquiry = getEnquiry(enquiryID);
+        if (enquiry == null) {
+            System.out.println("Enquiry not found.");
+            return false;
+        }
+
+        // Get the project ID from the enquiry
+        Project pro = proMan.getProjectObjByName(usr, enquiry.getProjectID(), false);
+        // If user is an officer, check if they are handling this project
+        if ((usr instanceof HDBManager && Objects.equals(pro.getManagerId(), usr.getUserID())) || (usr instanceof HDBOfficer && pro.getOfficersIDList().contains(usr.getUserID()))) {
+            return true;
+        } else {
+            System.out.println("You can only reply to enquiries regarding projects you are in charge of");
+            return false;
+        }
+    }
+
     @Override
     public List<String> editEnquiries(user usr, String newText, String enquiryId) {
         List<String> result = new ArrayList<>(List.of("",""));
@@ -228,7 +254,7 @@ public class EnquiriesManager implements EnquiryAction {
                 return result;
             }
 
-            if(usr instanceof HDBManager || usr instanceof HDBOfficer) { //todo: check that the enquiry is for a project they manage
+            if(usr instanceof HDBManager || usr instanceof HDBOfficer) {
                 enquiry.setReply(reply);
                 result = getEnquiriesById(usr,enquiryId);
             } else {

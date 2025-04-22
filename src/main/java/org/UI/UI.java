@@ -82,7 +82,7 @@ class ui_main {
                     //if the input was valid, run any relevant functions here and save the return values to a ctx local var
                 	tmp = fn_map.get(ui_idx)[usr_in-1];
                     tmpList = context.act(tmp,this.sc);
-                    if (!tmpList.get(0).isEmpty()) {
+                    if (!tmpList.get(0).trim().isEmpty()) {
                         System.out.println("Query returned blank");
                         ctx_idx = tmp;
                         ctx = tmpList;

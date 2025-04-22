@@ -141,8 +141,10 @@ public class Application implements Act {
         if (!applicationId.isEmpty()) {
             out = out && Objects.equals(this.applicationId, applicationId);
         }
-        for (ApplicationStatus status : statusBlacklist) {
-            out = out && (this.status != status);
+        if (statusBlacklist != null) {
+            for (ApplicationStatus status : statusBlacklist) {
+                out = out && (this.status != status);
+            }
         }
         return out;
     }

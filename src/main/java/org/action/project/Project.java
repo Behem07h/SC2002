@@ -8,9 +8,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-//todo: track how many flats have already been booked, update this whenever an application status is updated
-//todo: track how many applications have been made for the project
-//todo: track amount of enquiries there are about the project
 public class Project {
     String projectName;
     String neighbourhood;
@@ -177,6 +174,15 @@ public class Project {
         if (officerSlots > 0) {this.officerSlotCount = officerSlots;}
         System.out.println("Project details updated successfully.");
 
+    }
+
+    public int flatAvailability(String flat_type) {
+        if (flatType1.toLowerCase().contains(flat_type.toLowerCase())) {
+            return flatCount1 - flatType1Bookings.size();
+        } else if (flatType2.toLowerCase().contains(flat_type.toLowerCase())) {
+            return flatCount2 - flatType2Bookings.size();
+        }
+        return 0;
     }
 
     public boolean filter(String name, String nameExact, String neighbourhood, String flat, boolean date, boolean visible) {

@@ -1,3 +1,14 @@
+/**
+ * Manages housing applications in the HDB system.
+ *
+ * This class handles CRUD operations for applications, including storing applications,
+ * filtering and retrieving applications, processing approvals, rejections, and withdrawals.
+ * It also provides reporting capabilities for booking receipts.
+ *
+ * Applications are loaded from and stored to CSV files for persistence.
+ * @author Group 1- Beitricia Jassindah, Bryan, Cai Yuqin, Lin Jia Rong, Tan Min
+ * @version 1.0
+ */
 package org.action;
 
 import org.UI.ConfigLDR;
@@ -14,10 +25,19 @@ import java.util.*;
 import java.util.function.Function;
 
 public class ApplicationManager {
+
+    /** List containing all applications in the system */
     private final List<Application> applicationList;
+
+    /** Base directory path for data files */
     private final String path = "data/db";
+
+    /** Filename for applications data */
     private final String filename =  "/applications.csv";
 
+    /**
+     * Constructs a new ApplicationManager which loads existing applications from CSV.
+     * Initializes the application list and populates it with data from the file.     */
     public ApplicationManager() {
         //load applications from csv
         this.applicationList = new ArrayList<>();
@@ -41,6 +61,10 @@ public class ApplicationManager {
         }
     }
 
+    /**
+     * Stores all applications to the CSV file.
+     * This method should be called when exiting the program to ensure data persistence.
+     */
     public void store() {
         // run this when quitting program to store to csv
         Map<String,String[]> appl_map = new HashMap<>();
@@ -53,7 +77,15 @@ public class ApplicationManager {
     }
 
 
-
+    /**
+     * Filters applications based on specified criteria.
+     *
+     * @param userId User ID to filter by, or empty string to ignore this filter
+     * @param projectId Project ID to filter by, or empty string to ignore this filter
+     * @param applicationId Application ID to filter by, or empty string to ignore this filter
+     * @param statusBlacklist List of statuses to exclude from results
+     * @return List of applications matching the filter criteria
+     */
     private List<Application> searchFilter(String userId, String projectId, String applicationId, List<Application.ApplicationStatus> statusBlacklist) {
         List<Application> out = new ArrayList<>();
         for (Application a : applicationList) {
@@ -64,11 +96,26 @@ public class ApplicationManager {
         return out;
     }
 
+    /**
+     * Counts the number of active applications for a user.
+     * Applications with status WITHDRAWN or UNSUCCESSFUL are not counted.
+     *
+     * @param usr The user whose applications are being counted
+     * @return Number of active applications for the user
+     */
     private int countByUser(user usr) {
         List<Application> filteredApps = searchFilter(usr.getUserID(),"","", List.of(Application.ApplicationStatus.WITHDRAWN,Application.ApplicationStatus.UNSUCCESSFUL));
         return filteredApps.size();
     }
 
+    /**
+     * Lists all applications for a specific user.
+     *
+     * @param usr The user whose applications are being listed
+     * @param enqMan The EnquiriesManager to retrieve project details
+     * @param proMan The ProjectManager to retrieve project details
+     * @return List of formatted strings containing application details
+     */
     public List<String> listByUser(user usr, EnquiriesManager enqMan, ProjectManager proMan) {
         List<Application> filteredApps = searchFilter(usr.getUserID(),"","", List.of());
         List<String> output = new ArrayList<>(List.of(""));
@@ -78,6 +125,15 @@ public class ApplicationManager {
         return output;
     }
 
+    /**
+     * Lists all applications for a specific project.
+     * If the user is an Applicant, only their own applications for the project are shown.
+     * If the user is an HDBOfficer, all applications for the project are shown.
+     *
+     * @param usr The user requesting the list
+     * @param projectId The ID of the project to list applications for
+     * @return List of formatted strings containing application details
+     */
     public List<String> listByProject(user usr, String projectId) {//todo: perms checking.
         List<Application> filteredApps;
         List<String> output = new ArrayList<>(List.of(""));
@@ -98,12 +154,25 @@ public class ApplicationManager {
         return output;
     }
 
+    /**
+     * Checks if a user has any active applications for a specific project.
+     * Used to verify if an HDB officer is eligible to process applications.
+     *
+     * @param usr The user to check
+     * @param projectId The project ID to check against
+     * @return Number of active applications for the user on this project
+     */
     public int checkForOfficer(user usr, String projectId) {
         List<Application> filteredApps = searchFilter(usr.getUserID(), projectId, "",
         List.of(Application.ApplicationStatus.PENDING,Application.ApplicationStatus.BOOKED,Application.ApplicationStatus.SUCCESSFUL));
         return filteredApps.size();
     }
 
+    /**
+     * Generates a new unique application ID.
+     *
+     * @return An integer ID
+     */
     private int generateNewApplicationId() {
         int maxId = 0;
         for (Application a : applicationList) {
@@ -113,6 +182,17 @@ public class ApplicationManager {
         }
         return maxId + 1;
     }
+
+    /**
+     * Creates a new application for a user.
+     * Checks if the user is eligible to apply (e.g., not an officer of the project)
+     * and if they don't already have an active application.
+     *
+     * @param usr The user creating the application
+     * @param projectId The ID of the project being applied for
+     * @param flatType The type of flat being applied for
+     * @param proMan The ProjectManager to verify project details
+     */
     public void newApplication(user usr, String projectId, String flatType, ProjectManager proMan) {
         if (usr instanceof HDBOfficer) {
             Project p = proMan.getProjectObjByName(usr, projectId, false);
@@ -145,6 +225,12 @@ public class ApplicationManager {
         }
     }
 
+    /**
+     * Retrieves an application by its ID.
+     *
+     * @param applicationId The ID of the application to retrieve
+     * @return The Application object if found, null otherwise
+     */
     private Application retrieveApplication(String applicationId) {
         for (Application app : applicationList) {
             if (app.getApplicationId().equalsIgnoreCase(applicationId)) {
@@ -155,6 +241,16 @@ public class ApplicationManager {
         return null;
     }
 
+    /**
+     * Processes an application's status change.
+     * Only HDB officers assigned to the project can process applications.
+     * Available actions are: BOOKED, SUCCESSFUL, UNSUCCESSFUL.
+     *
+     * @param usr The user processing the application (must be an HDBOfficer)
+     * @param applicationId The ID of the application to process
+     * @param action The action to perform (status to change to)
+     * @param proMan The ProjectManager to verify project details
+     */
     public void processApplication(user usr, String applicationId, String action, ProjectManager proMan) {
         if (!(usr instanceof HDBOfficer)) {
             System.out.println("You do not have the perms to process project applications");
@@ -197,6 +293,16 @@ public class ApplicationManager {
         }
     }
 
+    /**
+     * Processes a withdrawal request for an application.
+     * Only HDB officers assigned to the project can process withdrawal requests.
+     * Available actions are: WITHDRAW (approve), REJECT (reject withdrawal).
+     *
+     * @param usr The user processing the withdrawal (must be an HDBOfficer)
+     * @param applicationId The ID of the application with withdrawal request
+     * @param action The action to perform (WITHDRAW or REJECT)
+     * @param proMan The ProjectManager to verify project details
+     */
     public void processWithdrawal(user usr, String applicationId, String action, ProjectManager proMan) {
         if (!(usr instanceof HDBOfficer)) {
             System.out.println("You do not have the perms to process project withdrawal");
@@ -229,6 +335,13 @@ public class ApplicationManager {
         }
     }
 
+    /**
+     * Submits a withdrawal request for an application.
+     * Only the applicant who owns the application can request withdrawal.
+     *
+     * @param usr The applicant requesting withdrawal
+     * @param applicationId The ID of the application to withdraw
+     */
     public void requestWithdrawal(user usr, String applicationId) {
         if (!(usr instanceof HDBOfficer || usr instanceof Applicant)) {
             System.out.println("You do not have the perms to request withdrawal from projects");
@@ -246,7 +359,18 @@ public class ApplicationManager {
         app.requestWithdrawal();
     }
 
-    
+    /**
+     * Generates booking receipts based on filter criteria.
+     * This is used for reporting on booked applications.
+     *
+     * @param actor The user requesting the report
+     * @param projectFilter Filter by project name (empty string to ignore)
+     * @param flatTypeFilter Filter by flat type (empty string to ignore)
+     * @param maritalFilter Filter by marital status (empty string to ignore)
+     * @param proMan The ProjectManager to retrieve project details
+     * @param lookupUser Function to retrieve user details by user ID
+     * @return List of BookingReceipt objects matching the filter criteria
+     */
     public List<BookingReceipt> getBookingReceipts(
             user actor,
             String projectFilter,
@@ -298,7 +422,11 @@ public class ApplicationManager {
         return receipts;
     }
 
-
+    /**
+     * Gets the complete list of applications managed by this ApplicationManager.
+     *
+     * @return The list of all Application objects
+     */
     public List<Application> getApplicationList() {
         return applicationList;
     }

@@ -1,3 +1,13 @@
+/**
+ * Manages projects within the system, handling creation, storage, retrieval, and filtering.
+ * <p>
+ * This class provides functionality for managing HDB projects, including creating, editing, and deleting projects,
+ * searching and filtering projects based on various criteria, checking project eligibility for users,
+ * and storing/loading project data from persistent storage. It serves as the central management point
+ * for all project-related operations in the system.
+ * @author Group 1- Beitricia Jassindah, Bryan, Cai Yuqin, Lin Jia Rong, Tan Min
+ * @version 1.0
+ */
 package org.action.project;
 
 import org.UI.ConfigLDR;

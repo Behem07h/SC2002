@@ -1,3 +1,10 @@
+/**
+ * Manages the bookings for HDB flat applications.
+ * This class tracks all bookings (both confirmed and unconfirmed) and provides
+ * methods to add and retrieve bookings.
+ * @author Group 1- Beitricia Jassindah, Bryan, Cai Yuqin, Lin Jia Rong, Tan Min
+ * @version 1.0
+ */
 package org.action;
 
 public class WithdrawalRequest{

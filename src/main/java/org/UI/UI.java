@@ -12,6 +12,7 @@
  * @since 2025-04-23
  */
 package org.UI;
+import org.Users.GenericManager;
 import org.Users.user;
 
 import java.util.*;
@@ -28,13 +29,13 @@ public class UI {
      * @param myuser The authenticated user accessing the system
      * @param sc The Scanner object for reading user input
      */
-    public UI(String cfg_rt, user myuser, Scanner sc) {
+    public UI(String cfg_rt, user myuser, Scanner sc, List<GenericManager<user>> managersList) {
         ConfigLDR ldr = new ConfigLDR();
         this.ui = new ui_main(ldr.ReadToMap(cfg_rt+"/ui.csv"),
                 ldr.ReadToArrMap(cfg_rt+"/ui_connections.csv"),
                 ldr.ReadToArrMap(cfg_rt+"/ui_fns.csv"),
                 ldr.ReadToArrMap(cfg_rt+"/ui_visibility.csv"),
-                myuser, sc);
+                myuser, sc, managersList);
     }
     /**
      * Loads and starts the user interface.
@@ -95,7 +96,7 @@ class ui_main {
      * @param currentUser The authenticated user accessing the system
      * @param sc The Scanner object for reading user input
      */
-    public ui_main(Map<String,String> ui_map,Map<String,String[]> next_ui_map,Map<String,String[]> fn_map,Map<String,String[]> vis_map, user currentUser, Scanner sc) {
+    public ui_main(Map<String,String> ui_map,Map<String,String[]> next_ui_map,Map<String,String[]> fn_map,Map<String,String[]> vis_map, user currentUser, Scanner sc, List<GenericManager<user>> managersList) {
         //load file path into ui_arr
         this.ui_map = ui_map;
         this.next_ui_map = next_ui_map;
@@ -104,7 +105,7 @@ class ui_main {
 
         this.sc = sc;
 
-    	this.context = new Context(currentUser);
+    	this.context = new Context(currentUser, managersList);
         ctx_idx = fn_map.get("DEFAULT")[0];
         ctx = context.act(ctx_idx,this.sc); //UI context starts on the projects list screen
         ui_idx = next_ui_map.get("DEFAULT")[0]; //defaults can be loaded from file

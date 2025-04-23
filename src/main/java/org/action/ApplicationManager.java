@@ -148,7 +148,7 @@ public class ApplicationManager {
         if (usr instanceof Applicant) {
             filteredApps = searchFilter(usr.getUserID(), projectId, "", List.of());
             if (filteredApps.isEmpty()) {
-                output.set(0, "You have no applications for this project.");
+                System.out.println("You have no applications for this project.");
                 return output;
             }
         }

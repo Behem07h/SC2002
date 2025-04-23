@@ -9,8 +9,6 @@ package org.Users.HDBManager;
 
 import org.Users.user;  // Adjust the import as necessary if your user interface is in a different package
 
-import java.util.Scanner;
-
 /**
  *
  * HDBManager contains personal information about the manager, their authentication
@@ -36,11 +34,6 @@ public class HDBManager implements user {
     /** The age of the manager */
     private int age;
 
-    /**
-     * ID of the project currently being handled by this manager
-     * Note: Active projects cannot overlap with previous projects
-     */
-    private String activeProjectId;
 
     /**
      * Creates a new HDBManager with complete profile information.
@@ -51,34 +44,14 @@ public class HDBManager implements user {
      * @param maritalStatus The marital status of the manager
      * @param age The age of the manager
      * @param perms The permission level assigned to this manager
-     * @param activeProjectId The ID of the project currently assigned to this manager
      */
-    public HDBManager(String userID, String username, String password, String maritalStatus, int age, PermissionLevel perms, String activeProjectId) {
+    public HDBManager(String userID, String username, String password, String maritalStatus, int age, PermissionLevel perms) {
         this.userID = userID;
         this.username = username;
         this.password = password;  // Plain-text password
         this.maritalStatus = maritalStatus;
         this.age = age;
         this.perms = perms;
-        this.activeProjectId = activeProjectId;
-    }
-
-    /**
-     * Gets the ID of the project currently being handled by this manager.
-     *
-     * @return The active project ID
-     */
-    public String getActiveProjectId() {
-        return activeProjectId;
-    }
-
-    /**
-     * Sets the ID of the project currently being handled by this manager.
-     *
-     * @param activeProjectId The active project ID to set
-     */
-    public void setActiveProjectId(String activeProjectId) {
-        this.activeProjectId = activeProjectId;
     }
 
     /**
@@ -218,7 +191,6 @@ public class HDBManager implements user {
                ", maritalStatus='" + maritalStatus + '\'' +
                ", age=" + age +
                ", permissionLevel=" + perms +
-                ", activeProjectId='" + activeProjectId + '\'' +
                '}';
     }
 }

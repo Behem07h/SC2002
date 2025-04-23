@@ -5,11 +5,10 @@
  * @version 1.0
  * @since 2025-04-23
  */
-package org.action;
+package org.action.application;
 
 import org.UI.ConfigLDR;
 import org.Users.Applicant.Applicant;
-import org.Users.Applicant.ApplicantManager;
 import org.Users.GenericManager;
 import org.Users.HDBManager.HDBManager;
 import org.Users.HDBOfficer.HDBOfficer;
@@ -21,10 +20,9 @@ import org.receipt.BookingReceipt;
 
 import java.time.LocalDate;
 import java.util.*;
-import java.util.function.Function;
 
-import static org.action.Application.ApplicationStatus.PENDING;
-import static org.action.Application.ApplicationStatus.SUCCESSFUL;
+import static org.action.application.Application.ApplicationStatus.PENDING;
+import static org.action.application.Application.ApplicationStatus.SUCCESSFUL;
 
 /**
  *This class handles CRUD operations for applications, including storing applications,
@@ -141,14 +139,14 @@ public class ApplicationManager {
      * @param projectId The ID of the project to list applications for
      * @return List of formatted strings containing application details
      */
-    public List<String> listByProject(user usr, String projectId) {//todo: perms checking.
+    public List<String> listByProject(user usr, String projectId) {
         List<Application> filteredApps;
         List<String> output = new ArrayList<>(List.of(""));
 
         if (usr instanceof Applicant) {
             filteredApps = searchFilter(usr.getUserID(), projectId, "", List.of());
             if (filteredApps.isEmpty()) {
-                output.set(0, "You have no applications for this project.");
+                System.out.println("You have no applications for this project.");
                 return output;
             }
         }

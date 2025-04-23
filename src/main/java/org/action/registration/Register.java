@@ -18,16 +18,16 @@ import java.util.Objects;
 public class Register {
 
     /** Unique ID for the registration */
-    private String registrationID;
+    private final String registrationID;
 
     /** ID of the user submitting the registration */
-    private String userID;
+    private final String userID;
 
     /** Username of the user submitting the registration */
-    private String username;
+    private final String username;
 
     /** Identifier of the project being registered for */
-    private String projectID;
+    private final String projectID;
 
     /** Current status of the registration */
     private RegistrationStatus status;

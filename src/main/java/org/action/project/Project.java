@@ -325,7 +325,7 @@ public class Project {
      */
     public String viewFull(user usr, String flatsFilter, EnquiriesManager enqMan) {
         int enquiriesCount = enqMan.countProjectEnquiries(usr, projectName);
-        return String.format("%s | %s\nApplication Period: %s to %s\nManager: %s\nOfficers: %s\nVisible: %s\n\nEnquiries: %s",projectName, viewFlatDetails(flatsFilter,true), openingDate, closingDate, managerName, officersList, visible, enquiriesCount);
+        return String.format("%s | %s\nApplication Period: %s to %s\nManager: %s\nOfficers: %s\nVisible: %s | Applications Open: %s\n\nEnquiries: %s",projectName, viewFlatDetails(flatsFilter,true), openingDate, closingDate, managerName, officersList, visible, LocalDate.now().isBefore(closingDate),enquiriesCount);
     }
 
     /**

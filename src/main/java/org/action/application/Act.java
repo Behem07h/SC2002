@@ -4,7 +4,7 @@
  * @version 1.0
  * @since 2025-04-23
  */
-package org.action;
+package org.action.application;
 /**
  * This interface establishes a common contract for objects that can be viewed
  * or interacted with in the application workflow.

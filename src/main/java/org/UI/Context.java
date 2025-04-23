@@ -7,12 +7,11 @@ package org.UI;
 
 import org.Users.GenericManager;
 import org.Users.user;
-import org.action.ApplicationManager;
+import org.action.application.ApplicationManager;
 import org.action.enquiry.EnquiriesManager;
 import org.action.project.ProjectManager;
 import org.action.registration.RegistrationManager;
 import org.receipt.BookingReceipt;
-import org.Users.Applicant.ApplicantManager;
 
 
 import java.time.LocalDate;

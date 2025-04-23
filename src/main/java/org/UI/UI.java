@@ -96,6 +96,7 @@ class ui_main {
      * @param vis_map Map containing visibility settings for menu options
      * @param currentUser The authenticated user accessing the system
      * @param sc The Scanner object for reading user input
+     * @param managersList List of GenericManager to get user specific data
      */
     public ui_main(Map<String,String> ui_map,Map<String,String[]> next_ui_map,Map<String,String[]> fn_map,Map<String,String[]> vis_map, user currentUser, Scanner sc, List<GenericManager<user>> managersList) {
         //load file path into ui_arr
@@ -153,10 +154,11 @@ class ui_main {
                 	tmp = fn_map.get(ui_idx)[usr_in-1];
                     tmpList = context.act(tmp,this.sc);
                     if (!tmpList.get(0).trim().isEmpty()) {
-                        System.out.println("Query returned blank");
                         ctx_idx = tmp;
                         ctx = tmpList;
                         ui_idx = next_alias; //get the next ui idx
+                    } else {
+                        System.out.println("Query returned blank");
                     }
 
                 } else if (Objects.equals(next_alias, "NIL")) {

@@ -5,13 +5,13 @@
  * @version 1.0
  * @since 2025-04-23
  */
-package org.action;
+package org.action.application;
 
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Objects;
 
-import static org.action.Application.WithdrawalStatus.*;
+import static org.action.application.Application.WithdrawalStatus.*;
 
 /**
  * This class encapsulates all the information and business logic for managing
@@ -115,7 +115,7 @@ public class Application implements Act {
         if (status == ApplicationStatus.WITHDRAWN) {
             return "Application is withdrawn, cannot view";
         }
-        return String.format("Application %s | Project %s\nApplicant: %s\nStatus: %s%s\nSubmitted on: %s%s", applicationId, projectId, applicantId, status, ((withdrawStatus != NIL) ? String.format(" | Withdrawal: %s", withdrawStatus) : ""),submissionDate, (closingDate  != null ? String.format("| Closed on: %s",closingDate)  : ""));
+        return String.format("Application ID %s | Project %s\nApplicant: %s\nStatus: %s%s\nSubmitted on: %s%s", applicationId, projectId, applicantId, status, ((withdrawStatus != NIL) ? String.format(" | Withdrawal: %s", withdrawStatus) : ""),submissionDate, (closingDate  != null ? String.format("| Closed on: %s",closingDate)  : ""));
     }
 
     /**
@@ -221,7 +221,7 @@ public class Application implements Act {
             out = Objects.equals(this.applicantId, userId);
         }
         if (!projectId.isEmpty()) {
-            out = Objects.equals(this.projectId, projectId);
+            out = out && Objects.equals(this.projectId, projectId);
         }
         if (!applicationId.isEmpty()) {
             out = out && Objects.equals(this.applicationId, applicationId);

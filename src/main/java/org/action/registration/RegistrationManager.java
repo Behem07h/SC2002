@@ -141,7 +141,7 @@ public class RegistrationManager{
             case "APPROVED":
                 System.out.println("Processing approval for registration ID: " + registrationID);
                 reg.approveRegistration();
-                assignOfficer(reg, proMan);
+                assignOfficer(usr, reg, proMan);
                 break;
 
             case "REJECTED":
@@ -154,8 +154,8 @@ public class RegistrationManager{
         }
     }
 
-    public void assignOfficer(Register reg, ProjectManager proMan) {
-        Project proj = proMan.getProjectObjByName(null, reg.getProjectID(), false);
+    public void assignOfficer(user usr, Register reg, ProjectManager proMan) {
+        Project proj = proMan.getProjectObjByName(usr, reg.getProjectID(), false);
 
         if (proj != null) {
             String officerID = reg.getUserID();

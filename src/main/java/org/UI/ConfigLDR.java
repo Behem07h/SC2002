@@ -55,8 +55,8 @@ public class ConfigLDR{
      * @return a HashMap containing keys and their associated array of values from the CSV file
      */
     public HashMap<String, String[]> ReadToArrMap(String filename) {
-        Scanner sc = new Scanner(System.in);
-        sc.nextLine();
+        //Scanner sc = new Scanner(System.in); //for debugging purposes
+        //sc.nextLine();
         File file = new File(filename);
         HashMap<String, String[]> cfg = new HashMap<>();
         try (BufferedReader br = new BufferedReader(new FileReader(file))) {

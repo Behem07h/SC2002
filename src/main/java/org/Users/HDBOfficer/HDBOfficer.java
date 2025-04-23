@@ -2,6 +2,7 @@
  * Package for HDB Officer user management functionality.
  * @author Group 1- Beitricia Jassindah, Bryan, Cai Yuqin, Lin Jia Rong, Tan Min
  * @version 1.0
+ * @since 2025-04-23
  */
 package org.Users.HDBOfficer;
 
@@ -15,7 +16,7 @@ import org.Users.user;
  * mechanism in production environments.
  */
  public class HDBOfficer implements user {
-    /** Unique identifier for the HDB Officer */
+    /** Unique ID for the HDB Officer */
     private String userID;
 
     /** Username for login authentication */
@@ -36,7 +37,7 @@ import org.Users.user;
     /**
      * Constructs a new HDBOfficer with the specified details.
      *
-     * @param userID        The unique identifier for the officer
+     * @param userID        The unique ID for the officer
      * @param username      The login username for the officer
      * @param password      The password for authentication (stored as plain text)
      * @param maritalStatus The officer's marital status

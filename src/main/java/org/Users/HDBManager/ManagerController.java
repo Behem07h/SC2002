@@ -5,6 +5,7 @@
  *
  * @author Group 1- Beitricia Jassindah, Bryan, Cai Yuqin, Lin Jia Rong, Tan Min
  * @version 1.0
+ * @since 2025-04-23
  */
 package org.Users.HDBManager;
 
@@ -37,7 +38,7 @@ public class ManagerController extends GenericManager<user> {
      * Adds a new manager to the user database with default permission level MANAGER
      * and an empty active project ID.
      *
-     * @param userID The unique identifier for the new manager
+     * @param userID The unique ID for the new manager
      * @param username The username for the new manager
      * @param age The age of the new manager
      * @param maritalStatus The marital status of the new manager

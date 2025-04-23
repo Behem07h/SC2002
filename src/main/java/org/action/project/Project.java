@@ -4,9 +4,11 @@
  * This class encapsulates all information related to a Housing Development Board (HDB) project,
  * including project metadata, flat types, pricing, availability, application periods, and the
  * management team responsible for the project. It provides methods for viewing, editing,
- * and filtering project information based on various criteria.
+ * and filtering project information based on various criteria. </p>
  * @author Group 1- Beitricia Jassindah, Bryan, Cai Yuqin, Lin Jia Rong, Tan Min
  * @version 1.0
+ * @since 2025-04-23
+
  */
 package org.action.project;
 

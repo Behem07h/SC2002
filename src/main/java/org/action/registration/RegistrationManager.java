@@ -7,6 +7,7 @@
  *
  * @author Group 1- Beitricia Jassindah, Bryan, Cai Yuqin, Lin Jia Rong, Tan Min
  * @version 1.0
+ * @since 2025-04-23
  */
 package org.action.registration;
 
@@ -147,33 +148,33 @@ public class RegistrationManager{
             if ((proj != null) && (proj.getOfficersIDList().contains(usr.getUserID()))) {
                 System.out.println("You are currently an officer for a project");
                 return;
-            } //else continue to check for existing applications
+            }
+            // allow reg if user does not have approved registration and has not applied as applicant
+            if (countByUser(usr) == 0 && !(appliedAsApplicant(usr, projectId, appMan))) {
+                if (proMan.projectExists(usr, projectId, true) > 0) {
+                    Register newRegistration =  new Register(
+                            String.valueOf(generateNewRegistrationID()),
+                            usr.getUserID(),
+                            usr.getUsername(),
+                            projectId,
+                            Register.RegistrationStatus.PENDING,
+                            String.valueOf(LocalDate.now()),
+                            "" 
+                    );
+                    registrationList.add(newRegistration);
+                } else {
+                    System.out.println("No such project");
+                }
+            }
+            if (countByUser(usr) != 0) {
+                System.out.println("You have already registered for another project");
+            }
+            if (appliedAsApplicant(usr, projectId, appMan)) {
+                System.out.println("You have applied for this project as an applicant");
+            }
         } else {
             System.out.println("Your user type cannot register for projects");
             return;
-        }
-        // allow reg if user does not have approved registration and has not applied as applicant
-        if (countByUser(usr) == 0 && !(appliedAsApplicant(usr, projectId, appMan))) {
-            if (proMan.projectExists(usr, projectId, true) > 0) {
-                Register newRegistration =  new Register(
-                        String.valueOf(generateNewRegistrationID()),
-                        usr.getUserID(),
-                        usr.getUsername(),
-                        projectId,
-                        Register.RegistrationStatus.PENDING,
-                        String.valueOf(LocalDate.now()),
-                        "" 
-                );
-                registrationList.add(newRegistration);
-            } else {
-                System.out.println("No such project");
-            }
-        }
-        if (countByUser(usr) != 0) {
-            System.out.println("You have already registered for another project");
-        }
-        if (appliedAsApplicant(usr, projectId, appMan)) {
-            System.out.println("You have applied for this project as an applicant");
         }
     }
 
@@ -229,6 +230,13 @@ public class RegistrationManager{
         }
     }
 
+    /**
+     * Assigns the HDBOfficer to project after registration approved
+     *
+     * @param usr The user processing the registration
+     * @param reg The registration being processed
+     * @param proMan The ProjectManager instance to use for assigning officers
+     */
     public void assignOfficer(user usr, Register reg, ProjectManager proMan) {
         Project proj = proMan.getProjectObjByName(usr, reg.getProjectID(), false);
 
@@ -271,6 +279,7 @@ public class RegistrationManager{
             return output;
         }
     }
+
     /**
      * Only HDBOfficer users can view their own pending registrations.
      *

@@ -2,6 +2,7 @@
  * Package for HDB (Housing Development Board) Officer user management functionality.
  * @author Group 1- Beitricia Jassindah, Bryan, Cai Yuqin, Lin Jia Rong, Tan Min
  * @version 1.0
+ * @since 2025-04-23
  */
 package org.Users.HDBOfficer;
 
@@ -39,7 +40,7 @@ public class HDBOfficerManager extends GenericManager<user> {
      * This method creates a new HDBOfficer with the provided details and a default
      * password of "password". The permission level is set to OFFICER automatically.
      *
-     * @param userID The unique identifier for the officer
+     * @param userID The unique ID for the officer
      * @param username The login username for the officer
      * @param age The officer's age in years
      * @param maritalStatus The officer's marital status (or department information)

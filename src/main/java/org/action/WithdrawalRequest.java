@@ -4,6 +4,7 @@
  * methods to add and retrieve bookings.
  * @author Group 1- Beitricia Jassindah, Bryan, Cai Yuqin, Lin Jia Rong, Tan Min
  * @version 1.0
+ * @since 2025-04-23
  */
 package org.action;
 
@@ -37,7 +38,7 @@ public class WithdrawalRequest{
             approvalStatus = OfficerApprovalStatus.APPROVED;
             System.out.println("Officer approved withdrawal for application ID: " + applicationId);
         } else {
-            System.out.println("Cannot approve: no pending request or already processed (status=" 
+            System.out.println("Cannot approve: no pending request or already processed (status="
                                + approvalStatus + ").");
         }
     }
@@ -47,7 +48,7 @@ public class WithdrawalRequest{
             approvalStatus = OfficerApprovalStatus.REJECTED;
             System.out.println("Officer rejected withdrawal for application ID: " + applicationId);
         } else {
-            System.out.println("Cannot reject: no pending request or already processed (status=" 
+            System.out.println("Cannot reject: no pending request or already processed (status="
                                + approvalStatus + ").");
         }
     }

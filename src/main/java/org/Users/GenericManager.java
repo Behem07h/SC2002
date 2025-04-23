@@ -2,6 +2,7 @@
  * Package for user management functionality.
  * @author Group 1- Beitricia Jassindah, Bryan, Cai Yuqin, Lin Jia Rong, Tan Min
  * @version 1.0
+ * @since 2025-04-23
  */
 package org.Users;
 
@@ -181,7 +182,7 @@ public abstract class GenericManager<T extends user> {
      * <p>This abstract method must be implemented by subclasses to define
      * how a new user is created and added to the database.</p>
      *
-     * @param userID The unique identifier for the user
+     * @param userID The unique ID for the user
      * @param username The login username for the user
      * @param age The user's age in years
      * @param extra1 Additional parameter specific to the user type

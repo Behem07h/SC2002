@@ -12,6 +12,8 @@ import org.Users.HDBManager.ManagerController;
 import org.Users.HDBOfficer.HDBOfficerManager;
 import org.Users.user;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 
 /**
@@ -84,6 +86,22 @@ class loginScreen {
             System.out.println("Warning: Failed to load users from CSV file.");
         }
 
+        List<GenericManager<user>> applicantManagers = new ArrayList<>();
+        if (userManager instanceof ApplicantManager) {
+            applicantManagers.add(userManager);
+            applicantManagers.add(new HDBOfficerManager());
+            applicantManagers.get(1).loadUsersFromCSV("data/hdbofficer.csv");
+        } else if (userManager instanceof HDBOfficerManager){
+
+            applicantManagers.add(new ApplicantManager());
+            applicantManagers.get(0).loadUsersFromCSV("data/applicant.csv");
+            applicantManagers.add(userManager);
+        } else {
+            applicantManagers.add(new ApplicantManager());
+            applicantManagers.get(0).loadUsersFromCSV("data/applicant.csv");
+            applicantManagers.add(new HDBOfficerManager());
+            applicantManagers.get(1).loadUsersFromCSV("data/hdbofficer.csv");
+        }
 
 
         while (true) {
@@ -109,7 +127,7 @@ class loginScreen {
                     String password = scanner.nextLine();
                     user myuser = userManager.authenticate(userID, password);
                     if (myuser != null) {
-                        UI mainUI = new UI("data/ui_cfg", myuser, scanner);
+                        UI mainUI = new UI("data/ui_cfg", myuser, scanner, applicantManagers);
                         mainUI.load_ui();
                     }
                     break;

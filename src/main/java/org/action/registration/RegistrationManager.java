@@ -238,13 +238,19 @@ public class RegistrationManager{
 
         if (proj != null) {
             String officerID = reg.getUserID();
+            String officerUsername = reg.getUsername();
             String currentOfficerIDList = proj.getOfficersIDList();
+            String currentOfficerNameList = proj.getOfficersList();
 
-            if(!currentOfficerIDList.contains(reg.getUserID())) {
+            if(!currentOfficerIDList.contains(reg.getUserID()) && !currentOfficerNameList.contains(reg.getUsername())) {
                 List<String> officersIDList;
                 officersIDList = new ArrayList<>(Arrays.asList(currentOfficerIDList.split(":")));
                 officersIDList.add(officerID);
-                proj.editOfficerList(String.join(":", officersIDList));
+                proj.editOfficerIDList(String.join(":", officersIDList));
+                List<String> officersNameList;
+                officersNameList = new ArrayList<>(Arrays.asList(currentOfficerNameList.split(":")));
+                officersNameList.add(officerUsername);
+                proj.editOfficerNameList(String.join(":", officersNameList));
             }
         }
     }

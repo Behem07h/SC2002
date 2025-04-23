@@ -25,6 +25,9 @@ import java.time.LocalDate;
 import java.util.*;
 import java.util.function.Function;
 
+import static org.action.Application.ApplicationStatus.PENDING;
+import static org.action.Application.ApplicationStatus.SUCCESSFUL;
+
 public class ApplicationManager {
 
     /** List containing all applications in the system */
@@ -165,7 +168,7 @@ public class ApplicationManager {
      */
     public int checkForOfficer(user usr, String projectId) {
         List<Application> filteredApps = searchFilter(usr.getUserID(), projectId, "",
-        List.of(Application.ApplicationStatus.PENDING,Application.ApplicationStatus.BOOKED,Application.ApplicationStatus.SUCCESSFUL));
+        List.of(PENDING,Application.ApplicationStatus.BOOKED, SUCCESSFUL));
         return filteredApps.size();
     }
 
@@ -211,7 +214,7 @@ public class ApplicationManager {
                         String.valueOf(generateNewApplicationId()),
                         usr.getUserID(),
                         projectId,
-                        Application.ApplicationStatus.PENDING,
+                        PENDING,
                         Application.WithdrawalStatus.NIL,
                         String.valueOf(LocalDate.now()),
                         "",
@@ -240,6 +243,22 @@ public class ApplicationManager {
         }
         System.out.println("No application found with ID: " + applicationId);
         return null;
+    }
+
+    public List<String> processApplicationOptions(String applicationId) {
+        Application app = retrieveApplication(applicationId);
+        List<String> options = new ArrayList<>(List.of("CANCEL"));
+        if (app == null) {
+            System.out.println("This application ID does not exist");
+            options = List.of("CANCEL");
+        } else {
+            if (app.getStatus() == PENDING) {
+                options = List.of("SUCCESSFUL","UNSUCCESSFUL","CANCEL");
+            } else if (app.getStatus() == SUCCESSFUL) {
+                options = List.of("BOOKED","CANCEL");
+            }
+        }
+        return options;
     }
 
     /**

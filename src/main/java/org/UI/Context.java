@@ -188,7 +188,7 @@ public class Context {
                 System.out.println("Enter application ID to update status: ");
                 input.set(0, sc.nextLine());
                 System.out.println("Enter new application status (CANCEL to exit): ");
-                input.set(1, strIn(sc, List.of("SUCCESSFUL","UNSUCCESSFUL","CANCEL")));
+                input.set(1, strIn(sc, appMan.processApplicationOptions(input.get(0))));
                 if (!Objects.equals(input.get(1), "CANCEL")) {
                     appMan.processApplication(usr, input.get(0), input.get(1), proMan);
                 }

@@ -2,7 +2,7 @@
 
 ## **Overview**
 
-The BTO Management System is a comprehensive platform for applicants and HDB staff to view, apply for, and manage Build-To-Order housing projects. This system serves as a centralized hub for all BTO-related activities, providing different functionalities based on user roles.
+The BTO Management System is a platform for applicants and HDB staff to be able to view, apply for, and manage Build-To-Order housing projects. This system serves as a centralized hub for all BTO-related activities, providing different functionalities based on user roles.
 
 ## **User Authentication**
 
@@ -30,13 +30,13 @@ Book a flat with HDB Officer assistance
 
 Request withdrawal of BTO applications
 
-Submit, view, edit, and delete enquiries
+Submit, view, edit, and delete enquiries that they have created
 
 ## **HDB Officer Features**
 
-Register to handle projects (subject to approval from HDB Manager)
+Register to handle projects (subjected to approval from HDB Manager)
 
-Assist applicants with flat booking
+Assist applicants with flat booking that they are in charged of
 
 Update flat availability
 
@@ -66,7 +66,7 @@ Log in using your NRIC and password (default: "password")
 
 Navigate through the menu options based on your role
 
-Follow on-screen instructions to perform various actions
+Follow instructions to perform various actions
 
 ## **System Requirements**
 

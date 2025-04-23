@@ -139,7 +139,7 @@ public class ApplicationManager {
      * @param projectId The ID of the project to list applications for
      * @return List of formatted strings containing application details
      */
-    public List<String> listByProject(user usr, String projectId) {//todo: perms checking.
+    public List<String> listByProject(user usr, String projectId) {
         List<Application> filteredApps;
         List<String> output = new ArrayList<>(List.of(""));
 

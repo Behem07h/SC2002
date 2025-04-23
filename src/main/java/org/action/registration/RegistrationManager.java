@@ -1,10 +1,5 @@
 /**
  * Manages registration operations for the project management system.
- *
- * <p>This class provides functionality for creating, storing, retrieving,
- * and processing registrations. It handles user registration for projects,
- * registration approval/rejection by managers, and officer assignment to projects.</p>
- *
  * @author Group 1- Beitricia Jassindah, Bryan, Cai Yuqin, Lin Jia Rong, Tan Min
  * @version 1.0
  * @since 2025-04-23
@@ -23,8 +18,9 @@ import java.time.LocalDate;
 import java.util.*;
 
 /**
- * This class manages all registrations in the system.
- * It handles the creation, storage, retrieval, and processing of registrations.
+ * This class provides functionality for creating, storing, retrieving,
+ * and processing registrations. It handles user registration for projects,
+ * registration approval/rejection by managers, and officer assignment to projects.
  */
 public class RegistrationManager{
 
@@ -242,13 +238,19 @@ public class RegistrationManager{
 
         if (proj != null) {
             String officerID = reg.getUserID();
+            String officerUsername = reg.getUsername();
             String currentOfficerIDList = proj.getOfficersIDList();
+            String currentOfficerNameList = proj.getOfficersList();
 
-            if(!currentOfficerIDList.contains(reg.getUserID())) {
+            if(!currentOfficerIDList.contains(reg.getUserID()) && !currentOfficerNameList.contains(reg.getUsername())) {
                 List<String> officersIDList;
                 officersIDList = new ArrayList<>(Arrays.asList(currentOfficerIDList.split(":")));
                 officersIDList.add(officerID);
-                proj.editOfficerList(String.join(":", officersIDList));
+                proj.editOfficerIDList(String.join(":", officersIDList));
+                List<String> officersNameList;
+                officersNameList = new ArrayList<>(Arrays.asList(currentOfficerNameList.split(":")));
+                officersNameList.add(officerUsername);
+                proj.editOfficerNameList(String.join(":", officersNameList));
             }
         }
     }

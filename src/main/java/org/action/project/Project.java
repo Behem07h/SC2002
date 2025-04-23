@@ -1,10 +1,5 @@
 /**
  * Represents a housing project with details about available flats, dates, management team, and bookings.
- * <p>
- * This class encapsulates all information related to a Housing Development Board (HDB) project,
- * including project metadata, flat types, pricing, availability, application periods, and the
- * management team responsible for the project. It provides methods for viewing, editing,
- * and filtering project information based on various criteria. </p>
  * @author Group 1- Beitricia Jassindah, Bryan, Cai Yuqin, Lin Jia Rong, Tan Min
  * @version 1.0
  * @since 2025-04-23
@@ -23,6 +18,12 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
+/**
+ * This class encapsulates all information related to a BTO project,
+ * including project metadata, flat types, pricing, availability, application periods, and the
+ * management team responsible for the project. It provides methods for viewing, editing,
+ * and filtering project information based on various criteria.
+ */
 public class Project {
 
     /** Name of the project */
@@ -442,8 +443,17 @@ public class Project {
      *
      * @param officersIDList New list of officer IDs as a colon-separated string
      */
-    public void editOfficerList(String officersIDList) {
+    public void editOfficerIDList(String officersIDList) {
          this.officersIDList = new ArrayList<>(Arrays.asList(officersIDList.split(":")));
+    }
+
+    /**
+     * Updates the list of officers assigned to this project.
+     *
+     * @param officersList New list of officer names as a colon-separated string
+     */
+    public void editOfficerNameList(String officersList) {
+        this.officersList = new ArrayList<>(Arrays.asList(officersList.split(":")));
     }
 
     /**

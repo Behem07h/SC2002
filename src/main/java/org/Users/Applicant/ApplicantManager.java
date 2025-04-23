@@ -1,7 +1,5 @@
 /**
  * The ApplicantManager class is responsible for managing Applicant objects.
- * It extends the GenericManager class and provides specific implementations
- * for parsing and adding Applicant users to the system.
  *
  * @author Group 1- Beitricia Jassindah, Bryan, Cai Yuqin, Lin Jia Rong, Tan Min
  * @version 1.0
@@ -13,7 +11,10 @@ package org.Users.Applicant;
 import org.Users.GenericManager;
 import org.Users.user;
 
-
+/**
+ * It extends the GenericManager class and provides specific implementations
+ * for parsing and adding Applicant users to the system.
+ */
 public class ApplicantManager extends GenericManager<user> {
     /**
      * Parses a CSV line into an Applicant object.

@@ -1,7 +1,4 @@
 /**
- * Context class manages the interaction between user inputs, business logic, and various manager classes.
- * It serves as a controller that processes user actions and coordinates between different modules of the application.
- *
  * @author Group 1- Beitricia Jassindah, Bryan, Cai Yuqin, Lin Jia Rong, Tan Min
  * @version 1.0
  * @since 2025-04-23
@@ -25,6 +22,10 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Scanner;
 
+/**
+ * Context class manages the interaction between user inputs, business logic, and various manager classes.
+ * It serves as a controller that processes user actions and coordinates between different modules of the application.
+ */
 public class Context {
     private final EnquiriesManager enqMan;
     private final ApplicationManager appMan;

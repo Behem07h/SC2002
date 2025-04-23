@@ -1,3 +1,8 @@
+/**
+ * @author Group 1- Beitricia Jassindah, Bryan, Cai Yuqin, Lin Jia Rong, Tan Min
+ * @version 1.0
+ * @since 2025-04-23
+ */
 package org.action.enquiry;
 
 import java.time.LocalDateTime;
@@ -7,10 +12,6 @@ import java.util.Objects;
  * Represents the enquiry in the BTO system.
  * This class stores information about the enquiry, which include its content,
  * and related metadata such as timestamps and user information.
- *
- * @author Group 1- Beitricia Jassindah, Bryan, Cai Yuqin, Lin Jia Rong, Tan Min
- * @version 1.0
- * @since 2025-04-23
  */
 public class Enquiries {
     /** The text content of the enquiry */

@@ -1,8 +1,4 @@
 /**
- * The ManagerController class extends GenericManager to provide specific functionality
- * for managing HDB managers in the system. It handles user parsing from storage and
- * adding new managers to the system.
- *
  * @author Group 1- Beitricia Jassindah, Bryan, Cai Yuqin, Lin Jia Rong, Tan Min
  * @version 1.0
  * @since 2025-04-23
@@ -13,7 +9,12 @@ package org.Users.HDBManager;
 import org.Users.GenericManager;
 import org.Users.user;
 
-
+/**
+ * The ManagerController class extends GenericManager to provide specific functionality
+ * for managing HDB managers in the system. It handles user parsing from storage and
+ * adding new managers to the system.
+ *
+ */
 public class ManagerController extends GenericManager<user> {
     /**
      * Parses a line of text into an HDBManager object.

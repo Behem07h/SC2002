@@ -1,10 +1,6 @@
 /**
  * Represents an HDB Manager in the system.
  * This class implements the user interface and includes manager-specific functionality.
- *
- * <p>HDBManager contains personal information about the manager, their authentication
- * credentials, permission level, and information about their currently assigned project.</p>
- *
  * @author Group 1- Beitricia Jassindah, Bryan, Cai Yuqin, Lin Jia Rong, Tan Min
  * @version 1.0
  * @since 2025-04-23
@@ -15,6 +11,12 @@ import org.Users.user;  // Adjust the import as necessary if your user interface
 
 import java.util.Scanner;
 
+/**
+ *
+ * HDBManager contains personal information about the manager, their authentication
+ * credentials, permission level, and information about their currently assigned project.
+ *
+ */
 public class HDBManager implements user {
     /** The unique ID for the manager */
     private String userID;

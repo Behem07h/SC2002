@@ -13,6 +13,7 @@ package org.action;
 
 import org.UI.ConfigLDR;
 import org.Users.Applicant.Applicant;
+import org.Users.HDBManager.HDBManager;
 import org.Users.HDBOfficer.HDBOfficer;
 import org.Users.user;
 import org.action.enquiry.EnquiriesManager;
@@ -252,7 +253,7 @@ public class ApplicationManager {
      * @param proMan The ProjectManager to verify project details
      */
     public void processApplication(user usr, String applicationId, String action, ProjectManager proMan) {
-        if (!(usr instanceof HDBOfficer)) {
+        if (!(usr instanceof HDBOfficer || usr instanceof HDBManager)) {
             System.out.println("You do not have the perms to process project applications");
             return;
         }
@@ -304,7 +305,7 @@ public class ApplicationManager {
      * @param proMan The ProjectManager to verify project details
      */
     public void processWithdrawal(user usr, String applicationId, String action, ProjectManager proMan) {
-        if (!(usr instanceof HDBOfficer)) {
+        if (!(usr instanceof HDBOfficer || usr instanceof HDBManager)) {
             System.out.println("You do not have the perms to process project withdrawal");
             return;
         }

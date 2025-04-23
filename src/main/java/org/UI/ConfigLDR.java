@@ -2,8 +2,9 @@
  * ConfigLDR is a configuration loader class for handling CSV configuration files.
  * It provides methods to read configuration data from CSV files into maps and save map data back to CSV files.
  *
- * @author Your Name
+ * @author Group 1- Beitricia Jassindah, Bryan, Cai Yuqin, Lin Jia Rong, Tan Min
  * @version 1.0
+ * @since 2025-04-23
  */
 package org.UI;
 

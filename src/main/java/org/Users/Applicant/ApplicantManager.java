@@ -40,7 +40,7 @@ public class ApplicantManager extends GenericManager<user> {
      * Adds a new Applicant to the user database.
      * The password is set to "password" by default, and permission level is set to APPLICANT.
      *
-     * @param userID The unique identifier for the new applicant
+     * @param userID The unique ID for the new applicant
      * @param username The username for the new applicant
      * @param age The age of the new applicant (must be non-negative)
      * @param maritalStatus The marital status of the new applicant

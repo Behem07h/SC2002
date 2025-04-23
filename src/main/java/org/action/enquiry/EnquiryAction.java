@@ -10,6 +10,7 @@ import java.util.List;
  * Provides methods for submitting, deleting, editing, and replying to enquiries.
  * @author Group 1- Beitricia Jassindah, Bryan, Cai Yuqin, Lin Jia Rong, Tan Min
  * @version 1.0
+ * @since 2025-04-23
  */
 public interface EnquiryAction {
 

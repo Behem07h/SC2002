@@ -22,7 +22,7 @@ public class Applicant implements user {
     /**
      * Constructs a new Applicant with the specified attributes.
      *
-     * @param userID        The unique identifier for the applicant
+     * @param userID        The unique ID for the applicant
      * @param username      The username for the applicant
      * @param password      The password for the applicant (stored as plain-text)
      * @param maritalStatus The marital status of the applicant
@@ -39,7 +39,7 @@ public class Applicant implements user {
     }
 
     /**
-     * Returns the unique identifier of the applicant.
+     * Returns the unique ID of the applicant.
      *
      * @return The applicant's user ID
      */
@@ -49,7 +49,7 @@ public class Applicant implements user {
     }
 
     /**
-     * Sets the unique identifier for the applicant.
+     * Sets the unique ID for the applicant.
      *
      * @param userID The new user ID to set
      */

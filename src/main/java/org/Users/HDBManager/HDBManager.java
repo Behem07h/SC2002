@@ -1,12 +1,13 @@
 /**
- * Represents an HDB (Housing Development Board) Manager in the system.
+ * Represents an HDB Manager in the system.
  * This class implements the user interface and includes manager-specific functionality.
  *
  * <p>HDBManager contains personal information about the manager, their authentication
- * credentials, permission level, and information about their currently assigned project.
+ * credentials, permission level, and information about their currently assigned project.</p>
  *
  * @author Group 1- Beitricia Jassindah, Bryan, Cai Yuqin, Lin Jia Rong, Tan Min
  * @version 1.0
+ * @since 2025-04-23
  */
 package org.Users.HDBManager;
 
@@ -15,7 +16,7 @@ import org.Users.user;  // Adjust the import as necessary if your user interface
 import java.util.Scanner;
 
 public class HDBManager implements user {
-    /** The unique identifier for the manager */
+    /** The unique ID for the manager */
     private String userID;
 
     /** The username for login purposes */
@@ -42,7 +43,7 @@ public class HDBManager implements user {
     /**
      * Creates a new HDBManager with complete profile information.
      *
-     * @param userID The unique identifier for this manager
+     * @param userID The unique ID for this manager
      * @param username The login username for this manager
      * @param password The login password for this manager (plain text)
      * @param maritalStatus The marital status of the manager
@@ -118,7 +119,7 @@ public class HDBManager implements user {
     }
 
     /**
-     * Gets the unique identifier for the manager.
+     * Gets the unique ID for the manager.
      *
      * @return The user ID
      */    @Override
@@ -127,7 +128,7 @@ public class HDBManager implements user {
     }
 
     /**
-     * Sets the unique identifier for the manager.
+     * Sets the unique ID for the manager.
      *
      * @param userID The user ID to set
      */

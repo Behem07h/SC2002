@@ -13,6 +13,7 @@ import java.util.Objects;
  *
  * @author Group 1- Beitricia Jassindah, Bryan, Cai Yuqin, Lin Jia Rong, Tan Min
  * @version 1.0
+ * @since 2025-04-23
  */
 public class Register {
 

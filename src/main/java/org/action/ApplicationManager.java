@@ -9,6 +9,8 @@ package org.action;
 
 import org.UI.ConfigLDR;
 import org.Users.Applicant.Applicant;
+import org.Users.Applicant.ApplicantManager;
+import org.Users.GenericManager;
 import org.Users.HDBManager.HDBManager;
 import org.Users.HDBOfficer.HDBOfficer;
 import org.Users.user;
@@ -389,7 +391,7 @@ public class ApplicationManager {
      * @param flatTypeFilter Filter by flat type (empty string to ignore)
      * @param maritalFilter Filter by marital status (empty string to ignore)
      * @param proMan The ProjectManager to retrieve project details
-     * @param lookupUser Function to retrieve user details by user ID
+     * @param managersList List of GenericManager to retrieve user details by user ID
      * @return List of BookingReceipt objects matching the filter criteria
      */
     public List<BookingReceipt> getBookingReceipts(
@@ -398,24 +400,32 @@ public class ApplicationManager {
             String flatTypeFilter,
             String maritalFilter,
             ProjectManager proMan,
-            Function<String, user> lookupUser
+            List<GenericManager<user>> managersList
     ) {
         List<BookingReceipt> receipts = new ArrayList<>();
     
         for (Application a : applicationList) {
-            if (a.getStatus() != Application.ApplicationStatus.BOOKED) continue;
-            if (!projectFilter.isEmpty() && !a.getProjectId().equals(projectFilter)) continue;
-            if (!flatTypeFilter.isEmpty() && !a.getFlatType().equals(flatTypeFilter)) continue;
-    
-            user applicant = lookupUser.apply(a.getApplicantId());
+            if (a.getStatus() != Application.ApplicationStatus.BOOKED) continue; //if not booked, skip
+            if (!projectFilter.isEmpty() && !a.getProjectId().equals(projectFilter)) continue; //if not the right project, skip
+            if (!flatTypeFilter.isEmpty() && !a.getFlatType().equals(flatTypeFilter)) continue; //if not the right flat type, skip
+
+            user applicant = null;
+            for (GenericManager<user> man : managersList) {
+                applicant = man.findById(a.getApplicantId()); //get the user by id
+                if (applicant != null) {
+                    break;
+                }
+            }
             if (applicant == null) continue;
+
             if (!maritalFilter.isEmpty()
              && !applicant.getMaritalStatus().equalsIgnoreCase(maritalFilter))
-                continue;
-    
+                continue; //if not the right marital status, skip
+
             // build the flat-type details from the Project
-            Project p = proMan.getProjectObjByName(actor, a.getProjectId(), true);
-            if (p == null) continue;
+            Project p = proMan.getProjectObjByName(actor, a.getProjectId(), false);
+            if (p == null) continue; //if cant find the project obj, skip
+
             int free1 = p.getFlatCount1() - p.getBookingCount1();
             String details = String.format(
                 "%s – $%d; %d/%d free",
@@ -429,7 +439,7 @@ public class ApplicationManager {
                 );
             }
             String projDetails = String.format("%s: %s", p.getProjectName(), details);
-    
+
             receipts.add(new BookingReceipt(
                 a.getFlatType(),
                 applicant.getUsername(),

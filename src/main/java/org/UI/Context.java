@@ -5,6 +5,7 @@
  */
 package org.UI;
 
+import org.Users.GenericManager;
 import org.Users.user;
 import org.action.ApplicationManager;
 import org.action.enquiry.EnquiriesManager;
@@ -31,7 +32,7 @@ public class Context {
     private final ProjectManager proMan;
     private final RegistrationManager regMan;
     private final user usr;
-    private final  ApplicantManager applicantMan;
+    private final List<GenericManager<user>> managersList;
     private String currentViewedProjectID;
     private String currentViewedEnquiryID;
 
@@ -41,13 +42,13 @@ public class Context {
      *
      * @param currentUser the user for which this context is created
      */
-    public Context(user currentUser) {
+    public Context(user currentUser, List<GenericManager<user>> managersList) {
         usr = currentUser;
+        this.managersList = managersList;
         enqMan = new EnquiriesManager();
         appMan = new ApplicationManager();
         proMan = new ProjectManager();
         regMan = new RegistrationManager();
-        applicantMan = new ApplicantManager();
     }
 
     /**
@@ -251,7 +252,7 @@ public class Context {
                     flatTypeFilter,
                     maritalFilter,
                     proMan,
-                        applicantMan::findById
+                    managersList
                     );
             
                 if (receipts.isEmpty()) {

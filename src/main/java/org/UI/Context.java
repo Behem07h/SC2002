@@ -3,7 +3,6 @@ package org.UI;
 import org.Users.user;
 import org.action.ApplicationManager;
 import org.action.enquiry.EnquiriesManager;
-import org.action.project.Project;
 import org.action.project.ProjectManager;
 import org.action.registration.RegistrationManager;
 import org.receipt.BookingReceipt;
@@ -37,7 +36,6 @@ public class Context {
     }
 
     public void endContext() {
-        Scanner sc = new Scanner(System.in);
         System.out.println("Saving Enquiries");
         enqMan.store();
         System.out.println("Saving Applications");
@@ -232,7 +230,7 @@ public class Context {
                     flatTypeFilter,
                     maritalFilter,
                     proMan,
-                    id -> applicantMan.findById(id)
+                        applicantMan::findById
                     );
             
                 if (receipts.isEmpty()) {
@@ -277,51 +275,47 @@ public class Context {
                     output.add("No projects found");
                 }
                 return output;
-                case "filter-projects": {
-                    System.out.println("Filter by:");
-                    // Build the menu
-                    List<String> options = new ArrayList<>(List.of(
-                        "Flat", "Neighbourhood", "My Projects", "Reset Filter"
-                    ));
-                    String choice = strIn(sc, options);
-                
-                    switch (choice) {
-                        case "Flat":
-                            System.out.println("Enter flat type to filter by:");
-                            String flat = strIn(sc, proMan.userFlatOptions(usr, ""));
-                            output = proMan.filterFlat(usr, flat);
-                            break;
-                
-                        case "Neighbourhood":
-                            System.out.println("Enter neighbourhood to filter by:");
-                            String hood = sc.nextLine();
-                            output = proMan.filterNeighbourhood(usr, hood);
-                            break;
-                
-                        case "My Projects":
-                            // getProjectList() now returns exactly the right IDs for managers, officers or applicants
-                            output = proMan.getProjectList(usr);
-                            break;
-                        
-                
-                        case "Reset Filter":
-                            output = proMan.getProjectList(usr);
-                            break;
-                
-                        default:
-                            output = List.of("Invalid filter");
-                    }
-                
-                    // clear any context
-                    currentViewedProjectID = "";
-                    currentViewedEnquiryID = "";
-                
-                    // ensure we always return at least one line
-                    if (output.isEmpty() || output.get(0).isEmpty()) {
-                        output = List.of("No projects found");
-                    }
-                    return output;
+            case "filter-projects": {
+                System.out.println("Filter by:");
+                // Build the menu
+                List<String> options = proMan.getValidFilters(usr);
+                input.set(1, strIn(sc, options));
+
+                switch (input.get(1)) {
+                    case "Flat":
+                        System.out.println("Enter flat type to filter by:");
+                        input.set(2, strIn(sc, proMan.userFlatOptions(usr, "")));
+                        output = proMan.projectsToString(usr,proMan.filterFlat(usr, input.get(2)));
+                        break;
+
+                    case "Neighbourhood":
+                        System.out.println("Enter neighbourhood to filter by:");
+                        input.set(2, sc.nextLine());
+                        output = proMan.filterNeighbourhood(usr, input.get(2));
+                        break;
+
+                    case "My Projects":
+                        output = proMan.projectsToString(usr,proMan.filterRelated(usr));
+                        break;
+
+                    case "Reset Filter":
+                        output = proMan.getProjectList(usr);
+                        break;
+
+                    default:
+                        output = List.of("Invalid filter");
                 }
+
+                // clear any context
+                currentViewedProjectID = "";
+                currentViewedEnquiryID = "";
+
+                // ensure we always return at least one line
+                if (output.isEmpty() || output.get(0).isEmpty()) {
+                    output = List.of("No projects found");
+                }
+                return output;
+            }
             case "delete-project":
                 //input project id, output success/failure and new projects list
                 System.out.println("Enter project ID to be deleted: ");

@@ -1,7 +1,7 @@
 userID,username,password,maritalStatus,age,perms
-S1234567A,John,password,Single,35,APPLICANT
-T7654321B,Sarah,password,Married,30,APPLICANT
-S9876543C,Grace,password,Married,37,APPLICANT
-T2345678D,James,password,Married,30,APPLICANT
-S3456789E,Rachel,password,Single,25,APPLICANT
-
+S3456789E   ,Rachel, password, Single, 25, APPLICANT,
+T7654321B   ,Sarah, password, Married, 30, APPLICANT,
+T0390603A   ,Bryan, password, Single, 21, APPLICANT,
+S9876543C   ,Grace, password, Married, 37, APPLICANT,
+S1234567A   ,John, password, Single, 35, APPLICANT,
+T2345678D   ,James, password, Married, 30, APPLICANT,

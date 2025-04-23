@@ -6,6 +6,8 @@
  */
 package org.Users;
 
+import org.UI.ConfigLDR;
+
 import java.io.*;
 import java.util.*;
 import java.util.regex.*;
@@ -23,6 +25,8 @@ public abstract class GenericManager<T extends user> {
     /** Collection of users managed by this manager */
     protected List<T> userDB = new ArrayList<>();
 
+    private String filepath;
+
     /**
      * Loads user data from a CSV file.
      *
@@ -34,6 +38,7 @@ public abstract class GenericManager<T extends user> {
      * @return true if users were loaded successfully, false otherwise
      */
     public boolean loadUsersFromCSV(String filename) {
+        filepath = filename;
         File file = new File(filename);
         try (BufferedReader br = new BufferedReader(new FileReader(file))) {
             String line;
@@ -189,4 +194,14 @@ public abstract class GenericManager<T extends user> {
      * @param extra2 Additional parameter specific to the user type
      */
     public abstract void addUser(String userID, String username, int age, String extra1, String extra2);
+
+    public void store() {
+        Map<String,String[]> reg_map = new HashMap<>();
+        for (user usr : userDB) {
+            String[] items = {usr.getUsername(),usr.getPassword(),usr.getMaritalStatus(), String.valueOf(usr.getAge()), String.valueOf(usr.getPerms())};
+            reg_map.put(usr.getUserID(),items);
+        }
+        ConfigLDR ldr = new ConfigLDR();
+        ldr.saveCSV(filepath,reg_map);
+    }
 }

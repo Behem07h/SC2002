@@ -41,16 +41,19 @@ public class Main {
                 case 1:
                     manager = new ApplicantManager();
                     new loginScreen(scanner, manager, "data/applicant.csv");
+                    manager.store();
                     return;
                     //initialise generic manager as applicant manager
                 case 2:
                     manager = new HDBOfficerManager();
                     new loginScreen(scanner, manager, "data/hdbofficer.csv");
+                    manager.store();
                     return;
                     //initialise generic manager as officer manager
                 case 3:
                     manager = new ManagerController();
                     new loginScreen(scanner, manager, "data/hdbmanager.csv");
+                    manager.store();
                     return;
                     //initialise generic manager as manager of manager
                 default:

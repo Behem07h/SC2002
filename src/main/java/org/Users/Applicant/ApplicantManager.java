@@ -27,6 +27,9 @@ public class ApplicantManager extends GenericManager<user> {
    protected Applicant parseUser(String line) {
        String[] details = line.split(",");
        if (details.length != 6) return null;
+       for (int i = 0; i < details.length; i++) {
+           details[i] = details[i].trim();
+       }
 
 
        int age = Integer.parseInt(details[4]);

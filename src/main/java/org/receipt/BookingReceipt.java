@@ -127,9 +127,7 @@ public class BookingReceipt {
 
     /**
      * Returns whether the booking is confirmed.
-     *
-     * @return code true if the booking is confirmed, false otherwise
-     */
+     **/
    public void confirm() {
        this.isConfirmed = true;
    }

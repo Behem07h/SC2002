@@ -1,16 +1,16 @@
 /**
- * The Applicant class represents a user with the role of an applicant in the system.
- * It implements the user interface and provides functionality specific to applicants.
- *
  * @author Group 1- Beitricia Jassindah, Bryan, Cai Yuqin, Lin Jia Rong, Tan Min
  * @version 1.0
  * @since 2025-04-23
  */
-
 package org.Users.Applicant;
 
 import org.Users.user;
 
+/**
+ * The Applicant class represents a user with the role of an applicant in the system.
+ * It implements the user interface and provides functionality specific to applicants.
+ */
 public class Applicant implements user {
     private String userID;
     private String username;

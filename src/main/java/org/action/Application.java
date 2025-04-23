@@ -1,4 +1,10 @@
-// src/org/action/Application.java
+/**
+ *  * Represents a single housing application with a complete workflow for submission,
+ *  * approval, rejection, and withdrawal processes.
+ * @author Group 1- Beitricia Jassindah, Bryan, Cai Yuqin, Lin Jia Rong, Tan Min
+ * @version 1.0
+ * @since 2025-04-23
+ */
 package org.action;
 
 import java.time.LocalDate;
@@ -8,16 +14,9 @@ import java.util.Objects;
 import static org.action.Application.WithdrawalStatus.*;
 
 /**
- * Represents a single housing application with a complete workflow for submission,
- * approval, rejection, and withdrawal processes.
- * <p>
  * This class encapsulates all the information and business logic for managing
  * a housing application through its entire lifecycle, including state transitions,
  * withdrawal requests, and status tracking.
- *
- * @author Group 1- Beitricia Jassindah, Bryan, Cai Yuqin, Lin Jia Rong, Tan Min
- * @version 1.0
- * @since 2025-04-23
  */
 public class Application implements Act {
     private final String applicationId;

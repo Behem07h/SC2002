@@ -1,10 +1,5 @@
 /**
  * The Main class serves as the entry point for the BTO Management System.
- * It provides a user interface to select the type of user accessing the system
- * (Applicant, HDB Officer, or HDB Manager) and directs them to the appropriate login screen.
- * The class initializes the appropriate user manager based on the selected user type
- * and passes it to the loginScreen class to handle user authentication and system operations.
- *
  * @author Group 1- Beitricia Jassindah, Bryan, Cai Yuqin, Lin Jia Rong, Tan Min
  * @version 1.0
  * @since 2025-04-23
@@ -19,6 +14,13 @@ import org.Users.user;
 
 import java.util.Scanner;
 
+/**
+ * It provides a user interface to select the type of user accessing the system
+ * (Applicant, HDB Officer, or HDB Manager) and directs them to the appropriate login screen.
+ * The class initializes the appropriate user manager based on the selected user type
+ * and passes it to the loginScreen class to handle user authentication and system operations.
+ *
+ */
 public class Main {
     /**
      * The main method that serves as the entry point for the BTO Management System.

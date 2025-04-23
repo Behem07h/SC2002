@@ -1,12 +1,6 @@
 /**
  * This package contains classes for handling the user interface of the BTO Management System.
  * It provides a dynamic menu system that adapts based on user permissions and configuration files.
- *
- * <p>The UI class serves as a wrapper for the ui_main class, providing configuration loading
- * and initialization for the user interface. It reads configuration files for UI elements,
- * connections, functions, and visibility settings from specified file paths and initializes
- * the main UI system with these configurations.</p>
- *
  * @author Group 1- Beitricia Jassindah, Bryan, Cai Yuqin, Lin Jia Rong, Tan Min
  * @version 1.0
  * @since 2025-04-23
@@ -16,6 +10,12 @@ import org.Users.user;
 
 import java.util.*;
 
+/**
+ * The UI class serves as a wrapper for the ui_main class, providing configuration loading
+ * and initialization for the user interface. It reads configuration files for UI elements,
+ * connections, functions, and visibility settings from specified file paths and initializes
+ * the main UI system with these configurations.
+ */
 public class UI {
     /** The main UI controller instance */
     private final ui_main ui;

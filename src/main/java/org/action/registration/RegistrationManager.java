@@ -1,10 +1,5 @@
 /**
  * Manages registration operations for the project management system.
- *
- * <p>This class provides functionality for creating, storing, retrieving,
- * and processing registrations. It handles user registration for projects,
- * registration approval/rejection by managers, and officer assignment to projects.</p>
- *
  * @author Group 1- Beitricia Jassindah, Bryan, Cai Yuqin, Lin Jia Rong, Tan Min
  * @version 1.0
  * @since 2025-04-23
@@ -23,8 +18,9 @@ import java.time.LocalDate;
 import java.util.*;
 
 /**
- * This class manages all registrations in the system.
- * It handles the creation, storage, retrieval, and processing of registrations.
+ * This class provides functionality for creating, storing, retrieving,
+ * and processing registrations. It handles user registration for projects,
+ * registration approval/rejection by managers, and officer assignment to projects.
  */
 public class RegistrationManager{
 

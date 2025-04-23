@@ -1,10 +1,5 @@
 /**
  * Manages housing applications in the HDB system.
- *
- * <p> This class handles CRUD operations for applications, including storing applications,
- * filtering and retrieving applications, processing approvals, rejections, and withdrawals.
- * It also provides reporting capabilities for booking receipts.</p>
- *
  * Applications are loaded from and stored to CSV files for persistence.
  * @author Group 1- Beitricia Jassindah, Bryan, Cai Yuqin, Lin Jia Rong, Tan Min
  * @version 1.0
@@ -29,6 +24,11 @@ import java.util.function.Function;
 import static org.action.Application.ApplicationStatus.PENDING;
 import static org.action.Application.ApplicationStatus.SUCCESSFUL;
 
+/**
+ *This class handles CRUD operations for applications, including storing applications,
+ * filtering and retrieving applications, processing approvals, rejections, and withdrawals.
+ * It also provides reporting capabilities for booking receipts.
+ */
 public class ApplicationManager {
 
     /** List containing all applications in the system */

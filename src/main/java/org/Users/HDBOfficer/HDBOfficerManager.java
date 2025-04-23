@@ -11,7 +11,12 @@ import org.Users.Applicant.Applicant;
 import org.Users.GenericManager;
 import org.Users.user;
 
-
+/**
+ *
+ * HDBOfficer contains personal information about the manager, their authentication
+ * credentials, permission level, and information about their currently assigned project.
+ *
+ */
 public class HDBOfficerManager extends GenericManager<user> {
 
     /**

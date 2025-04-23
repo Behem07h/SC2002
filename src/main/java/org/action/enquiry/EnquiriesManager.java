@@ -1,9 +1,6 @@
 /**
  * Manages the enquiries within the system. (Controller)
  *
- * <p>This class implements the EnquiryAction interface to provide functionality for creating,
- * managing, and responding to enquiries. Also handles persistence of enquiry data. </p>
- *
  * @author Group 1- Beitricia Jassindah, Bryan, Cai Yuqin, Lin Jia Rong, Tan Min
  * @version 1.0
  * @since 2025-04-23
@@ -20,7 +17,10 @@ import org.action.project.ProjectManager;
 import java.time.LocalDateTime;
 import java.util.*;
 
-
+/**
+ * This class implements the EnquiryAction interface to provide functionality for creating,
+ * managing, and responding to enquiries. Also handles persistence of enquiry data.
+ */
 public class EnquiriesManager implements EnquiryAction {
 
     /** List of all enquiries in the BTO system */

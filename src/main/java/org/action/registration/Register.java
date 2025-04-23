@@ -1,3 +1,10 @@
+/**
+ * Represents a registration entry in the project management system.
+ * This class handles registration status, submission details, and processing operations.
+ * @author Group 1- Beitricia Jassindah, Bryan, Cai Yuqin, Lin Jia Rong, Tan Min
+ * @version 1.0
+ * @since 2025-04-23
+ */
 package org.action.registration;
 
 import java.time.LocalDate;
@@ -5,15 +12,8 @@ import java.util.List;
 import java.util.Objects;
 
 /**
- * Represents a registration entry in the project management system.
- * This class handles registration status, submission details, and processing operations.
- *
- * <p>A registration connects officer to a project with a specific status
- * (NIL, PENDING, APPROVED, REJECTED) and tracks important dates.</p>
- *
- * @author Group 1- Beitricia Jassindah, Bryan, Cai Yuqin, Lin Jia Rong, Tan Min
- * @version 1.0
- * @since 2025-04-23
+ * A registration connects officer to a project with a specific status
+ * (NIL, PENDING, APPROVED, REJECTED) and tracks important dates.
  */
 public class Register {
 

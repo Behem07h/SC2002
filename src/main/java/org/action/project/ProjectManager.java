@@ -1,10 +1,5 @@
 /**
  * Manages projects within the system, handling creation, storage, retrieval, and filtering.
- * <p>
- * This class provides functionality for managing HDB projects, including creating, editing, and deleting projects,
- * searching and filtering projects based on various criteria, checking project eligibility for users,
- * and storing/loading project data from persistent storage. It serves as the central management point
- * for all project-related operations in the system.
  * @author Group 1- Beitricia Jassindah, Bryan, Cai Yuqin, Lin Jia Rong, Tan Min
  * @version 1.0
  * @since 2025-04-23
@@ -29,6 +24,12 @@ import java.util.stream.Collectors;
 
 import static java.lang.Integer.max;
 
+/**
+ * This class provides functionality for managing HDB projects, including creating, editing, and deleting projects,
+ * searching and filtering projects based on various criteria, checking project eligibility for users,
+ * and storing/loading project data from persistent storage. It serves as the central management point
+ * for all project-related operations in the system.
+ */
 public class ProjectManager {
     private final List<Project> projectList;
     private final String path = "data/db";

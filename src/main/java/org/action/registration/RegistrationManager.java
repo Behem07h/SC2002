@@ -229,7 +229,7 @@ public class RegistrationManager{
         }
     }
 
-    public void assignOfficer(Register reg, ProjectManager proMan) {
+    public void assignOfficer(user usr, Register reg, ProjectManager proMan) {
         Project proj = proMan.getProjectObjByName(null, reg.getProjectID(), false);
 
         if (proj != null) {

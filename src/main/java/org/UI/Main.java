@@ -1,3 +1,14 @@
+/**
+ * The Main class serves as the entry point for the BTO Management System.
+ * It provides a user interface to select the type of user accessing the system
+ * (Applicant, HDB Officer, or HDB Manager) and directs them to the appropriate login screen.
+ * The class initializes the appropriate user manager based on the selected user type
+ * and passes it to the loginScreen class to handle user authentication and system operations.
+ *
+ * @author Group 1- Beitricia Jassindah, Bryan, Cai Yuqin, Lin Jia Rong, Tan Min
+ * @version 1.0
+ * @since 2025-04-23
+ */
 package org.UI;
 
 import org.Users.Applicant.ApplicantManager;
@@ -9,6 +20,12 @@ import org.Users.user;
 import java.util.Scanner;
 
 public class Main {
+    /**
+     * The main method that serves as the entry point for the BTO Management System.
+     * Displays an initial menu to select user type and initializes the appropriate manager.
+     *
+     * @param args Command line arguments (not used)
+     */
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
         int choice;
@@ -39,7 +56,26 @@ public class Main {
     }
 }
 
+/**
+ * The loginScreen class handles user authentication and provides a menu for various
+ * user management operations.
+ *
+ * <p>This class loads user data from a CSV file, authenticates users, and provides options
+ * for logging in, adding new users, changing passwords, displaying user information, and exiting
+ * the system.</p>
+ *
+ * <p>Upon successful authentication, the class initializes and loads the main UI for the system.</p>
+ */
 class loginScreen {
+    /**
+     * Constructs a loginScreen object with the specified scanner, user manager, and data file.
+     *
+     * <p>Initializes the login screen and displays a menu for user management operations.</p>
+     *
+     * @param scanner The Scanner object for reading user input
+     * @param userManager The GenericManager that manages user operations
+     * @param filename The path to the CSV file containing user data
+     */
     public loginScreen(Scanner scanner, GenericManager<user> userManager, String filename) {
         boolean loaded = userManager.loadUsersFromCSV(filename);
         if (!loaded) {
@@ -119,6 +155,15 @@ class loginScreen {
             }
         }
     }
+    /**
+     * Helper method to handle marital status input and validation.
+     *
+     * <p>Validates that the user input is either 0 (Single) or 1 (Married) and
+     * returns the appropriate string representation.</p>
+     *
+     * @param scanner The Scanner object for reading user input
+     * @return String representation of marital status ("Single" or "Married")
+     */
     private static String getMaritalStatus(Scanner scanner) {
         String maritalStatus;
         while (true) {

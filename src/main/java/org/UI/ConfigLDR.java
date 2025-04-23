@@ -1,9 +1,24 @@
+/**
+ * ConfigLDR is a configuration loader class for handling CSV configuration files.
+ * It provides methods to read configuration data from CSV files into maps and save map data back to CSV files.
+ *
+ * @author Your Name
+ * @version 1.0
+ */
 package org.UI;
 
 import java.io.*;
 import java.util.*;
 
 public class ConfigLDR{
+    /**
+     * Reads a CSV file and loads its contents into a HashMap with string keys and values.
+     * The method expects a CSV format with two columns (key, value).
+     * The first line of the file is assumed to be a header and is skipped.
+     *
+     * @param filename the path to the CSV file to read
+     * @return a HashMap containing the key-value pairs from the CSV file
+     */
     public HashMap<String, String> ReadToMap(String filename) {
         File file = new File(filename);
         HashMap<String, String> cfg = new HashMap<>();
@@ -26,6 +41,16 @@ public class ConfigLDR{
             return cfg;
         }
     }
+    /**
+     * Reads a CSV file and loads its contents into a HashMap with string keys and string array values.
+     * The method expects a CSV format with multiple columns, where the first column is the key
+     * and all subsequent columns form an array of values.
+     * The first line of the file is assumed to be a header and is skipped.
+     * Values equal to "NONE" in CSV are converted to empty strings.
+     *
+     * @param filename the path to the CSV file to read
+     * @return a HashMap containing keys and their associated array of values from the CSV file
+     */
     public HashMap<String, String[]> ReadToArrMap(String filename) {
         Scanner sc = new Scanner(System.in);
         sc.nextLine();
@@ -61,6 +86,14 @@ public class ConfigLDR{
         }
     }
 
+    /**
+     * Saves a Map with string keys and string array values to a CSV file.
+     * The method preserves the header line from the original file.
+     * Empty strings in arrays are converted to "NONE" in the CSV output.
+     *
+     * @param filename the path to the CSV file to write to
+     * @param map the Map containing key-value pairs to save
+     */
     public void saveCSV(String filename, Map<String, String[]> map) {
         String headerLine = "";
         try (BufferedReader br = new BufferedReader(new FileReader(filename))) {
@@ -83,6 +116,13 @@ public class ConfigLDR{
         }
     }
 
+    /**
+     * Converts a string array to a comma-separated string.
+     * Empty strings in the array are converted to "NONE" before joining.
+     *
+     * @param data the string array to convert
+     * @return a comma-separated string representation of the array
+     */
         public String arr2str(String[] data) {
         for (int i = 0; i < data.length; i++) {
             if (data[i].isEmpty()) {

@@ -1,3 +1,10 @@
+/**
+ * Context class manages the interaction between user inputs, business logic, and various manager classes.
+ * It serves as a controller that processes user actions and coordinates between different modules of the application.
+ *
+ * @author Group 1- Beitricia Jassindah, Bryan, Cai Yuqin, Lin Jia Rong, Tan Min
+ * @version 1.0
+ */
 package org.UI;
 
 import org.Users.user;
@@ -26,6 +33,12 @@ public class Context {
     private String currentViewedProjectID;
     private String currentViewedEnquiryID;
 
+    /**
+     * Constructs a new Context associated with the specified user.
+     * Initializes all manager classes needed for handling different actions.
+     *
+     * @param currentUser the user for which this context is created
+     */
     public Context(user currentUser) {
         usr = currentUser;
         enqMan = new EnquiriesManager();
@@ -35,6 +48,10 @@ public class Context {
         applicantMan = new ApplicantManager();
     }
 
+    /**
+     * Terminates the current context by saving all modified data.
+     * Saves enquiries, applications, and projects to their respective storage locations.
+     */
     public void endContext() {
         System.out.println("Saving Enquiries");
         enqMan.store();
@@ -44,6 +61,14 @@ public class Context {
         proMan.store();
     }
 
+    /**
+     * Processes a user action based on the action type and handles user input/output.
+     * This method serves as the main controller for all user interactions with the system.
+     *
+     * @param action the action to be performed (e.g., "view-enquiries", "submit-enquiry", etc.)
+     * @param sc the Scanner object for reading user input
+     * @return a List of strings representing the output/response to be displayed to the user
+     */
     public List<String> act(String action, Scanner sc) {
         List<String> output = new ArrayList<>(List.of("",""));
         List<String> input = new ArrayList<>(List.of("","","","","","","","","","","",""));
@@ -117,8 +142,6 @@ public class Context {
                 } else {
                     output = List.of("");
                 }
-
-
                 return output;
             //application methods
             case "view-applications":
@@ -411,6 +434,14 @@ public class Context {
         }
     }
 
+    /**
+     * Reads an integer input from the user with optional range validation.
+     *
+     * @param sc the Scanner object for reading user input
+     * @param min the minimum acceptable value (-1 to ignore minimum constraint)
+     * @param max the maximum acceptable value (-1 to ignore maximum constraint)
+     * @return a String representation of the validated integer input
+     */
     private String numberIn(Scanner sc, int min, int max) {
         int input;
         do {
@@ -420,6 +451,14 @@ public class Context {
         return String.valueOf(input);
     }
 
+    /**
+     * Reads a string input from the user that must match one of the provided options.
+     * Displays the list of valid options to the user before accepting input.
+     *
+     * @param sc the Scanner object for reading user input
+     * @param options a List of strings representing valid input options
+     * @return the validated string input that matches one of the provided options
+     */
     private String strIn(Scanner sc, List<String> options) {
         String input;
         System.out.println("Options:");
@@ -432,6 +471,13 @@ public class Context {
         return input;
     }
 
+    /**
+     * Reads a non-blank string input from the user.
+     * Continues prompting until a non-empty input is provided.
+     *
+     * @param sc the Scanner object for reading user input
+     * @return the validated non-blank string input
+     */
     private String strInNoBlank(Scanner sc) {
         String input;
         do {
@@ -443,7 +489,15 @@ public class Context {
         return input;
     }
 
-
+    /**
+     * Reads a date input from the user with optional constraints.
+     * Validates that the input is a valid date and optionally checks that it is after a minimum date.
+     *
+     * @param sc the Scanner object for reading user input
+     * @param minDate a string representing the minimum acceptable date (empty string to ignore)
+     * @param allowBlank whether blank input is allowed
+     * @return a string representation of the validated date
+     */
     private String dateIn(Scanner sc, String minDate, boolean allowBlank) {
         String input;
         LocalDate inDate;
@@ -472,6 +526,11 @@ public class Context {
         } while (!done);
         return input;
     }
+    /**
+     * Returns the current user associated with this context.
+     *
+     * @return the user object
+     */
     public user getCurrentUser() {
         return usr;
     }

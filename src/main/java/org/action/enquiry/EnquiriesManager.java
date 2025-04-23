@@ -1,3 +1,12 @@
+/**
+ * Manages the enquiries within the system. (Controller)
+ *
+ * <p>This class implements the EnquiryAction interface to provide functionality for creating,
+ * managing, and responding to enquiries. Also handles persistence of enquiry data. </p>
+ *
+ * @author Group 1- Beitricia Jassindah, Bryan, Cai Yuqin, Lin Jia Rong, Tan Min
+ * @version 1.0
+ */
 package org.action.enquiry;
 
 import org.UI.ConfigLDR;
@@ -10,10 +19,21 @@ import org.action.project.ProjectManager;
 import java.time.LocalDateTime;
 import java.util.*;
 
+
 public class EnquiriesManager implements EnquiryAction {
+
+    /** List of all enquiries in the BTO system */
     private final List<Enquiries> enquiriesList;
+
+    /** Path to the data directory */
     private final String path = "data/db";
+
+    /** Filename for the enquiries data storage */
     private final String filename = "/enquiries.csv";
+    /**
+     * Constructor for the EnquiriesManager.
+     * Loads enquiries content from the CSV file during initialization.
+     */
     public EnquiriesManager() {
         //load enquiries from csv
         this.enquiriesList = new ArrayList<>();
@@ -38,6 +58,10 @@ public class EnquiriesManager implements EnquiryAction {
         }
     }
 
+    /**
+     * Stores the current state of enquiries to CSV file.
+     * Should be called when quitting the program.
+     */
     public void store() {
         // run this when quitting program to store to csv
         Map<String,String[]> enq_map = new HashMap<>();
@@ -48,6 +72,16 @@ public class EnquiriesManager implements EnquiryAction {
         ConfigLDR ldr = new ConfigLDR();
         ldr.saveCSV(path + filename,enq_map);
     }
+
+    /**
+     * Filters enquiries based on the provided parameters.
+     *
+     * @param usr The user performing the search
+     * @param userId Filter by user ID
+     * @param projectId Filter by project ID
+     * @param enquiryId Filter by enquiry ID
+     * @return A list of enquiries matching the filter criteria
+     */
     private List<Enquiries> searchFilter(user usr, String userId, String projectId, String enquiryId) {
         List<Enquiries> out = new ArrayList<>();
         for (Enquiries e : enquiriesList) {
@@ -57,6 +91,14 @@ public class EnquiriesManager implements EnquiryAction {
         }
         return out;
     }
+
+    /**
+     * Gets enquiries for a specific project.
+     *
+     * @param usr The user requesting the enquiries
+     * @param projectName The name/ID of the project
+     * @return A list of strings containing the project name and enquiries information
+     */
     public List<String> getEnquiriesByProject(user usr, String projectName) {
         List<Enquiries> filteredEnquiries;
         List<String> out = new ArrayList<>(List.of(String.format("%s",projectName),""));
@@ -69,12 +111,25 @@ public class EnquiriesManager implements EnquiryAction {
         }
         return out;
     }
-
+    /**
+     * Counts the number of enquiries for a specific project.
+     *
+     * @param usr The user requesting the count
+     * @param projectName The name/ID of the project
+     * @return The number of enquiries for the project
+     */
     public int countProjectEnquiries(user usr, String projectName) {
         List<Enquiries> filteredEnquiries;
         filteredEnquiries = searchFilter(usr,"",projectName,"");
         return filteredEnquiries.size();
     }
+
+    /**
+     * Gets enquiries created by a specific user.
+     *
+     * @param usr The user whose enquiries to retrieve
+     * @return A list of strings containing the user ID and enquiries information
+     */
     public List<String> getEnquiriesByUser(user usr) {
         List<Enquiries> filteredEnquiries;
         List<String> out = new ArrayList<>(List.of(String.format("%s",usr.getUserID()),""));
@@ -88,6 +143,13 @@ public class EnquiriesManager implements EnquiryAction {
         return out;
     }
 
+    /**
+     * Gets an enquiry by its ID.
+     *
+     * @param usr The user requesting the enquiry
+     * @param enquiryId The ID of the enquiry
+     * @return A list of strings containing the project ID and enquiry details
+     */
     public List<String> getEnquiriesById(user usr, String enquiryId) {
         List<Enquiries> filteredEnquiries;
         List<String> out = new ArrayList<>(List.of("",""));
@@ -102,7 +164,11 @@ public class EnquiriesManager implements EnquiryAction {
         return out;
     }
 
-
+    /**
+     * Generates a new enquiry ID.
+     *
+     * @return A new unique ID for an enquiry
+     */
     private int generateNewEnquiryId() {
         int maxId = 0;
         for (Enquiries e : enquiriesList) {
@@ -113,6 +179,14 @@ public class EnquiriesManager implements EnquiryAction {
         return maxId + 1;
     }
 
+    /**
+     * Submits a new enquiry.
+     *
+     * @param usr The user submitting the enquiry
+     * @param text The text content of the enquiry
+     * @param projectID The ID of the project the enquiry is related to
+     * @return A list of strings containing the result of the operation and any messages
+     */
     // Modified to match Context class expectations
     public List<String> submitEnquiry(user usr, String text, String projectID) {
         List<String> result = new ArrayList<>();
@@ -154,6 +228,12 @@ public class EnquiriesManager implements EnquiryAction {
         return result;
     }
 
+    /**
+     * Retrieves an enquiry by its ID.
+     *
+     * @param id The ID of the enquiry to retrieve
+     * @return The enquiry object, or null if not found
+     */
     private Enquiries getEnquiry(String id) {
         for (Enquiries e : enquiriesList) {
             if (Objects.equals(e.getID(), id)) {
@@ -162,6 +242,14 @@ public class EnquiriesManager implements EnquiryAction {
         }
         return null;
     }
+
+    /**
+     * Deletes an enquiry.
+     *
+     * @param usr The user attempting to delete the enquiry
+     * @param enquiryId The ID of the enquiry to delete
+     * @return A list of strings containing the result of the operation and any messages
+     */
     @Override
     public List<String> deleteEnquiries(user usr, String enquiryId) {
         List<String> result = new ArrayList<>(List.of("",""));
@@ -190,6 +278,14 @@ public class EnquiriesManager implements EnquiryAction {
         }
     }
 
+    /**
+     * Checks if a user can reply to an enquiry.
+     *
+     * @param usr The user attempting to reply
+     * @param enquiryID The ID of the enquiry to reply to
+     * @param proMan Checking if the user is a project manager or project officer
+     * @return true if the user can reply, false otherwise
+     */
     public boolean canReply(user usr, String enquiryID, ProjectManager proMan) {
         if (!(usr instanceof HDBOfficer) && !(usr instanceof HDBManager)) {
             System.out.println("Only HDB Officers and Managers can reply to enquiries.");
@@ -214,6 +310,14 @@ public class EnquiriesManager implements EnquiryAction {
         }
     }
 
+    /**
+     * Edits the text of an existing enquiry.
+     *
+     * @param usr The user attempting to edit the enquiry
+     * @param newText The new text content for the enquiry
+     * @param enquiryId The ID of the enquiry to edit
+     * @return A list of strings containing the result of the operation and any messages
+     */
     @Override
     public List<String> editEnquiries(user usr, String newText, String enquiryId) {
         List<String> result = new ArrayList<>(List.of("",""));
@@ -241,6 +345,14 @@ public class EnquiriesManager implements EnquiryAction {
         }
     }
 
+    /**
+     * Adds a reply to an existing enquiry.
+     * It also checks if it is a HDB officer or HDB manager replying the enquiries
+     * @param usr The user replying to the enquiry
+     * @param reply The text of the reply
+     * @param enquiryId The ID of the enquiry to reply to
+     * @return A list of strings containing the result of the operation and any messages
+     */
     @Override
     public List<String> replyEnquiries(user usr, String reply, String enquiryId) {
         List<String> result = new ArrayList<>(List.of("",""));
@@ -268,51 +380,5 @@ public class EnquiriesManager implements EnquiryAction {
             result.set(0, "ERROR: Invalid enquiry ID format");
             return result;
         }
-    }
-
-
-    public void processEnquiries(){
-        int pending = 0;
-        System.out.println("Enquiries processing");
-        for (Enquiries e : enquiriesList) {
-            if(e.getReply().isEmpty()){
-                pending++;
-                System.out.println("Enquiries id:" + e.getID());
-            }
-        }
-        System.out.println("Enquiries needed to be processed:" + pending);
-    }
-
-    public void trackStatus(String projectID){
-        int pending = 0;
-        int answered = 0;
-        System.out.println("Tracking status");
-        for(Enquiries e : enquiriesList){
-            if(e.getProjectID().equals(projectID))
-            {
-                if(e.getReply().isEmpty()){
-                    pending++;
-                }
-                else
-                {
-                    answered++;
-                }
-            }
-        }
-        System.out.println("Enquiries pending:" + pending);
-        System.out.println("Enquiries answered:" + answered);
-    }
-
-    public List<String> getUserEnquiries(user usr, String projectID) {
-        List<String> enquiryIds = new ArrayList<>();
-
-        for (Enquiries e : enquiriesList) {
-            if (e.getUserID().equals(usr.getUserID()) &&
-                    (projectID.isEmpty() || e.getProjectID().equals(projectID))) {
-                enquiryIds.add(String.valueOf(e.getID()));
-            }
-        }
-
-        return enquiryIds;
     }
 }

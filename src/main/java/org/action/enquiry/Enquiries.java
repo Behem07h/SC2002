@@ -37,7 +37,7 @@ public class Enquiries {
     /**
      * Constructor for creating a new enquiry object.
      *
-     * @param id The unique identifier for the enquiry
+     * @param id The unique ID for the enquiry
      * @param projectID The project ID for this enquiry
      * @param userId The user ID of the person who created the enquiry
      * @param username The username of the person who created the enquiry

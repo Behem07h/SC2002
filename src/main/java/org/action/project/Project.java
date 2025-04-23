@@ -442,8 +442,17 @@ public class Project {
      *
      * @param officersIDList New list of officer IDs as a colon-separated string
      */
-    public void editOfficerList(String officersIDList) {
+    public void editOfficerIDList(String officersIDList) {
          this.officersIDList = new ArrayList<>(Arrays.asList(officersIDList.split(":")));
+    }
+
+    /**
+     * Updates the list of officers assigned to this project.
+     *
+     * @param officersList New list of officer names as a colon-separated string
+     */
+    public void editOfficerNameList(String officersList) {
+        this.officersList = new ArrayList<>(Arrays.asList(officersList.split(":")));
     }
 
     /**

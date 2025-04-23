@@ -290,7 +290,7 @@ public class ApplicationManager {
             return;
         }
         Project pro = proMan.getProjectObjByName(usr, app.getProjectId(), false);
-        if (!(pro != null && pro.getOfficersIDList().contains(usr.getUserID()))) {
+        if (!(pro != null && pro.managerOfficerOf(usr))) {
             System.out.println("You are not an officer for this project");
             return;
         }
@@ -342,7 +342,7 @@ public class ApplicationManager {
             return;
         }
         Project pro = proMan.getProjectObjByName(usr, app.getProjectId(), false);
-        if (!(pro != null && pro.getOfficersIDList().contains(usr.getUserID()))) {
+        if (!(pro != null && pro.managerOfficerOf(usr))) {
             System.out.println("You are not an officer for this project");
             return;
         }

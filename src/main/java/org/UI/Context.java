@@ -172,12 +172,6 @@ public class Context {
                 appMan.newApplication(usr, currentViewedProjectID, input.get(0), proMan);
                 output = appMan.listByUser(usr, enqMan, proMan);
                 return output;
-            case "retrieve-application":
-                System.out.println("Enter an application ID to view: ");
-                input.set(0, sc.nextLine());
-                //appMan.retrieveApplication(usr,input[0]);
-                //??
-                return List.of("");
             case "withdraw-application":
                 //input application id, sends withdrawal for current application view
                 //return withdrawal status
@@ -193,7 +187,8 @@ public class Context {
                 System.out.println("Enter new application status (CANCEL to exit): ");
                 input.set(1, strIn(sc, appMan.processApplicationOptions(input.get(0))));
                 if (!Objects.equals(input.get(1), "CANCEL")) {
-                    appMan.processApplication(usr, input.get(0), input.get(1), proMan);
+                    output = appMan.processApplication(usr, input.get(0), input.get(1), proMan);
+                    return output;
                 }
                 return List.of("");
             case "process-withdrawal":

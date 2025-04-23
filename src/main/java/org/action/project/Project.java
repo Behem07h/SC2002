@@ -203,6 +203,7 @@ public class Project {
      * @return The officers' names as a colon-separated string
      */
     public String getOfficersList() {
+        officersList.removeIf(officer -> officer.trim().isEmpty());
         return String.join(":",officersList);
     }
 
@@ -212,6 +213,7 @@ public class Project {
      * @return The officers' IDs as a colon-separated string
      */
     public String getOfficersIDList() {
+        officersIDList.removeIf(officerID -> officerID.trim().isEmpty());
         return String.join(":",officersIDList);
     }
 
@@ -542,7 +544,7 @@ public class Project {
             out = projectName.toLowerCase().contains(name.toLowerCase());
         }
         if (!neighbourhood.isEmpty()) {
-            out = out && neighbourhood.toLowerCase().contains(neighbourhood.toLowerCase());
+            out = out && this.neighbourhood.toLowerCase().contains(neighbourhood.toLowerCase());
         }
         if (!flat.isEmpty()) {
             out = out && (flatType1.toLowerCase().contains(flat.toLowerCase()) || flatType2.toLowerCase().contains(flat.toLowerCase()));

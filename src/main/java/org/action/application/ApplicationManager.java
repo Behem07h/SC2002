@@ -275,21 +275,22 @@ public class ApplicationManager {
      * @param applicationId The ID of the application to process
      * @param action The action to perform (status to change to)
      * @param proMan The ProjectManager to verify project details
+     * @return The details of the modified application
      */
-    public void processApplication(user usr, String applicationId, String action, ProjectManager proMan) {
+    public List<String> processApplication(user usr, String applicationId, String action, ProjectManager proMan) {
         if (!(usr instanceof HDBOfficer || usr instanceof HDBManager)) {
             System.out.println("You do not have the perms to process project applications");
-            return;
+            return List.of("");
         }
         Application app = retrieveApplication(applicationId);
         if (app == null) {
             System.out.println("Application ID \"" + applicationId + "\" not found.");
-            return;
+            return List.of("");
         }
         Project pro = proMan.getProjectObjByName(usr, app.getProjectId(), false);
         if (!(pro != null && pro.managerOfficerOf(usr))) {
             System.out.println("You are not an officer for this project");
-            return;
+            return List.of("");
         }
         switch (action) {
             case "BOOKED":
@@ -316,6 +317,7 @@ public class ApplicationManager {
             default:
                 System.out.println("Unsupported target status: " + action);
         }
+        return List.of(app.view());
     }
 
     /**

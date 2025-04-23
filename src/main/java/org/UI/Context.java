@@ -352,12 +352,12 @@ public class Context {
                 return output;
             case "hide-show-project":
                 //input project id, output success/failure and new projects list
-                System.out.println("Enter project ID to toggle visibility: ");
+                System.out.println("Enter project ID to confirm toggle visibility: ");
                 input.set(0, sc.nextLine());
                 proMan.toggleVisibility(usr, input.get(0));
                 currentViewedProjectID = "";
                 currentViewedEnquiryID = "";
-                output = proMan.getProjectList(usr);
+                output = proMan.getProjectByName(usr, input.get(0), enqMan, true);
                 return output;
             case "edit-project":
                 //input project id, output success/failure and new projects list

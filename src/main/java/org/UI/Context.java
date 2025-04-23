@@ -42,6 +42,8 @@ public class Context {
         appMan.store();
         System.out.println("Saving Projects");
         proMan.store();
+        System.out.println("Saving Registrations");
+        regMan.store();
     }
 
     public List<String> act(String action, Scanner sc) {

@@ -170,7 +170,6 @@ public class RegistrationManager{
             }
         } else {
             System.out.println("Your user type cannot register for projects");
-            return;
         }
     }
 
@@ -275,11 +274,10 @@ public class RegistrationManager{
             for (Register reg : pendingReg) {
                 output.set(0,output.get(0)+reg.view_full());
             }
-            return output;
         } else {
             System.out.println("You do not have the perms to view pending project registrations");
-            return output;
         }
+        return output;
     }
 
     /**
@@ -300,11 +298,10 @@ public class RegistrationManager{
             for (Register reg : pendingReg) {
                 output.set(0,output.get(0)+reg.view());
             }
-            return output;
         } else {
             System.out.println("You do not have the perms to view pending project registrations");
-            return output;
         }
+        return output;
     }
 
     /**

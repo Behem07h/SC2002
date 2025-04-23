@@ -6,7 +6,6 @@
  */
 package org.Users;
 
-import java.util.Scanner;
 /**
  * Defines the common interface for all user types in the system.
  * This interface establishes the contract for basic user operations including
@@ -106,7 +105,7 @@ public interface user {
      * Defines the permission levels available in the system.
      * Each level grants different access rights to system functionality.
      */
-    public enum PermissionLevel {
+    enum PermissionLevel {
         /** Read-only access for applicants */
         APPLICANT,   // Read permission
         /** Access HDB officers */

@@ -11,16 +11,12 @@ import org.Users.HDBManager.HDBManager;
 import org.Users.HDBOfficer.HDBOfficer;
 import org.Users.user;
 import org.action.enquiry.EnquiriesManager;
-import org.action.registration.Register;
-import org.action.registration.RegistrationManager;
-import org.action.project.Project;
 
 
 
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
 import java.util.*;
-import java.util.stream.Collectors;
 
 import static java.lang.Integer.max;
 
@@ -51,9 +47,6 @@ public class ProjectManager {
      * If a project entry is missing required parameters, it is skipped with a warning message.
      */
     public ProjectManager() {
-        /**
-         * List containing all projects in the system.
-         */
         projectList = new ArrayList<>();
 
         ConfigLDR ldr = new ConfigLDR();
@@ -503,57 +496,7 @@ public class ProjectManager {
      * @return List containing a formatted string of viewable projects
      */
     public List<String> getProjectList(user usr) {
-        /*
-        // Managers see *all* project IDs
-        if (usr.getPerms() == user.PermissionLevel.MANAGER) {
-            return projectList.stream()
-                              .map(Project::getProjectName)
-                              .collect(Collectors.toList());
-        }
-        // Officers see only those they’re assigned to
-        else if (usr.getPerms() == user.PermissionLevel.OFFICER) {
-            return projectList.stream()
-                              .filter(p -> p.getOfficersIDList().contains(usr.getUserID()))
-                              .map(Project::getProjectName)
-                              .collect(Collectors.toList());
-        }
-        // Applicants (and everyone else) now also see only the IDs of projects
-        // they’re eligible for, filtered by flat‑type legality
-        else {
-            return projectList.stream()
-                .filter(p -> {
-                    // reuse your flat‑type weeding logic
-                    String legal = getUserValidFlatTypes(usr);
-                    return p.getFlatType1().contains(legal)
-                        || p.getFlatType2().contains(legal);
-                })
-                .map(Project::getProjectName)
-                .collect(Collectors.toList());
-        }
-        */
-        //return projectsToString(filterFlat(usr, getUserValidFlatTypes(usr)));
         return projectsToString(usr, mergeProjects(filterFlat(usr, getUserValidFlatTypes(usr)), filterRelated(usr)));
     }
-    
-
-
-
-
-
-
-
-
-    /*
-    public void joinProject(user usr, String projectName, RegistrationCriteria criteria){
-        if(usr instanceof HDBOfficer) {
-            String regID = UUID.randomUUID().toString();
-            Register newRegistration = new Register(regID, usr.getUserID(), projectName, criteria);
-            registrationManager.addRegistration(newRegistration);
-            System.out.println("Registration submitted. Awaiting approval.");
-        } else {
-            System.out.println("No perms to join project");
-        }
-    }
-    */
 } 
 

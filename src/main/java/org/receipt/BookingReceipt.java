@@ -15,27 +15,27 @@ public class BookingReceipt {
     /**
      * Type of flat being booked (e.g., 2-Room, 3-Room, 4-Room, etc.)
      */
-   private String flatType;
+   private final String flatType;
     /**
      * Name of the applicant
      */
-   private String applicantName;
+   private final String applicantName;
     /**
      * Age of the applicant
      */
-   private int applicantAge;
+   private final int applicantAge;
     /**
      * NRIC number of the applicant
      */
-   private String applicantNRIC;
+   private final String applicantNRIC;
     /**
      * Details about the HDB project
      */
-   private String projectDetails;
+   private final String projectDetails;
     /**
      * Marital status of the applicant
      */
-   private String applicantMartialStatus;
+   private final String applicantMartialStatus;
     /**
      * Boolean Indicator whether the booking is confirmed
      */

@@ -7,7 +7,6 @@
 package org.Users.HDBOfficer;
 
 
-import org.Users.Applicant.Applicant;
 import org.Users.GenericManager;
 import org.Users.user;
 

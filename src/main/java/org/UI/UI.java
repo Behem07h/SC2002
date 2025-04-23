@@ -130,7 +130,7 @@ class ui_main {
                     allowed_options.add(i);
                 } else {
                     ui_text = ui_text.replaceAll(String.format("\\[%s\\] - ",i+1)+".*"+"\n","");
-                    //replace options we dont want the user to see
+                    //replace options we don't want the user to see
                 }
             }
         	for (int i = 0; i < ctx.size(); i++) {

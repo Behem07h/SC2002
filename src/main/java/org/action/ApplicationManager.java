@@ -1,9 +1,9 @@
 /**
  * Manages housing applications in the HDB system.
  *
- * This class handles CRUD operations for applications, including storing applications,
+ * <p> This class handles CRUD operations for applications, including storing applications,
  * filtering and retrieving applications, processing approvals, rejections, and withdrawals.
- * It also provides reporting capabilities for booking receipts.
+ * It also provides reporting capabilities for booking receipts.</p>
  *
  * Applications are loaded from and stored to CSV files for persistence.
  * @author Group 1- Beitricia Jassindah, Bryan, Cai Yuqin, Lin Jia Rong, Tan Min

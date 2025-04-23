@@ -48,10 +48,10 @@ public class RegistrationManager{
         ldr.saveCSV(path + filename,reg_map);
     }
 
-    private List<Register> searchFilter(String userID, String username, String projectID, String registrationID, List<Register.RegistrationStatus> statusBlacklist) {
+    private List<Register> searchFilter(String userID, String username, String projectID, String registrationID, List<Register.RegistrationStatus> statusWhitelist) {
         List<Register> out = new ArrayList<>();
         for (Register reg : registrationList) {
-            if (reg.filter(userID, username, projectID, registrationID, statusBlacklist)) {
+            if (reg.filter(userID, username, projectID, registrationID, statusWhitelist)) {
                 out.add(reg);
             }
         }
@@ -88,12 +88,12 @@ public class RegistrationManager{
                 System.out.println("You are currently an officer for a project");
                 return;
             } //else continue to check for existing applications
-        } else if (!(usr instanceof HDBOfficer)) {
+        } else {
             System.out.println("Your user type cannot register for projects");
             return;
         }
         // allow reg if user does not have approved registration and has not applied as applicant
-        if (countByUser(usr) == 0 && !(appliedAsApplicant(usr, projectId, null))) {
+        if (countByUser(usr) == 0 && !(appliedAsApplicant(usr, projectId, null))) { //todo: why do we pass null here?
             if (proMan.projectExists(usr, projectId, true) > 0) {
                 Register newRegistration =  new Register(
                         String.valueOf(generateNewRegistrationID()),

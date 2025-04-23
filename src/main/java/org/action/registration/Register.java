@@ -62,7 +62,7 @@ public class Register {
         }
     }
 
-    public boolean filter(String userID, String username, String projectID, String registrationID, List<RegistrationStatus> statusBlacklist) {
+    public boolean filter(String userID, String username, String projectID, String registrationID, List<RegistrationStatus> statusWhitelist) {
         boolean out = true;
         if (!userID.isEmpty()) {
             out = Objects.equals(this.userID, userID);
@@ -76,8 +76,8 @@ public class Register {
         if (!registrationID.isEmpty()) {
             out = out && Objects.equals(this.registrationID, registrationID);
         }
-        for (RegistrationStatus status : statusBlacklist) {
-            out = out && (this.status != status);
+        for (RegistrationStatus status : statusWhitelist) {
+            out = out && (this.status == status);
         }
         return out;
     }

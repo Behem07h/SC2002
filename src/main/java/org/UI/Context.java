@@ -180,12 +180,8 @@ public class Context {
                     appMan.processWithdrawal(usr, input.get(0), input.get(1), proMan);
                 }
                 return List.of("");
-            //todo: add registration methods, which is just the application class but again
-            //todo: officers register for BTO, view their registered BTOs by viewing the associated registrations
-            //todo: filterable by visibility
+
             case "list-registrations":
-                //todo: managers need a way to see all pending registrations for a project
-                //todo: officers need a way to see their own pending registrations
                 System.out.println("Enter project name to view pending registrations (Blank to view own applications): ");
                 input.set(0, sc.nextLine());
                 if (!input.get(0).isEmpty()) {
@@ -195,13 +191,6 @@ public class Context {
                 }
                 return List.of("");
             case "add-registration":
-                //todo:officers register to manage project
-                //todo:check the project application period does not overlap with other ones they are managing
-                //todo:check that they have no pending or successful applications for the project
-                if (!(usr instanceof HDBOfficer)) {
-                    System.out.println("Only officers can register to manage projects");
-                    return List.of("");
-                }
                 System.out.println("Enter project name you want to register for: ");
                 input.set(0, sc.nextLine());
                 regMan.registerProject(usr, input.get(0), proMan);

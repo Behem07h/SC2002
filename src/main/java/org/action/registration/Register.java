@@ -43,6 +43,13 @@ public class Register {
         }
     }
 
+    public String view() {
+        return String.format("RegID: %s | Project %s\nSubmitted %s\n",registrationID, projectID, submissionDate);
+    }
+
+    public String view_full() {
+        return String.format("RegID: %s | Officer %s\nSubmitted %s\n",registrationID, username, submissionDate);
+    }
     public void approveRegistration() {
         if (status == RegistrationStatus.PENDING) {
             status      = RegistrationStatus.APPROVED;

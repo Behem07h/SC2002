@@ -170,41 +170,41 @@ public class RegistrationManager{
         }
     }
 
-    public void listPendingReg(user usr, String projectID) {
+    public List<String> listPendingReg(user usr, String projectID) {
+        List<String> output = new ArrayList<>(List.of(""));
         if(usr instanceof HDBManager) {
             List<Register> pendingReg = searchFilter("","",projectID,"", List.of(Register.RegistrationStatus.PENDING));
             if (pendingReg.isEmpty()) {
                 System.out.println("No pending registrations found for this project");
-                return;
+                return output;
             }
-            System.out.println("Pending Registrations for " + projectID);
+            output.set(0, output.get(0)+String.format("Pending Registrations for %s\n", projectID));
             for (Register reg : pendingReg) {
-                System.out.println("RegID: " + reg.getRegistrationID() +
-                                ", Officer: " + reg.getUserID() +
-                                ", Submitted On: " + reg.getSubmissionDate());
+                output.set(0,output.get(0)+reg.view_full());
             }
+            return output;
         } else {
             System.out.println("You do not have the perms to view pending project registrations");
-            return;
+            return output;
         }
     }
 
-    public void listPendingReg(user usr) {
+    public List<String> listPendingReg(user usr) {
+        List<String> output = new ArrayList<>(List.of(""));
         if(usr instanceof HDBOfficer) {
             List<Register> pendingReg = searchFilter(usr.getUserID(),"","","", List.of(Register.RegistrationStatus.PENDING));
             if (pendingReg.isEmpty()) {
                 System.out.println("No pending registrations found");
-                return;
+                return output;
             }
             System.out.println("Your Pending Registrations:");
             for (Register reg : pendingReg) {
-                System.out.println("RegID: " + reg.getRegistrationID() +
-                                ", Project: " + reg.getProjectID() +
-                                ", Submitted On: " + reg.getSubmissionDate());
+                output.set(0,output.get(0)+reg.view());
             }
+            return output;
         } else {
             System.out.println("You do not have the perms to view pending project registrations");
-            return;
+            return output;
         }
     }
 

@@ -185,11 +185,11 @@ public class Context {
                 System.out.println("Enter project name to view pending registrations (Blank to view own applications): ");
                 input.set(0, sc.nextLine());
                 if (!input.get(0).isEmpty()) {
-                    regMan.listPendingReg(usr, input.get(0));
+                    output = regMan.listPendingReg(usr, input.get(0));
                 } else {
-                    regMan.listPendingReg(usr);
+                    output = regMan.listPendingReg(usr);
                 }
-                return List.of("");
+                return output;
             case "add-registration":
                 System.out.println("Enter project name you want to register for: ");
                 input.set(0, sc.nextLine());

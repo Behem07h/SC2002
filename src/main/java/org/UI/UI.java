@@ -1,10 +1,33 @@
+/**
+ * This package contains classes for handling the user interface of the BTO Management System.
+ * It provides a dynamic menu system that adapts based on user permissions and configuration files.
+ *
+ * <p>The UI class serves as a wrapper for the ui_main class, providing configuration loading
+ * and initialization for the user interface. It reads configuration files for UI elements,
+ * connections, functions, and visibility settings from specified file paths and initializes
+ * the main UI system with these configurations.</p>
+ *
+ * @author Group 1- Beitricia Jassindah, Bryan, Cai Yuqin, Lin Jia Rong, Tan Min
+ * @version 1.0
+ * @since 2025-04-23
+ */
 package org.UI;
 import org.Users.user;
 
 import java.util.*;
 
 public class UI {
+    /** The main UI controller instance */
     private final ui_main ui;
+    /**
+     * Constructs a UI object with the specified configuration root path, user, and scanner.
+     *
+     * <p>Loads UI configurations from files and initializes the ui_main controller.</p>
+     *
+     * @param cfg_rt The root path to configuration files
+     * @param myuser The authenticated user accessing the system
+     * @param sc The Scanner object for reading user input
+     */
     public UI(String cfg_rt, user myuser, Scanner sc) {
         ConfigLDR ldr = new ConfigLDR();
         this.ui = new ui_main(ldr.ReadToMap(cfg_rt+"/ui.csv"),
@@ -13,29 +36,65 @@ public class UI {
                 ldr.ReadToArrMap(cfg_rt+"/ui_visibility.csv"),
                 myuser, sc);
     }
+    /**
+     * Loads and starts the user interface.
+     * Delegates to the ui_main controller to manage the UI flow.
+     */
     public void load_ui() {
         this.ui.load_ui();
     }
 }
 
-
+/**
+ * The ui_main class is the core controller for the BTO Management System's user interface.
+ *
+ * <p>This class manages the UI flow, handles user input, processes function calls, and
+ * controls navigation between different UI screens based on configuration settings and user permissions.</p>
+ *
+ * <p>It maintains context across UI screens and supports dynamic rendering of UI elements
+ * with contextual text replacement.</p>
+ */
 class ui_main {
 
+    /** Map containing UI text for each screen */
     Map<String,String> ui_map;          //text to display in ui page
-    //inputs are all 1 indexed as 0 is reserved for quitting
+    /** Map containing functions to execute for each menu option */
     Map<String,String[]> fn_map;        //fns in fn_arr to run when receiving input. may not be the same as the name of the next ui
+    /** Map containing navigation connections between UI screens */
     Map<String,String[]> next_ui_map;   //ui menu connections
+    /** Map containing visibility settings for menu options based on user permissions */
     Map<String,String[]> vis_map;       //ui option visibility
+    /** List of menu options currently visible to the user */
     List<Integer> allowed_options = new ArrayList<>();      //visible options as list
 
+    /** Context object managing application state and user sessions */
     Context context;
+    /** List containing contextual data from function execution */
     List<String> ctx;
+    /** Temporary list for storing function return values */
     List<String> tmpList;
+    /** Identifier of the function fn that the ctx was returned from */
     String ctx_idx; //fn that the ctx was returned from
+    /** Temporary string storage */
     String tmp;
+    /** Identifier of the name of the ui menu */
     String ui_idx; //the name of the ui menu
+    /** Scanner for reading user input */
     Scanner sc;
 
+    /**
+     * Constructs a ui_main object with the specified UI configuration maps, user, and scanner.
+     *
+     * <p>Initializes the UI controller with configuration settings and sets the initial context
+     * and UI screen.</p>
+     *
+     * @param ui_map Map containing UI text for each screen
+     * @param next_ui_map Map containing navigation connections between UI screens
+     * @param fn_map Map containing functions to execute for each menu option
+     * @param vis_map Map containing visibility settings for menu options
+     * @param currentUser The authenticated user accessing the system
+     * @param sc The Scanner object for reading user input
+     */
     public ui_main(Map<String,String> ui_map,Map<String,String[]> next_ui_map,Map<String,String[]> fn_map,Map<String,String[]> vis_map, user currentUser, Scanner sc) {
         //load file path into ui_arr
         this.ui_map = ui_map;
@@ -51,6 +110,15 @@ class ui_main {
         ui_idx = next_ui_map.get("DEFAULT")[0]; //defaults can be loaded from file
     }
 
+    /**
+     * Starts the UI interaction loop.
+     *
+     * <p>This method handles rendering UI screens, collecting user input, executing
+     * associated functions, and navigating between screens according to the configuration.</p>
+     *
+     * <p>It also manages visibility of menu options based on user permissions and handles
+     * contextual text replacement in the UI.</p>
+     */
     public void load_ui() {
         while (true) {
         	String ui_text = ui_map.get(ui_idx).replace("\\n","\n"); //get the current ui text

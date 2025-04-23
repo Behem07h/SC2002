@@ -193,7 +193,7 @@ public class Context {
             case "add-registration":
                 System.out.println("Enter project name you want to register for: ");
                 input.set(0, sc.nextLine());
-                regMan.registerProject(usr, input.get(0), proMan);
+                regMan.registerProject(usr, input.get(0), proMan, appMan);
                 return List.of("");
             case "process-registration":
                 System.out.println("Enter registration ID to update status: ");

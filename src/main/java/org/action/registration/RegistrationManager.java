@@ -81,7 +81,7 @@ public class RegistrationManager{
         }
     }
 
-    public void registerProject(user usr, String projectId, ProjectManager proMan) {
+    public void registerProject(user usr, String projectId, ProjectManager proMan, ApplicationManager appMan) {
         if (usr instanceof HDBOfficer) {
             Project proj = proMan.getProjectObjByName(usr, projectId, true);
             if ((proj != null) && (proj.getOfficersIDList().contains(usr.getUserID()))) {
@@ -93,7 +93,7 @@ public class RegistrationManager{
             return;
         }
         // allow reg if user does not have approved registration and has not applied as applicant
-        if (countByUser(usr) == 0 && !(appliedAsApplicant(usr, projectId, null))) { //todo: why do we pass null here?
+        if (countByUser(usr) == 0 && !(appliedAsApplicant(usr, projectId, appMan))) {
             if (proMan.projectExists(usr, projectId, true) > 0) {
                 Register newRegistration =  new Register(
                         String.valueOf(generateNewRegistrationID()),
@@ -112,7 +112,7 @@ public class RegistrationManager{
         if (countByUser(usr) != 0) {
             System.out.println("You have already registered for another project");
         }
-        if (appliedAsApplicant(usr, projectId, null)) {
+        if (appliedAsApplicant(usr, projectId, appMan)) {
             System.out.println("You have applied for this project as an applicant");
         }
     }

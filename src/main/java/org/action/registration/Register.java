@@ -7,6 +7,8 @@
  */
 package org.action.registration;
 
+import org.action.application.Act;
+
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Objects;
@@ -41,7 +43,7 @@ public class Register {
     /**
      * Enumeration of possible registration statuses.
      */
-    public enum RegistrationStatus {
+    public enum RegistrationStatus implements Act {
         /**
          * If there is no registration
          */

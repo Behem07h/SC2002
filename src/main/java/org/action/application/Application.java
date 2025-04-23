@@ -5,13 +5,13 @@
  * @version 1.0
  * @since 2025-04-23
  */
-package org.action;
+package org.action.application;
 
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Objects;
 
-import static org.action.Application.WithdrawalStatus.*;
+import static org.action.application.Application.WithdrawalStatus.*;
 
 /**
  * This class encapsulates all the information and business logic for managing

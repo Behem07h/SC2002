@@ -8,7 +8,7 @@ package org.action.registration;
 
 import org.Users.HDBManager.HDBManager;
 import org.Users.HDBOfficer.HDBOfficer;
-import org.action.ApplicationManager;
+import org.action.application.ApplicationManager;
 import org.action.project.Project;
 import org.action.project.ProjectManager;
 import org.UI.ConfigLDR;

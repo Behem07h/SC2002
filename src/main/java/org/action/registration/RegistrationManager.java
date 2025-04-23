@@ -230,7 +230,7 @@ public class RegistrationManager{
     }
 
     public void assignOfficer(user usr, Register reg, ProjectManager proMan) {
-        Project proj = proMan.getProjectObjByName(null, reg.getProjectID(), false);
+        Project proj = proMan.getProjectObjByName(usr, reg.getProjectID(), false);
 
         if (proj != null) {
             String officerID = reg.getUserID();

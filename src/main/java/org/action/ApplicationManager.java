@@ -248,6 +248,11 @@ public class ApplicationManager {
         return null;
     }
 
+    /**
+     * The options for each Application
+     * @param applicationId Unique Application ID for the application
+     * @return the respectively Cancel or SUCCESSFUL or CANCEL or BOOKED
+     */
     public List<String> processApplicationOptions(String applicationId) {
         Application app = retrieveApplication(applicationId);
         List<String> options = new ArrayList<>(List.of("CANCEL"));

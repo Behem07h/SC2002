@@ -42,9 +42,21 @@ public class Register {
      * Enumeration of possible registration statuses.
      */
     public enum RegistrationStatus {
+        /**
+         * If there is no registration
+         */
         NIL,
+        /**
+         * If the registration is still pending
+         */
         PENDING,
+        /**
+         * If the registration has been approved
+         */
         APPROVED,
+        /**
+         * If the registration has been rejected
+         */
         REJECTED
     }
     /**

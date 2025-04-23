@@ -41,6 +41,7 @@ public class Context {
      * Initializes all manager classes needed for handling different actions.
      *
      * @param currentUser the user for which this context is created
+     * @param managersList List of the Managers
      */
     public Context(user currentUser, List<GenericManager<user>> managersList) {
         usr = currentUser;

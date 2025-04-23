@@ -31,13 +31,29 @@ import static java.lang.Integer.max;
  * for all project-related operations in the system.
  */
 public class ProjectManager {
+    /**
+     * List containing all projects in the system.
+     */
     private final List<Project> projectList;
+    /**
+     * The directory path where database files are stored.
+     */
     private final String path = "data/db";
+    /**
+     * The filename for project data storage.
+     */
     private final String filename = "/project.csv";
     
     //private RegistrationManager registrationManager;
-    
+    /**
+     * Constructs a new ProjectManager and loads existing projects from persistent storage.
+     * Projects are loaded from a CSV file and added to the project list.
+     * If a project entry is missing required parameters, it is skipped with a warning message.
+     */
     public ProjectManager() {
+        /**
+         * List containing all projects in the system.
+         */
         projectList = new ArrayList<>();
 
         ConfigLDR ldr = new ConfigLDR();
@@ -72,7 +88,10 @@ public class ProjectManager {
 
         //registrationManager = new RegistrationManager();
     }
-
+    /**
+     * Stores all project data to the CSV file.
+     * This method should be called when quitting the program to save all project changes.
+     */
     public void store() {
         // run this when quitting program to store to csv
         Map<String,String[]> pro_map = new HashMap<>();
@@ -84,7 +103,25 @@ public class ProjectManager {
         ldr.saveCSV(path + filename,pro_map);
     }
 
-
+    /**
+     * Creates a new project with the specified parameters.
+     * Only users with HDBManager role can create projects.
+     * Validates that no project with the same name exists and that the manager
+     * is not already managing a project with overlapping application period.
+     *
+     * @param usr The user attempting to create the project
+     * @param projectName The unique name for the new project
+     * @param neighbourhood The neighbourhood where the project is located
+     * @param type1 The first flat type offered in the project
+     * @param type1_count The number of units available for the first flat type
+     * @param type1_price The price of the first flat type
+     * @param type2 The second flat type offered in the project
+     * @param type2_count The number of units available for the second flat type
+     * @param type2_price The price of the second flat type
+     * @param opening_date The project's opening date (format: YYYY-MM-DD)
+     * @param closing_date The project's closing date (format: YYYY-MM-DD)
+     * @param officer_slots The number of officer slots available for this project
+     */
     public void createProject(user usr, String projectName, String neighbourhood, String type1, int type1_count, int type1_price, String type2, int type2_count, int type2_price, String opening_date, String closing_date, int officer_slots) {
         if (usr instanceof HDBManager) {
             boolean exists = false;
@@ -117,6 +154,14 @@ public class ProjectManager {
             System.out.println("No perms to create project");
         }
     }
+
+    /**
+     * Deletes a project from the system.
+     * Only users with HDBManager role who manage the project can delete it.
+     *
+     * @param usr The user attempting to delete the project
+     * @param projectName The name of the project to delete
+     */
     public void deleteProject(user usr, String projectName) {
         if (usr instanceof HDBManager) {
             boolean removed = projectList.removeIf(p -> p.filter("",projectName,"","",usr,false,false));
@@ -129,6 +174,25 @@ public class ProjectManager {
             System.out.println("No perms to edit project");
         }
     }
+    /**
+     * Edits an existing project with updated parameters.
+     * Only users with HDBManager role who manage the project can edit it.
+     * Ensures flat counts don't decrease below current bookings.
+     *
+     * @param usr The user attempting to edit the project
+     * @param projectNameOld The current name of the project
+     * @param projectName The new name for the project
+     * @param neighbourhood The updated neighbourhood
+     * @param flatType1 The updated first flat type
+     * @param flatCount1 The updated number of units for first flat type
+     * @param flatPrice1 The updated price for first flat type
+     * @param flatType2 The updated second flat type
+     * @param flatCount2 The updated number of units for second flat type
+     * @param flatPrice2 The updated price for second flat type
+     * @param openingDate The updated opening date
+     * @param closingDate The updated closing date
+     * @param officerSlots The updated number of officer slots
+     */
     public void editProject(user usr, String projectNameOld, String projectName, String neighbourhood, String flatType1, int flatCount1, int flatPrice1, String flatType2, int flatCount2, int flatPrice2, String openingDate, String closingDate, int officerSlots) {
         if (usr instanceof HDBManager) {
             for (Project p : projectList) {
@@ -144,6 +208,13 @@ public class ProjectManager {
         }
     }
 
+    /**
+     * Toggles the visibility of a project.
+     * Only users with HDBManager role who manage the project can change its visibility.
+     *
+     * @param usr The user attempting to toggle project visibility
+     * @param keyword The name of the project to toggle visibility for
+     */
     public void toggleVisibility(user usr, String keyword) {
         if (usr instanceof HDBManager) {
             for (Project p : projectList) {
@@ -161,6 +232,19 @@ public class ProjectManager {
             System.out.println("No perms to alter project visibility");
         }
     }
+
+    /**
+     * Filters projects based on specified criteria.
+     *
+     * @param usr The user performing the search
+     * @param name Partial project name to search for
+     * @param nameExact Exact project name to match
+     * @param neighbourhood Neighbourhood to filter by
+     * @param flat Flat type to filter by
+     * @param managedBy Whether to filter by projects managed by the user
+     * @param visChk Whether to check project visibility
+     * @return List of projects matching the filter criteria
+     */
     private List<Project> searchFilter(user usr, String name, String nameExact, String neighbourhood, String flat, boolean managedBy, boolean visChk) {
         List<Project> out = new ArrayList<>();
         boolean visible_check = visChk; //default to true so new roles default to minimum perms
@@ -178,6 +262,13 @@ public class ProjectManager {
         return out;
     }
 
+    /**
+     * Converts a list of projects to formatted strings.
+     *
+     * @param usr The user requesting the project information
+     * @param projects The list of projects to convert
+     * @return List containing a formatted string representation of the projects
+     */
     public List<String> projectsToString(user usr, List<Project> projects) {
         List<String> out = new ArrayList<>(List.of(""));
         for (Project p : projects) {
@@ -186,18 +277,39 @@ public class ProjectManager {
         return out;
     }
 
+    /**
+     * Merges two lists of projects, removing duplicates.
+     *
+     * @param p1 First list of projects
+     * @param p2 Second list of projects
+     * @return A merged list with no duplicate projects
+     */
     public List<Project> mergeProjects(List<Project> p1, List<Project> p2) {
         Set<Project> set = new HashSet<>(p1);
         set.addAll(p2);
         return new ArrayList<>(set);
     }
 
+    /**
+     * Filters projects related to the user (projects the user manages or is assigned to).
+     *
+     * @param usr The user to find related projects for
+     * @return List of projects related to the user
+     */
     public List<Project> filterRelated(user usr) {
         List<Project> filteredProjects;
         filteredProjects = searchFilter(usr,"","","", "",true,false);
         return filteredProjects;
     }
 
+
+    /**
+     * Filters projects by flat type.
+     *
+     * @param usr The user requesting the filtering
+     * @param flatType The flat type to filter by
+     * @return List of projects matching the flat type filter
+     */
     public List<Project> filterFlat(user usr, String flatType) {
         List<Project> filteredProjects = new ArrayList<>();
         if (flatType.contains(getUserValidFlatTypes(usr))) {
@@ -205,6 +317,14 @@ public class ProjectManager {
         }
         return filteredProjects;
     }
+
+    /**
+     * Filters projects by neighbourhood and returns formatted string representations.
+     *
+     * @param usr The user requesting the filtering
+     * @param neighbourhood The neighbourhood to filter by
+     * @return List containing a formatted string of projects in the specified neighbourhood
+     */
     public List<String> filterNeighbourhood(user usr, String neighbourhood) {
         List<Project> filteredProjects;
         List<String> out = new ArrayList<>(List.of(""));
@@ -214,6 +334,14 @@ public class ProjectManager {
         }
         return out;
     }
+
+    /**
+     * Searches for projects by name and returns formatted string representations.
+     *
+     * @param usr The user performing the search
+     * @param name The project name to search for
+     * @return List containing a formatted string of projects matching the name search
+     */
     public List<String> searchName(user usr, String name) {
         List<Project> filteredProjects;
         List<String> out = new ArrayList<>(List.of(""));
@@ -223,12 +351,30 @@ public class ProjectManager {
         }
         return out;
     }
+
+    /**
+     * Checks if a project with the specified name exists.
+     *
+     * @param usr The user performing the check
+     * @param projectName The project name to check
+     * @param visChk Whether to check project visibility
+     * @return Number of matching projects found (typically 0 or 1)
+     */
     public int projectExists(user usr, String projectName, boolean visChk) {
         List<Project> filteredProjects;
         filteredProjects = searchFilter(usr,"",projectName,"", getUserValidFlatTypes(usr),false, visChk);
         return filteredProjects.size();
     }
 
+    /**
+     * Checks if the user is a manager or officer of the specified project.
+     *
+     * @param usr The user to check
+     * @param projectName The project name to check
+     * @param visChk Whether to check project visibility
+     * @param manager True to check if user is a manager, false to check if user is an officer
+     * @return True if the user is a manager/officer of the project, false otherwise
+     */
     public boolean checkManagedOfficerOf(user usr, String projectName, boolean visChk, boolean manager) {
         if (!((manager && usr instanceof HDBManager) || (!manager && usr instanceof HDBOfficer))) {
             return false;
@@ -244,6 +390,14 @@ public class ProjectManager {
         }
     }
 
+    /**
+     * Retrieves a project object by its name.
+     *
+     * @param usr The user requesting the project
+     * @param projectName The name of the project to retrieve
+     * @param visChk Whether to check project visibility
+     * @return The Project object if found, null otherwise
+     */
     public Project getProjectObjByName(user usr, String projectName, boolean visChk) {
         List<Project> filteredProjects;
         filteredProjects = searchFilter(usr,"",projectName,"", getUserValidFlatTypes(usr), false,visChk);
@@ -253,6 +407,15 @@ public class ProjectManager {
             return null;
         }
     }
+    /**
+     * Retrieves detailed information about a project by its name.
+     *
+     * @param usr The user requesting the project details
+     * @param projectName The name of the project to retrieve details for
+     * @param enqMan The EnquiriesManager for handling project-related enquiries
+     * @param visChk Whether to check project visibility
+     * @return List containing a formatted string with detailed project information
+     */
     public List<String> getProjectByName(user usr, String projectName, EnquiriesManager enqMan, boolean visChk) {
         List<String> out = new ArrayList<>(List.of(""));
         Project p = getProjectObjByName(usr, projectName, visChk);
@@ -261,6 +424,13 @@ public class ProjectManager {
         }
         return out;
     }
+
+    /**
+     * Determines which flat types a user is eligible for based on age and marital status.
+     *
+     * @param usr The user to check eligibility for
+     * @return String representing the valid flat types for the user
+     */
     private String getUserValidFlatTypes(user usr) {
         if (usr instanceof HDBOfficer || usr instanceof HDBManager) {
             return "Room";
@@ -274,6 +444,12 @@ public class ProjectManager {
         return "NONE"; //if you fall outside those ranges, you cannot see anything according to SG law
     }
 
+    /**
+     * Gets the list of valid filter options available to a user based on their role.
+     *
+     * @param usr The user to get filter options for
+     * @return List of filter options available to the user
+     */
     public List<String> getValidFilters(user usr) {
         if (usr instanceof HDBOfficer || usr instanceof HDBManager) {
             return List.of("Flat", "Neighbourhood", "My Projects","Reset Filter");
@@ -281,6 +457,14 @@ public class ProjectManager {
             return List.of("Flat", "Neighbourhood","Reset Filter");
         }
     }
+
+    /**
+     * Gets the flat options available to a user for a specific project or all projects.
+     *
+     * @param usr The user to get flat options for
+     * @param projectName The project name to check options for, or empty string for all projects
+     * @return List of flat types available to the user
+     */
     public List<String> userFlatOptions(user usr, String projectName) {
         List<String> flatChoices;
         List<String> outputChoices = new ArrayList<>();
@@ -310,9 +494,14 @@ public class ProjectManager {
 
 
     }
-    
-   
-    
+
+
+    /**
+     * Gets a list of all projects the user can view based on their eligibility.
+     *
+     * @param usr The user requesting the project list
+     * @return List containing a formatted string of viewable projects
+     */
     public List<String> getProjectList(user usr) {
         /*
         // Managers see *all* project IDs
@@ -346,9 +535,6 @@ public class ProjectManager {
         return projectsToString(usr, mergeProjects(filterFlat(usr, getUserValidFlatTypes(usr)), filterRelated(usr)));
     }
     
-/**
- * Returns the names (IDs) of all projects this officer is assigned to.
- */
 
 
 

@@ -27,6 +27,7 @@ public class UI {
      *
      * @param cfg_rt The root path to configuration files
      * @param myuser The authenticated user accessing the system
+     * @param managersList The manager list
      * @param sc The Scanner object for reading user input
      */
     public UI(String cfg_rt, user myuser, Scanner sc, List<GenericManager<user>> managersList) {

@@ -193,6 +193,7 @@ public class Context {
                 } else {
                     regMan.listPendingReg(usr);
                 }
+                return List.of("");
             case "add-registration":
                 //todo:officers register to manage project
                 //todo:check the project application period does not overlap with other ones they are managing

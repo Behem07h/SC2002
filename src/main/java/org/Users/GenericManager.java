@@ -78,6 +78,17 @@ public abstract class GenericManager<T extends user> {
     protected abstract T parseUser(String line);
 
     /**
+     * Parses a user object into a String[].
+     *
+     * <p>This abstract method must be implemented by subclasses to define
+     * how a user object is converted into a list of strings for storing into CSV.</p>
+     *
+     * @param usr The user object to parse
+     * @return A String[], or null if parsing fails
+     */
+    protected abstract String[] toStrList(user usr);
+
+    /**
      * Authenticates a user based on user ID and password.
      *
      * <p>This method searches for a user with the provided ID and password
@@ -204,8 +215,8 @@ public abstract class GenericManager<T extends user> {
     public void store() {
         Map<String,String[]> reg_map = new HashMap<>();
         for (user usr : userDB) {
-            String[] items = {usr.getUsername(),usr.getPassword(),usr.getMaritalStatus(), String.valueOf(usr.getAge()), String.valueOf(usr.getPerms())};
-            reg_map.put(usr.getUserID(),items);
+            String[] items = toStrList(usr);
+            reg_map.put(items[0],Arrays.copyOfRange(items, 1, items.length));
         }
         ConfigLDR ldr = new ConfigLDR();
         ldr.saveCSV(filepath,reg_map);

@@ -47,6 +47,18 @@ public class HDBOfficerManager extends GenericManager<user> {
    }
 
     /**
+     * Parses a HDBOfficer object into a String[].
+     * String[] format: user ID, username,password,maritalStatus,age,permissionLevel
+     *
+     * @param usr The user object to parse
+     * @return A String[], or null if parsing fails
+     */
+    @Override
+    protected String[] toStrList(user usr) {
+        return new String[]{usr.getUserID(), usr.getUsername(), usr.getPassword(), usr.getMaritalStatus(), String.valueOf(usr.getAge()), String.valueOf(usr.getPerms())};
+    }
+
+    /**
      * Adds a new HDB Officer to the system with default values.
      * This method creates a new HDBOfficer with the provided details and a default
      * password of "password". The permission level is set to OFFICER automatically.

@@ -39,6 +39,17 @@ public class ManagerController extends GenericManager<user> {
    }
 
     /**
+     * Parses a HDBManager object into a String[].
+     * String[] format: user ID, username,password,maritalStatus,age,permissionLevel
+     *
+     * @param usr The user object to parse
+     * @return A String[], or null if parsing fails
+     */
+    @Override
+    protected String[] toStrList(user usr) {
+        return new String[]{usr.getUserID(), usr.getUsername(), usr.getPassword(), usr.getMaritalStatus(), String.valueOf(usr.getAge()), String.valueOf(usr.getPerms())};
+    }
+    /**
      * Adds a new manager to the user database with default permission level MANAGER
      * and an empty active project ID.
      *

@@ -41,6 +41,18 @@ public class ApplicantManager extends GenericManager<user> {
    }
 
     /**
+     * Parses a Applicant object into a String[].
+     * String[] format: user ID, username,password,maritalStatus,age,permissionLevel
+     *
+     * @param usr The user object to parse
+     * @return A String[], or null if parsing fails
+     */
+    @Override
+    protected String[] toStrList(user usr) {
+        return new String[]{usr.getUserID(), usr.getUsername(), usr.getPassword(), usr.getMaritalStatus(), String.valueOf(usr.getAge()), String.valueOf(usr.getPerms())};
+    }
+
+    /**
      * Adds a new Applicant to the user database.
      * The password is set to "password" by default, and permission level is set to APPLICANT.
      *

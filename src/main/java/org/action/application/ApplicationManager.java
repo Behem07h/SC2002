@@ -21,8 +21,7 @@ import org.receipt.BookingReceipt;
 import java.time.LocalDate;
 import java.util.*;
 
-import static org.action.application.Application.ApplicationStatus.PENDING;
-import static org.action.application.Application.ApplicationStatus.SUCCESSFUL;
+import static org.action.application.Application.ApplicationStatus.*;
 
 /**
  *This class handles CRUD operations for applications, including storing applications,
@@ -169,7 +168,7 @@ public class ApplicationManager {
      */
     public int checkForOfficer(user usr, String projectId) {
         List<Application> filteredApps = searchFilter(usr.getUserID(), projectId, "",
-        List.of(PENDING,Application.ApplicationStatus.BOOKED, SUCCESSFUL));
+        List.of(UNSUCCESSFUL,WITHDRAWN));
         return filteredApps.size();
     }
 

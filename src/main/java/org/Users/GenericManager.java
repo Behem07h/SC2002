@@ -25,6 +25,7 @@ public abstract class GenericManager<T extends user> {
     /** Collection of users managed by this manager */
     protected List<T> userDB = new ArrayList<>();
 
+    /** File path that the users were loaded from */
     private String filepath;
 
     /**
@@ -195,6 +196,11 @@ public abstract class GenericManager<T extends user> {
      */
     public abstract void addUser(String userID, String username, int age, String extra1, String extra2);
 
+    /**
+     * Stores all users in the database to a file
+     *
+     * <p>Stores all users in userDB to the file they were loaded from.</p>
+     */
     public void store() {
         Map<String,String[]> reg_map = new HashMap<>();
         for (user usr : userDB) {

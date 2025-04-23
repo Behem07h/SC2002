@@ -1,15 +1,17 @@
-Build-To-Order (BTO) Management System
-Overview
+# **Build-To-Order (BTO) Management System**
+
+## **Overview**
+
 The BTO Management System is a comprehensive platform for applicants and HDB staff to view, apply for, and manage Build-To-Order housing projects. This system serves as a centralized hub for all BTO-related activities, providing different functionalities based on user roles.
 
-User Authentication
+## **User Authentication**
 
 Login using Singpass account (NRIC and password)
 Password change functionality
 User profiles with age and marital status information
 Role-based access control (Applicant, HDB Officer, HDB Manager)
 
-Applicant Features
+## **Applicant Features**
 
 View projects open to their user group (Single or Married)
 Apply for BTO projects based on eligibility criteria:
@@ -20,7 +22,7 @@ Book a flat with HDB Officer assistance
 Request withdrawal of BTO applications
 Submit, view, edit, and delete enquiries
 
-HDB Officer Features
+## **HDB Officer Features**
 
 Register to handle projects (subject to approval from HDB Manager)
 Assist applicants with flat booking
@@ -28,7 +30,7 @@ Update flat availability
 Reply to project enquiries
 Generate booking receipts
 
-HDB Manager Features
+## **HDB Manager Features**
 
 Create, edit, and delete BTO project listings
 Toggle project visibility
@@ -38,23 +40,23 @@ Approve/reject applicant BTO applications
 Handle withdrawal requests
 Generate reports with various filters
 
-Usage
+## **Usage**
 
 Log in using your NRIC and password (default: "password")
 Navigate through the menu options based on your role
 Follow on-screen instructions to perform various actions
 
-System Requirements
+## **System Requirements**
 
 Command-line interface
 
-Project Structure
+## **Project Structure**
 
 src/ - Source code files
 data/ - Data files for user information and projects
 docs/ - Documentation including JavaDoc
 
-Acknowledgments
+## **Acknowledgments**
 
 Nanyang Technological University, SCSE
 SC/CE/CZ2002: Object-Oriented Design & Programming course

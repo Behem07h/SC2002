@@ -117,7 +117,8 @@ public class Register {
     public void approveRegistration() {
         if (status == RegistrationStatus.PENDING) {
             status      = RegistrationStatus.APPROVED;
-            System.out.println("Registration " + registrationID + " for project " + projectID + "approved");
+            closingDate = LocalDate.now();
+            System.out.println("Registration " + registrationID + " for project " + projectID + " approved on " + closingDate);
         } else {
             System.out.println("Cannot accept: status is " + status);
         }

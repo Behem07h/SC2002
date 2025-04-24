@@ -394,6 +394,7 @@ public class ProjectManager {
     public Project getProjectObjByName(user usr, String projectName, boolean visChk) {
         List<Project> filteredProjects;
         filteredProjects = searchFilter(usr,"",projectName,"", getUserValidFlatTypes(usr), false,visChk);
+        filteredProjects = mergeProjects(filteredProjects,searchFilter(usr,"",projectName,"", getUserValidFlatTypes(usr), true,false));
         if (!filteredProjects.isEmpty()) {
             return filteredProjects.get(0);
         } else {

@@ -456,6 +456,7 @@ public class ProjectManager {
      *
      * @param usr The user to get flat options for
      * @param projectName The project name to check options for, or empty string for all projects
+     * @param filtering If options are for filtering or for application choices
      * @return List of flat types available to the user
      */
     public List<String> userFlatOptions(user usr, String projectName, boolean filtering) {

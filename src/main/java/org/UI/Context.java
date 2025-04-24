@@ -168,7 +168,7 @@ public class Context {
                     currentViewedProjectID = sc.nextLine();
                 }
                 System.out.println("Enter chosen flat type: ");
-                input.set(0, strIn(sc, proMan.userFlatOptions(usr, currentViewedProjectID)));
+                input.set(0, strIn(sc, proMan.userFlatOptions(usr, currentViewedProjectID,false)));
                 appMan.newApplication(usr, currentViewedProjectID, input.get(0), proMan);
                 output = appMan.listByUser(usr, enqMan, proMan);
                 return output;
@@ -301,7 +301,7 @@ public class Context {
                 switch (input.get(1)) {
                     case "Flat":
                         System.out.println("Enter flat type to filter by:");
-                        input.set(2, strIn(sc, proMan.userFlatOptions(usr, "")));
+                        input.set(2, strIn(sc, proMan.userFlatOptions(usr, "", true)));
                         output = proMan.projectsToString(usr,proMan.filterFlat(usr, input.get(2)));
                         break;
 

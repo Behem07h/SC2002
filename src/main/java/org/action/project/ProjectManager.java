@@ -458,10 +458,10 @@ public class ProjectManager {
      * @param projectName The project name to check options for, or empty string for all projects
      * @return List of flat types available to the user
      */
-    public List<String> userFlatOptions(user usr, String projectName) {
+    public List<String> userFlatOptions(user usr, String projectName, boolean filtering) {
         List<String> flatChoices;
         List<String> outputChoices = new ArrayList<>();
-        if (usr instanceof HDBOfficer || usr instanceof HDBManager) {
+        if ((usr instanceof HDBOfficer && filtering)|| usr instanceof HDBManager) {
             flatChoices = List.of("2-Room","3-Room");
         } else {
             if (Objects.equals(usr.getMaritalStatus(), "Single") && usr.getAge() >= 35) {
@@ -484,8 +484,6 @@ public class ProjectManager {
         } else {
             return flatChoices;
         }
-
-
     }
 
 

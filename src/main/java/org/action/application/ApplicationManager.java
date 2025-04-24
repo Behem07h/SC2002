@@ -410,8 +410,8 @@ public class ApplicationManager {
     
         for (Application a : applicationList) {
             if (a.getStatus() != Application.ApplicationStatus.BOOKED) continue; //if not booked, skip
-            if (!projectFilter.isEmpty() && !a.getProjectId().equals(projectFilter)) continue; //if not the right project, skip
-            if (!flatTypeFilter.isEmpty() && !a.getFlatType().equals(flatTypeFilter)) continue; //if not the right flat type, skip
+            if (!projectFilter.isEmpty() && !a.getProjectId().trim().equals(projectFilter)) continue; //if not the right project, skip
+            if (!flatTypeFilter.isEmpty() && !a.getFlatType().trim().equals(flatTypeFilter)) continue; //if not the right flat type, skip
 
             user applicant = null;
             for (GenericManager<user> man : managersList) {
@@ -423,7 +423,7 @@ public class ApplicationManager {
             if (applicant == null) continue;
 
             if (!maritalFilter.isEmpty()
-             && !applicant.getMaritalStatus().equalsIgnoreCase(maritalFilter))
+             && !applicant.getMaritalStatus().trim().equalsIgnoreCase(maritalFilter))
                 continue; //if not the right marital status, skip
 
             // build the flat-type details from the Project
